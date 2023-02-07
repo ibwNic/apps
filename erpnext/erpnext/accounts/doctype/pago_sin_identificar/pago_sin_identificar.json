@@ -31,7 +31,7 @@
    "fieldname": "tasa_de_cambio",
    "fieldtype": "Float",
    "label": "Tasa de Cambio",
-   "precision": "2",
+   "precision": "4",
    "read_only": 1,
    "reqd": 1
   },
@@ -115,7 +115,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-02-03 10:33:45.980122",
+ "modified": "2023-02-07 11:12:31.648751",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Pago Sin Identificar",

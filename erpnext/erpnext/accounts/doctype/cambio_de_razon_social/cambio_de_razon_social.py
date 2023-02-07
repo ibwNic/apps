@@ -41,8 +41,8 @@ def obtener_planes_de_cliente(cliente):
 		item1.plan = plan[0]
 		item1.plan_name = plan[1]
 		item1.contrato = plan[2]
-	crs.save()		
-	return crs
+	#crs.save()		
+	return {'docs': crs.as_dict()}
 
 @frappe.whitelist()
 def crear_nuevo_contrato(name):
