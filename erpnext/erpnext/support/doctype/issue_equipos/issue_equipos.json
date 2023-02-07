@@ -1,0 +1,43 @@
+{
+ "actions": [],
+ "autoname": "autoincrement",
+ "creation": "2022-10-17 08:48:52.857716",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "equipo",
+  "modelo",
+  "id_namesubscription_plan_detail"
+ ],
+ "fields": [
+  {
+   "fieldname": "equipo",
+   "fieldtype": "Data",
+   "label": "Equipo"
+  },
+  {
+   "fieldname": "modelo",
+   "fieldtype": "Data",
+   "label": "Modelo"
+  },
+  {
+   "fieldname": "id_namesubscription_plan_detail",
+   "fieldtype": "Data",
+   "label": "ID_NAMESubscription Plan Detail"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2022-11-09 10:32:45.658919",
+ "modified_by": "Administrator",
+ "module": "Support",
+ "name": "Issue_Equipos",
+ "naming_rule": "Autoincrement",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

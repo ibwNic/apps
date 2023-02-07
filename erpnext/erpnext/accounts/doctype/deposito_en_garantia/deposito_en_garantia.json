@@ -1,0 +1,163 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "DG-.#######",
+ "creation": "2022-12-23 11:49:11.181200",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "cliente",
+  "nombre_cliente",
+  "fecha",
+  "column_break_4",
+  "tipo_de_documento",
+  "nombre_del_documento",
+  "data_deposito_section",
+  "tasa_de_cambio",
+  "currency",
+  "monto",
+  "aplicado",
+  "modo_de_pagos_section",
+  "pagos",
+  "aplicaciones_section",
+  "asientos_contables",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "cliente",
+   "fieldtype": "Link",
+   "label": "Cliente",
+   "options": "Customer"
+  },
+  {
+   "fetch_from": "cliente.customer_name",
+   "fieldname": "nombre_cliente",
+   "fieldtype": "Data",
+   "label": "Nombre Cliente"
+  },
+  {
+   "fieldname": "fecha",
+   "fieldtype": "Date",
+   "label": "Fecha"
+  },
+  {
+   "fieldname": "column_break_4",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "Journal Entry",
+   "fieldname": "tipo_de_documento",
+   "fieldtype": "Select",
+   "label": "Tipo de Documento",
+   "options": "Journal Entry"
+  },
+  {
+   "fieldname": "nombre_del_documento",
+   "fieldtype": "Dynamic Link",
+   "label": "Nombre del Documento",
+   "options": "tipo_de_documento"
+  },
+  {
+   "fieldname": "data_deposito_section",
+   "fieldtype": "Section Break",
+   "label": "Data Deposito"
+  },
+  {
+   "fieldname": "tasa_de_cambio",
+   "fieldtype": "Float",
+   "label": "Tasa de Cambio",
+   "precision": "2"
+  },
+  {
+   "fieldname": "currency",
+   "fieldtype": "Data",
+   "label": "currency"
+  },
+  {
+   "fieldname": "monto",
+   "fieldtype": "Currency",
+   "label": "Monto",
+   "options": "currency"
+  },
+  {
+   "default": "0",
+   "fieldname": "aplicado",
+   "fieldtype": "Check",
+   "label": "Aplicado"
+  },
+  {
+   "fieldname": "aplicaciones_section",
+   "fieldtype": "Section Break",
+   "label": "Aplicaciones"
+  },
+  {
+   "fieldname": "asientos_contables",
+   "fieldtype": "Table",
+   "label": "Asientos Contables",
+   "options": "Deposito en Garantia Aplicado"
+  },
+  {
+   "fieldname": "modo_de_pagos_section",
+   "fieldtype": "Section Break",
+   "label": "Modo de pagos"
+  },
+  {
+   "fieldname": "pagos",
+   "fieldtype": "Table",
+   "label": "Pagos",
+   "options": "Deposito Modo de Pagos"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Deposito en Garantia",
+   "print_hide": 1,
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2023-01-30 11:49:25.377687",
+ "modified_by": "Administrator",
+ "module": "Accounts",
+ "name": "Deposito en Garantia",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "cancel": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Cajero",
+   "select": 1,
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

@@ -1,0 +1,138 @@
+{
+ "actions": [],
+ "autoname": "AVERIA-.######",
+ "creation": "2022-10-26 15:48:28.280834",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "fechas_section",
+  "fecha_creado",
+  "fecha_finalizado",
+  "column_break_4",
+  "fecha_cancelado",
+  "section_break_5",
+  "tipo_de_incidencia",
+  "tipo_subincidencia",
+  "tipo_de_nodo",
+  "nodo",
+  "column_break_5",
+  "portafolio",
+  "section_break_7",
+  "descripcion",
+  "incidencia_tab",
+  "incidencias"
+ ],
+ "fields": [
+  {
+   "fieldname": "tipo_de_incidencia",
+   "fieldtype": "Select",
+   "label": "Tipo de Incidencia",
+   "options": "Falla nodo\nVentana de Mantenimiento"
+  },
+  {
+   "fieldname": "tipo_subincidencia",
+   "fieldtype": "Select",
+   "label": "Tipo SubIncidencia",
+   "options": "Falla Tecnica\nPreventiva\nCorrectiva\nConfiguraciones\nAprovisionar Hardware"
+  },
+  {
+   "fieldname": "tipo_de_nodo",
+   "fieldtype": "Select",
+   "label": "Tipo de Nodo",
+   "options": "Cableado\nInalambrico"
+  },
+  {
+   "fieldname": "nodo",
+   "fieldtype": "Link",
+   "label": "Nodo",
+   "options": "Nodo"
+  },
+  {
+   "fieldname": "portafolio",
+   "fieldtype": "Table",
+   "label": "Portafolio",
+   "options": "Portafolio AveriasMasivas"
+  },
+  {
+   "fieldname": "column_break_5",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_7",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "descripcion",
+   "fieldtype": "Small Text",
+   "label": "Descripcion"
+  },
+  {
+   "fieldname": "incidencia_tab",
+   "fieldtype": "Tab Break",
+   "label": "Incidencia"
+  },
+  {
+   "fieldname": "incidencias",
+   "fieldtype": "Table",
+   "label": "Incidencias",
+   "options": "Issue Vinculado Averia",
+   "read_only": 1
+  },
+  {
+   "fieldname": "fecha_creado",
+   "fieldtype": "Datetime",
+   "label": "Fecha Creado"
+  },
+  {
+   "fieldname": "fecha_finalizado",
+   "fieldtype": "Datetime",
+   "label": "Fecha Finalizado"
+  },
+  {
+   "fieldname": "fecha_cancelado",
+   "fieldtype": "Datetime",
+   "label": "Fecha Cancelado"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "fechas_section",
+   "fieldtype": "Section Break",
+   "label": "Fechas"
+  },
+  {
+   "fieldname": "section_break_5",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_4",
+   "fieldtype": "Column Break"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-01-31 08:21:12.143728",
+ "modified_by": "Administrator",
+ "module": "Support",
+ "name": "AveriasMasivas",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

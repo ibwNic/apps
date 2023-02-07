@@ -1,0 +1,38 @@
+{
+ "actions": [],
+ "creation": "2022-11-03 14:09:43.388935",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "serial_no",
+  "service_order"
+ ],
+ "fields": [
+  {
+   "fieldname": "serial_no",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "serial_no",
+   "options": "Serial No"
+  },
+  {
+   "fieldname": "service_order",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Service Order",
+   "options": "Service Order"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2022-11-25 15:15:04.379391",
+ "modified_by": "Administrator",
+ "module": "Support",
+ "name": "Equipo_Orden_Servicio",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

@@ -1,0 +1,45 @@
+{
+ "actions": [],
+ "creation": "2023-01-24 13:59:05.465964",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "pregunta",
+  "respuestas"
+ ],
+ "fields": [
+  {
+   "fieldname": "pregunta",
+   "fieldtype": "Data",
+   "in_filter": 1,
+   "in_global_search": 1,
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Pregunta"
+  },
+  {
+   "fieldname": "respuestas",
+   "fieldtype": "Small Text",
+   "in_filter": 1,
+   "in_global_search": 1,
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Respuestas"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2023-01-24 14:02:30.445422",
+ "modified_by": "Administrator",
+ "module": "CRM",
+ "name": "Preguntas Encuesta",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

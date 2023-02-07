@@ -1,0 +1,36 @@
+{
+ "actions": [],
+ "creation": "2022-11-07 17:00:04.852746",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "cuentas",
+  "tipo_de_cuenta"
+ ],
+ "fields": [
+  {
+   "fieldname": "cuentas",
+   "fieldtype": "Link",
+   "label": "Cuentas",
+   "options": "Account"
+  },
+  {
+   "fieldname": "tipo_de_cuenta",
+   "fieldtype": "Data",
+   "label": "Tipo de Cuenta"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2022-11-08 09:44:36.971150",
+ "modified_by": "Administrator",
+ "module": "Selling",
+ "name": "Account_Colector",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

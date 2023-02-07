@@ -1,0 +1,101 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2022-12-12 13:20:08.279587",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "plan",
+  "cliente",
+  "direccion",
+  "currency",
+  "costo",
+  "intervalo_de_facturacion",
+  "estado_plan"
+ ],
+ "fields": [
+  {
+   "fieldname": "plan",
+   "fieldtype": "Link",
+   "label": "Plan",
+   "options": "Subscription Plan",
+   "read_only": 1
+  },
+  {
+   "fieldname": "cliente",
+   "fieldtype": "Link",
+   "label": "Cliente",
+   "options": "Customer",
+   "read_only": 1
+  },
+  {
+   "fieldname": "direccion",
+   "fieldtype": "Link",
+   "label": "Direccion",
+   "options": "Address",
+   "read_only": 1
+  },
+  {
+   "fieldname": "currency",
+   "fieldtype": "Link",
+   "label": "Currency",
+   "options": "Currency",
+   "read_only": 1
+  },
+  {
+   "fieldname": "costo",
+   "fieldtype": "Data",
+   "label": "Costo",
+   "read_only": 1
+  },
+  {
+   "fieldname": "intervalo_de_facturacion",
+   "fieldtype": "Data",
+   "label": "Intervalo de Facturacion",
+   "read_only": 1
+  },
+  {
+   "fieldname": "estado_plan",
+   "fieldtype": "Select",
+   "label": "Estado Plan",
+   "options": "Inactivo\nActivo\nSUSPENDIDO: Manual\nSUSPENDIDO: Temporal\nPlan Cerrado"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-02-01 16:39:59.604153",
+ "modified_by": "Administrator",
+ "module": "Accounts",
+ "name": "Bitacora de Planes",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Back Office",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

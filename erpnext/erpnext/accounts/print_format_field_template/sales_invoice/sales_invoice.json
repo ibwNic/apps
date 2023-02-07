@@ -1,0 +1,14 @@
+{
+ "creation": "2022-10-18 15:25:33.085840",
+ "docstatus": 0,
+ "doctype": "Print Format Field Template",
+ "document_type": "Sales Invoice",
+ "idx": 0,
+ "modified": "2022-10-18 15:25:33.085840",
+ "modified_by": "Administrator",
+ "module": "Accounts",
+ "name": "Sales Invoice",
+ "owner": "Administrator",
+ "standard": 1,
+ "template_file": "example.txt"
+}

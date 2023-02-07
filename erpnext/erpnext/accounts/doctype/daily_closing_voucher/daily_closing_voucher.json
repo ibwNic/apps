@@ -1,0 +1,218 @@
+{
+ "actions": [],
+ "autoname": "CIERRE.-.YYYY.-.MM.-.DD.-.#######",
+ "creation": "2022-11-03 10:40:12.737746",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "transaction_date",
+  "posting_date",
+  "company",
+  "tipo",
+  "tercero",
+  "column_break_4",
+  "closing_account_head",
+  "remarks",
+  "closing_date",
+  "details_section",
+  "details",
+  "totales_modo_de_pagos_section",
+  "totales_modo_de_pagos",
+  "montos_recibidos_section",
+  "montosrecibidos",
+  "references_sb",
+  "references",
+  "cancelled_sb",
+  "cancelled",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "default": "Today",
+   "fieldname": "transaction_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Transaction Date",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "posting_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Posting Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_4",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "closing_account_head",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "in_list_view": 1,
+   "label": "Closing Account Head",
+   "options": "Account"
+  },
+  {
+   "fieldname": "remarks",
+   "fieldtype": "Small Text",
+   "label": "Remarks",
+   "reqd": 1
+  },
+  {
+   "fieldname": "details_section",
+   "fieldtype": "Section Break",
+   "hidden": 1,
+   "label": "Details"
+  },
+  {
+   "fieldname": "details",
+   "fieldtype": "Table",
+   "label": "Details",
+   "options": "Daily Closing Detail",
+   "print_hide": 1
+  },
+  {
+   "fieldname": "references_sb",
+   "fieldtype": "Section Break",
+   "label": "Referencias Activas"
+  },
+  {
+   "allow_bulk_edit": 1,
+   "allow_on_submit": 1,
+   "fieldname": "references",
+   "fieldtype": "Table",
+   "label": "References",
+   "options": "Daily Closing Reference",
+   "read_only": 1
+  },
+  {
+   "fieldname": "cancelled_sb",
+   "fieldtype": "Section Break",
+   "label": "Referencias Canceladas"
+  },
+  {
+   "fieldname": "cancelled",
+   "fieldtype": "Table",
+   "label": "Cancelled",
+   "options": "Daily Closing Cancelled Reference",
+   "read_only": 1
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Daily Closing Voucher",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "closing_date",
+   "fieldtype": "Datetime",
+   "label": "Fecha Cierre"
+  },
+  {
+   "fieldname": "tipo",
+   "fieldtype": "Select",
+   "label": "Tipo",
+   "options": "User\nColectores"
+  },
+  {
+   "fieldname": "tercero",
+   "fieldtype": "Dynamic Link",
+   "label": "Tercero",
+   "options": "tipo"
+  },
+  {
+   "fieldname": "totales_modo_de_pagos",
+   "fieldtype": "Table",
+   "label": "Modo de pagos",
+   "options": "Totales Modo de pagos",
+   "read_only": 1
+  },
+  {
+   "fieldname": "totales_modo_de_pagos_section",
+   "fieldtype": "Section Break",
+   "label": "Montos Aplicados"
+  },
+  {
+   "fieldname": "montos_recibidos_section",
+   "fieldtype": "Section Break",
+   "label": "Montos Recibidos"
+  },
+  {
+   "fieldname": "montosrecibidos",
+   "fieldtype": "Table",
+   "label": "MontosRecibidos",
+   "options": "Daily Closing Motos Recibidos",
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2023-01-25 09:10:46.113110",
+ "modified_by": "Administrator",
+ "module": "Accounts",
+ "name": "Daily Closing Voucher",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "if_owner": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Administrador Caja",
+   "set_user_permissions": 1,
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Cajero",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

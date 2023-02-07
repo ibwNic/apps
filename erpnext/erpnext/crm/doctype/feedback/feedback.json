@@ -1,0 +1,87 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "FB-.##########",
+ "creation": "2023-01-24 14:21:16.031239",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "encuesta",
+  "modulo",
+  "tercero"
+ ],
+ "fields": [
+  {
+   "fieldname": "encuesta",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Encuesta",
+   "options": "Encuestas",
+   "reqd": 1
+  },
+  {
+   "fieldname": "modulo",
+   "fieldtype": "Select",
+   "label": "Modulo",
+   "options": "Customer\nService Order\nLead\nIssue"
+  },
+  {
+   "fieldname": "tercero",
+   "fieldtype": "Dynamic Link",
+   "label": "Tercero",
+   "options": "modulo"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-02-06 15:15:15.902932",
+ "modified_by": "Administrator",
+ "module": "CRM",
+ "name": "Feedback",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Support Team",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Back Office",
+   "select": 1,
+   "set_user_permissions": 1,
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

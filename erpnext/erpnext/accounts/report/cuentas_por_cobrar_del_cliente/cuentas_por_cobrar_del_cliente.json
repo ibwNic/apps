@@ -1,0 +1,60 @@
+{
+ "add_total_row": 1,
+ "columns": [],
+ "creation": "2022-11-08 14:47:02.956348",
+ "disable_prepared_report": 0,
+ "disabled": 0,
+ "docstatus": 0,
+ "doctype": "Report",
+ "filters": [
+  {
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "label": "customer",
+   "mandatory": 0,
+   "options": "Customer",
+   "wildcard_filter": 0
+  },
+  {
+   "fieldname": "report_date",
+   "fieldtype": "Date",
+   "label": "report_date",
+   "mandatory": 0,
+   "options": "today",
+   "wildcard_filter": 0
+  },
+  {
+   "fieldname": "ageing_based_on",
+   "fieldtype": "Select",
+   "label": "ageing_based_on",
+   "mandatory": 0,
+   "options": "Posting Date\nDue  Date",
+   "wildcard_filter": 0
+  }
+ ],
+ "idx": 0,
+ "is_standard": "Yes",
+ "letter_head": "IBW Factura",
+ "modified": "2023-01-25 13:37:18.144285",
+ "modified_by": "Administrator",
+ "module": "Accounts",
+ "name": "Cuentas por Cobrar del Cliente",
+ "owner": "Administrator",
+ "prepared_report": 0,
+ "query": "SELECT\r\n    DISTINCT\r\n    s.posting_date AS \"Posting Date:Date:80\",\r\n    s.customer  AS \"Customer:Link/Customer:200\",\r\n    s.customer_name  AS \"Customer Name:Data:200\",\r\n    s.voucher_type AS \"Voucher Type:Data:110\",\r\ns.voucher_no  AS \"Voucher No:Dynamic Link/Voucher No:120\",\r\n    s.due_date  AS \"Due Date:Date:80\",\r\n    s.status  AS \"status:Data:200\",\r\n    s.outstanding_amount  AS \"outstanding amount:Currency/currency:160\",\r\n    s.credit  AS \"Total Invoiced Amount:Currency/currency:140\",\r\n    s.debit  AS \"Total Paid Amount:Currency/currency:140\",\r\n    s.outstanding as \"Total Outstanding Amount:Currency/currency:160\",\r\n    s.age as \"Age (Days):Int:80\",\r\n    ifnull(CASE WHEN s.age <= 30 THEN s.outstanding ELSE 0.0 END, 0.0) AS \"0-30:Currency/currency:100\",\r\n    ifnull(CASE WHEN s.age > 30 AND s.age <= 60 THEN s.outstanding ELSE 0.0 END, 0.0) AS \"30-60:Currency/currency:100\",\r\n    ifnull(CASE WHEN s.age > 60 AND s.age <= 90 THEN s.outstanding ELSE 0.0 END, 0.0) AS \"60-90:Currency/currency:100\",\r\n    ifnull(CASE WHEN s.age > 90 THEN s.outstanding ELSE 0.0 END, 0.0) AS \"90-above:Currency/currency:100\",\r\n    s.territory  AS \"Territory:Link/Territory:80\",\r\n    s.remarks AS \"Remarks:Data:200\"\r\nFROM (SELECT DISTINCT\r\n    `tabGL Entry`.`posting_date`,\r\n    `tabCustomer`.`name` as customer,\r\n    `tabCustomer`.`customer_name`,\r\n    `tabGL Entry`.`voucher_type`,\r\n    `tabGL Entry`.`voucher_no`,\r\n    `tabSales Invoice`.`due_date`,\r\n    `tabSales Invoice`.`status`,\r\n    `tabSales Invoice`.`outstanding_amount`,\r\n    ifnull(`tabGL Entry`.`credit`, 0.0) as credit,\r\n    ifnull(`tabGL Entry`.`debit`, 0.0) as debit,\r\n    ifnull(`tabGL Entry`.`credit`, 0.0) - ifnull(`tabGL Entry`.`debit`, 0.0) as outstanding,\r\n    CASE %(ageing_based_on)s\r\n       WHEN \"Posting Date\" THEN\r\n          DATEDIFF(DATE(%(report_date)s), `tabSales Invoice`.`posting_date`)\r\n       WHEN \"Due Date\" THEN\r\n          DATEDIFF(%(report_date)s, `tabSales Invoice`.`due_date`)\r\n    END as age,\r\n    `tabCustomer`.`territory`,\r\n    `tabGL Entry`.`remarks`\r\nFROM `tabCustomer`\r\nINNER JOIN `tabGL Entry` ON `tabCustomer`.`name` = `tabGL Entry`.`against`\r\nLEFT JOIN `tabSales Invoice` ON \r\n    `tabSales Invoice`.`name` = `tabGL Entry`.`voucher_no` \r\n    AND `tabGL Entry`.`voucher_type` = \"Sales Invoice\"\r\nWHERE `tabSales Invoice`.`posting_date` <= %(report_date)s AND `tabSales Invoice`.`company` = 'IBW-NI' and `tabGL Entry`.`against` = %(customer)s and `tabSales Invoice`.`docstatus`<>2\r\nGROUP BY `tabCustomer`.`name`, `tabGL Entry`.`voucher_no`\r\nORDER BY `tabCustomer`.`customer_name` ASC) s",
+ "ref_doctype": "Sales Invoice",
+ "report_name": "Cuentas por Cobrar del Cliente",
+ "report_script": "frappe.query_reports[\"Cuentas por Cobrar del Cliente\"] = {\r\n\t\"filters\": [\r\n\t\t{\r\n\t\t\t\"fieldname\":\"company\",\r\n\t\t\t\"default\": frappe.defaults.get_user_default(\"Company\")\r\n\t\t}\r\n\t]\r\n}",
+ "report_type": "Query Report",
+ "roles": [
+  {
+   "role": "Accounts Manager"
+  },
+  {
+   "role": "Accounts User"
+  },
+  {
+   "role": "Cajero"
+  }
+ ]
+}

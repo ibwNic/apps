@@ -1,0 +1,78 @@
+{
+ "actions": [],
+ "creation": "2022-10-25 14:07:20.331196",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "azimut",
+  "pci",
+  "en_funcionamiento",
+  "tecnologia",
+  "consumo_mbps",
+  "bandwidth",
+  "capacidad_mbps",
+  "fecha_insert",
+  "porcentaje_ocupacion"
+ ],
+ "fields": [
+  {
+   "fieldname": "azimut",
+   "fieldtype": "Data",
+   "label": "Azimut"
+  },
+  {
+   "fieldname": "pci",
+   "fieldtype": "Data",
+   "label": "PCI"
+  },
+  {
+   "default": "0",
+   "fieldname": "en_funcionamiento",
+   "fieldtype": "Check",
+   "label": "En funcionamiento"
+  },
+  {
+   "fieldname": "tecnologia",
+   "fieldtype": "Select",
+   "label": "Tecnologia",
+   "options": "Wimax\nLTE\nLTE-AH4K\nLTE-AIR4G\nAir4G\nLTE (CapMbps 35)"
+  },
+  {
+   "fieldname": "consumo_mbps",
+   "fieldtype": "Float",
+   "label": "Consumo Mbps"
+  },
+  {
+   "fieldname": "bandwidth",
+   "fieldtype": "Data",
+   "label": "Bandwidth"
+  },
+  {
+   "fieldname": "capacidad_mbps",
+   "fieldtype": "Int",
+   "label": "Capacidad Mbps"
+  },
+  {
+   "fieldname": "fecha_insert",
+   "fieldtype": "Datetime",
+   "label": "Fecha insert"
+  },
+  {
+   "fieldname": "porcentaje_ocupacion",
+   "fieldtype": "Data",
+   "label": "Porcentaje Ocupacion"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2023-01-20 17:01:18.766359",
+ "modified_by": "Administrator",
+ "module": "Support",
+ "name": "Ocupacion",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

@@ -1,0 +1,215 @@
+{
+ "actions": [],
+ "autoname": "OS-.########",
+ "creation": "2022-09-27 11:42:37.730466",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "fecha_solicitud",
+  "fecha_finalizado",
+  "tipo_de_orden",
+  "tipo",
+  "tercero",
+  "column_break_4",
+  "estado",
+  "tipo_de_origen",
+  "nombre_de_origen",
+  "plan_de_subscripcion",
+  "datos_de_orden_section",
+  "descripcion",
+  "tecnico",
+  "departamento",
+  "municipio",
+  "barrio",
+  "column_break_15",
+  "solucion",
+  "direccion",
+  "direccion_de_instalacion",
+  "equipos__bom_section",
+  "currency"
+ ],
+ "fields": [
+  {
+   "fieldname": "tipo_de_orden",
+   "fieldtype": "Select",
+   "in_filter": 1,
+   "in_global_search": 1,
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Tipo de Orden",
+   "options": "CORTE\nSUSPENSION\nREACTIVACION\nDESINSTALACION\nDESINSTALACION RCPE\nINSTALACION\nINSTALACION OTC\nRECONECCION\nSITE SURVEY\nSUPERVISION\nTRASLADO\nAPROVISIONAMIENTO\nTV ADICIONAL\nPRESUPUESTO",
+   "reqd": 1
+  },
+  {
+   "fieldname": "tipo",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Tipo",
+   "options": "Customer\nLead\nOpportunity\nProspect\nSuspensiones",
+   "reqd": 1,
+   "translatable": 1
+  },
+  {
+   "fieldname": "tercero",
+   "fieldtype": "Dynamic Link",
+   "in_filter": 1,
+   "in_global_search": 1,
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Tercero",
+   "options": "tipo",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_4",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "estado",
+   "fieldtype": "Select",
+   "label": "Estado",
+   "options": "ABIERTO\nATENDIDO\nCANCELADO\nFINALIZADO\nPENDIENTE\nSEGUIMIENTO\nSOLICITADO\nSUSPENDIDO"
+  },
+  {
+   "default": "Now",
+   "fieldname": "fecha_solicitud",
+   "fieldtype": "Datetime",
+   "label": "Fecha Solicitud"
+  },
+  {
+   "fieldname": "tipo_de_origen",
+   "fieldtype": "Link",
+   "label": "Tipo de Origen",
+   "options": "DocType"
+  },
+  {
+   "fieldname": "nombre_de_origen",
+   "fieldtype": "Dynamic Link",
+   "label": "Nombre de Origen",
+   "options": "tipo_de_origen"
+  },
+  {
+   "fieldname": "plan_de_subscripcion",
+   "fieldtype": "Link",
+   "label": "Plan de Subscripcion",
+   "options": "Subscription Plan Detail"
+  },
+  {
+   "fieldname": "datos_de_orden_section",
+   "fieldtype": "Section Break",
+   "label": "Datos de Orden"
+  },
+  {
+   "fieldname": "descripcion",
+   "fieldtype": "Long Text",
+   "label": "Descripcion"
+  },
+  {
+   "fieldname": "tecnico",
+   "fieldtype": "Link",
+   "in_filter": 1,
+   "in_global_search": 1,
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Tecnico",
+   "options": "Tecnico"
+  },
+  {
+   "fieldname": "solucion",
+   "fieldtype": "Long Text",
+   "label": "Solucion"
+  },
+  {
+   "fieldname": "equipos__bom_section",
+   "fieldtype": "Section Break",
+   "label": "Equipos / BOM"
+  },
+  {
+   "fieldname": "fecha_finalizado",
+   "fieldtype": "Datetime",
+   "label": "Fecha Finalizado"
+  },
+  {
+   "fieldname": "direccion_de_instalacion",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Direccion de Instalacion",
+   "options": "Address"
+  },
+  {
+   "bold": 1,
+   "fieldname": "direccion",
+   "fieldtype": "Long Text",
+   "label": "Direccion"
+  },
+  {
+   "fieldname": "column_break_15",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "departamento",
+   "fieldtype": "Data",
+   "label": "Departamento"
+  },
+  {
+   "fieldname": "municipio",
+   "fieldtype": "Data",
+   "label": "Municipio"
+  },
+  {
+   "fieldname": "barrio",
+   "fieldtype": "Data",
+   "label": "Barrio"
+  },
+  {
+   "default": "USD",
+   "fieldname": "currency",
+   "fieldtype": "Link",
+   "label": "Currency",
+   "options": "Currency"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-02-03 10:26:14.944034",
+ "modified_by": "Administrator",
+ "module": "Support",
+ "name": "Service Order",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Back Office",
+   "select": 1,
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "search_fields": "tipo_de_orden,tercero",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

@@ -1,0 +1,79 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "SU-.#######",
+ "color": "blue",
+ "creation": "2022-12-16 15:36:36.774116",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "customer",
+  "tipo_contrato",
+  "contrato"
+ ],
+ "fields": [
+  {
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Customer",
+   "options": "Customer",
+   "reqd": 1
+  },
+  {
+   "fieldname": "tipo_contrato",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Tipo Contrato",
+   "options": "\nRENOVACION\nUPGRADE\nRENOVACION CON UPGRADE\nDOWGRADE\nCAMBIO DE SERVICIO SIN COMISION\nRETENCION\nRENOVACION CON CAMBIO DE SERVICIO\nMIGRACION CON INCREMENTO",
+   "reqd": 1
+  },
+  {
+   "fieldname": "contrato",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Contrato",
+   "options": "Subscription",
+   "reqd": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-02-03 14:54:06.038622",
+ "modified_by": "Administrator",
+ "module": "Accounts",
+ "name": "Subscription Update",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Back Office",
+   "select": 1,
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

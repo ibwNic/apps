@@ -1,0 +1,119 @@
+{
+ "actions": [],
+ "creation": "2022-11-17 09:18:25.512467",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "item_code",
+  "portafolio",
+  "proveedor_section",
+  "tipo_servicio",
+  "uom",
+  "qty",
+  "compresion",
+  "departamento",
+  "tasa",
+  "description_section",
+  "description",
+  "service_order"
+ ],
+ "fields": [
+  {
+   "fieldname": "item_code",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_preview": 1,
+   "label": "Item Code",
+   "options": "Item"
+  },
+  {
+   "fieldname": "tipo_servicio",
+   "fieldtype": "Select",
+   "label": "Tipo Servicio",
+   "options": "Datos\nInternet"
+  },
+  {
+   "fieldname": "uom",
+   "fieldtype": "Link",
+   "label": "UOM",
+   "options": "UOM",
+   "read_only": 1
+  },
+  {
+   "default": "1",
+   "fieldname": "qty",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "in_preview": 1,
+   "label": "Qty",
+   "read_only": 1
+  },
+  {
+   "fieldname": "compresion",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_preview": 1,
+   "label": "Compresion",
+   "options": "1:1\n2:1"
+  },
+  {
+   "default": "Managua",
+   "fieldname": "departamento",
+   "fieldtype": "Select",
+   "label": "Departamento",
+   "options": "Managua\nDepartamentos"
+  },
+  {
+   "default": "1.8",
+   "fieldname": "tasa",
+   "fieldtype": "Select",
+   "label": "Tasa",
+   "options": "1.8\n2.8"
+  },
+  {
+   "fieldname": "description_section",
+   "fieldtype": "Section Break",
+   "label": "Description"
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Text Editor",
+   "label": "Description"
+  },
+  {
+   "default": "IBW",
+   "fieldname": "proveedor_section",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_preview": 1,
+   "label": "Proveedor",
+   "options": "IBW\nTercero"
+  },
+  {
+   "fieldname": "service_order",
+   "fieldtype": "Link",
+   "label": "Service Order",
+   "options": "Service Order"
+  },
+  {
+   "fieldname": "portafolio",
+   "fieldtype": "Link",
+   "label": "Portafolio",
+   "options": "Item Group",
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2022-11-30 16:54:08.201115",
+ "modified_by": "Administrator",
+ "module": "CRM",
+ "name": "Opportunity Prospect",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

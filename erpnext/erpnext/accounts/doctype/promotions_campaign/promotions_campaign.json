@@ -1,0 +1,93 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:campa\u00f1a",
+ "creation": "2023-01-30 11:06:41.508535",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "campa\u00f1a",
+  "detalle",
+  "column_break_2",
+  "inicio",
+  "fin",
+  "porcentaje_de_mrc_en_promo",
+  "promo_primera_factura_gratis"
+ ],
+ "fields": [
+  {
+   "fieldname": "detalle",
+   "fieldtype": "Small Text",
+   "label": "Detalle"
+  },
+  {
+   "fieldname": "campa\u00f1a",
+   "fieldtype": "Data",
+   "label": "Campa\u00f1a",
+   "unique": 1
+  },
+  {
+   "fieldname": "inicio",
+   "fieldtype": "Date",
+   "label": "Inicio"
+  },
+  {
+   "fieldname": "fin",
+   "fieldtype": "Date",
+   "label": "Fin"
+  },
+  {
+   "fieldname": "porcentaje_de_mrc_en_promo",
+   "fieldtype": "Percent",
+   "label": "Porcentaje de MRC en Promo"
+  },
+  {
+   "default": "0",
+   "fieldname": "promo_primera_factura_gratis",
+   "fieldtype": "Check",
+   "label": "Promo Primera Factura Gratis"
+  },
+  {
+   "fieldname": "column_break_2",
+   "fieldtype": "Column Break"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-01-30 14:35:50.266397",
+ "modified_by": "Administrator",
+ "module": "Accounts",
+ "name": "promotions campaign",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Back Office",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

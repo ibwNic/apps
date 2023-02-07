@@ -1,0 +1,168 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "ANTC-.#######",
+ "creation": "2022-12-21 16:05:54.974175",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "cliente",
+  "nombre_cliente",
+  "fecha",
+  "column_break_4",
+  "tipo_de_documento",
+  "nombre_del_documento",
+  "data_anticipo_section",
+  "meses_anticipo",
+  "tasa_de_cambio",
+  "currency",
+  "monto",
+  "aplicado",
+  "detalle_section",
+  "modo_de_pagos",
+  "aplicaciones_section",
+  "asientos_contables",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "default": "Journal Entry",
+   "fieldname": "tipo_de_documento",
+   "fieldtype": "Select",
+   "label": "Tipo de Documento",
+   "options": "Journal Entry"
+  },
+  {
+   "fieldname": "nombre_del_documento",
+   "fieldtype": "Dynamic Link",
+   "label": "Nombre del Documento",
+   "options": "tipo_de_documento"
+  },
+  {
+   "fieldname": "cliente",
+   "fieldtype": "Link",
+   "label": "Cliente",
+   "options": "Customer"
+  },
+  {
+   "fieldname": "currency",
+   "fieldtype": "Data",
+   "label": "currency"
+  },
+  {
+   "fieldname": "monto",
+   "fieldtype": "Currency",
+   "label": "Saldo",
+   "options": "Currency"
+  },
+  {
+   "default": "0",
+   "fieldname": "aplicado",
+   "fieldtype": "Check",
+   "label": "Aplicado"
+  },
+  {
+   "fieldname": "fecha",
+   "fieldtype": "Date",
+   "label": "Fecha"
+  },
+  {
+   "fetch_from": "cliente.customer_name",
+   "fieldname": "nombre_cliente",
+   "fieldtype": "Data",
+   "label": "Nombre Cliente"
+  },
+  {
+   "fieldname": "column_break_4",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "data_anticipo_section",
+   "fieldtype": "Section Break",
+   "label": "Data Anticipo"
+  },
+  {
+   "fieldname": "meses_anticipo",
+   "fieldtype": "Data",
+   "label": "Meses Anticipo"
+  },
+  {
+   "fieldname": "tasa_de_cambio",
+   "fieldtype": "Float",
+   "label": "Tasa de Cambio"
+  },
+  {
+   "fieldname": "aplicaciones_section",
+   "fieldtype": "Section Break",
+   "label": "Aplicaciones"
+  },
+  {
+   "fieldname": "asientos_contables",
+   "fieldtype": "Table",
+   "label": "Asientos Contables",
+   "options": "Anticipos Aplicados"
+  },
+  {
+   "fieldname": "modo_de_pagos",
+   "fieldtype": "Table",
+   "label": "Modo de Pagos",
+   "options": "Anticipos Modo de Pagos"
+  },
+  {
+   "fieldname": "detalle_section",
+   "fieldtype": "Section Break",
+   "label": "Detalle"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Anticipos",
+   "print_hide": 1,
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2023-01-30 11:53:28.447836",
+ "modified_by": "Administrator",
+ "module": "Accounts",
+ "name": "Anticipos",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "cancel": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Cajero",
+   "select": 1,
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
