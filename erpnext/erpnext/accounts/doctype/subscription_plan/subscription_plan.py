@@ -73,8 +73,8 @@ def get_plan_rate(
 		return cost
 
 @frappe.whitelist()
-def get_plan_rate_NEW(cost,plan, start_date=None, end_date=None,periodo=None):
-	plan = frappe.get_doc("Subscription Plan", plan)
+def get_plan_rate_NEW(cost, start_date=None, end_date=None,periodo=None):
+	# plan = frappe.get_doc("Subscription Plan", plan)
 	if int(periodo)>1:
 		diff_T= flt(date_diff(end_date,get_first_day(start_date)))
 	else:

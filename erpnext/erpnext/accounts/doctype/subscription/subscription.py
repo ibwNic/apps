@@ -558,7 +558,7 @@ class Subscription(Document):
 					item = {
 						"item_code": item_code,
 						"qty": plan.qty,
-						"rate": get_plan_rate_NEW(plan.cost,plan.plan,self.current_invoice_start, self.current_invoice_end,self.periodo_de_facturacion),
+						"rate": get_plan_rate_NEW(plan.cost,self.current_invoice_start, self.current_invoice_end,self.periodo_de_facturacion),
 						"cost_center": plan_doc.cost_center,
 					}
 				else:
@@ -584,7 +584,7 @@ class Subscription(Document):
 							item = {
 								"item_code": item_code,
 								"qty": plan.qty,
-								"rate": get_plan_rate_NEW(plan.cost,plan.plan,self.current_invoice_start, self.current_invoice_end,self.periodo_de_facturacion)*float(paralela),
+								"rate": get_plan_rate_NEW(plan.cost,self.current_invoice_start, self.current_invoice_end,self.periodo_de_facturacion)*float(paralela),
 								"cost_center": plan_doc.cost_center,
 								"plan_detail":plan.name,
 							}
@@ -595,7 +595,6 @@ class Subscription(Document):
 								"item_code": item_code,
 								"qty": plan.qty,
 								"rate":get_plan_rate_NEW(plan.cost,
-										plan.plan,
 										plan.qty,
 										party,
 										self.current_invoice_start,
@@ -611,7 +610,7 @@ class Subscription(Document):
 							item = {
 								"item_code": item_code,
 								"qty": plan.qty,
-								"rate": get_plan_rate_NEW(plan.cost,plan.plan,self.current_invoice_start, self.current_invoice_end,self.periodo_de_facturacion)/float(paralela),
+								"rate": get_plan_rate_NEW(plan.cost,self.current_invoice_start, self.current_invoice_end,self.periodo_de_facturacion)/float(paralela),
 								"cost_center": plan_doc.cost_center,
 								"plan_detail":plan.name,
 							}
@@ -622,7 +621,7 @@ class Subscription(Document):
 							item = {
 								"item_code": item_code,
 								"qty": plan.qty,
-								"rate": get_plan_rate_NEW(plan.cost,plan.plan,self.current_invoice_start, self.current_invoice_end,self.periodo_de_facturacion),
+								"rate": get_plan_rate_NEW(plan.cost,self.current_invoice_start, self.current_invoice_end,self.periodo_de_facturacion),
 								"cost_center": plan_doc.cost_center,
 								"plan_detail":plan.name,
 							}
