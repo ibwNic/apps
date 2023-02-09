@@ -666,7 +666,7 @@ def get_holidays(holiday_list_name):
 def get_plan_Susc_cust(customer):
 		get_plan_cust = frappe.db.sql(
 			"""Select t1.name from `tabSubscription Plan Detail` t1 inner join `tabSubscription` t2 on t1.parent=t2.name
-				where t2.party=%(customer)s """,
+				where t2.party=%(customer)s and t1.estado_plan ='Activo' """,
 			{"customer": customer},
 		)	
 	
@@ -677,13 +677,9 @@ def get_plan_Susc_cust(customer):
 
 @frappe.whitelist()
 def get_plan_Portafolio(plan):
-		# get_plan_Portafolio = frappe.db.sql(
-		# 	"""Select t1.item_group from  `tabItem` t1 inner join `tabSubscription Plan` t2  on t1.name=t2.item 
-        #     inner join `tabSubscription Plan Detail` t3 on t3.plan=t2.name  where t3.name=%(plan)s limit 1 """,
-		# 	{"plan": plan},
-		# )	
+		
 		get_plan_Portafolio = frappe.db.sql(
-		"""Select t1.item_group,t4.departamento,t4.municipio,t4.barrio,t4.address_line1, t3.nodo from  `tabItem` t1 inner join `tabSubscription Plan` t2  on t1.name=t2.item 
+		"""Select t1.item_group,t4.departamento,t4.municipio,t4.barrio,t4.address_line1, t3.nodo, t3.latitud, t3.longitud from  `tabItem` t1 inner join `tabSubscription Plan` t2  on t1.name=t2.item 
 		inner join `tabSubscription Plan Detail` t3 on t3.plan=t2.name inner join `tabAddress` t4 on t4.name=t3.direccion  where t3.name=%(plan)s limit 1 """,
 		{"plan": plan},
 		)	

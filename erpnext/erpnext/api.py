@@ -3291,7 +3291,7 @@ def validate_payment_entriesDepositos(entries, accounts, messages, tc, dc='d'):
 
 # Depositos de BAnco
 @frappe.whitelist()
-def Aplicar_Deposito_Banco(deudas=None,pagos=None,cuentaBanco=None,regnumber=None, tc=None,fecha=None,dc='c'):
+def Aplicar_Deposito_Banco(deudas=None,pagos=None,cuentaBanco=None,regnumber=None, tc=None,fecha=None,dc='c',_ui_=True):
 	from erpnext.accounts.party import get_party_account, get_party_account_currency
 
 	
@@ -3313,7 +3313,7 @@ def Aplicar_Deposito_Banco(deudas=None,pagos=None,cuentaBanco=None,regnumber=Non
 	# if isinstance(tc, six.string_types):
 	# 	tc = json.loads(tc, object_pairs_hook=frappe._dict)
 	
-	# return deudas,pagos
+	# return deudas,pagos,regnumber
 
 	
 	# return fecha
@@ -3387,15 +3387,16 @@ def Aplicar_Deposito_Banco(deudas=None,pagos=None,cuentaBanco=None,regnumber=Non
 
 	# return accounts
 
-	# diff_amount = None
+	diff_amount = None
 	tdoc = None
+	
 	try:
 		tdoc = frappe.new_doc('Journal Entry').update({
 			'voucher_type': 'Journal Entry',
-			'posting_date': today(),
+			'posting_date': fecha,
 			'multi_currency': 1,
 			'accounts': accounts,
-			# 'ui': _ui_
+			'ui': _ui_
 		})
 		
 		tdoc.run_method('validate')
@@ -3404,8 +3405,63 @@ def Aplicar_Deposito_Banco(deudas=None,pagos=None,cuentaBanco=None,regnumber=Non
 		if tdoc.difference:
 			diff_amount = tdoc.difference
 
+	# return tdoc
 
-	
+	if diff_amount:
+		p = 'debit' if diff_amount < 0 else 'credit'
+		if diff_amount > 0:
+			# if hayNIOExc == "NIO":
+			# Utilidades Cambiarias - IBWNI
+			diff = list(filter(lambda e: e['account'] == '6.22.010-Utilidades Cambiarias - NI', accounts))
+
+			if not diff:
+			#  Utilidades Cambiarias - IBWNI
+				diff = {'account': '6.22.010-Utilidades Cambiarias - NI', 'account_currency': 'NIO', 'conversion_rate': 1, 'debit': 0.0, 'credit': 0.0, 'debit_in_account_currency': 0.0, 'credit_in_account_currency': 0.0, "tipo_de_cuenta":"Diferencial Cambiario"}
+				accounts.append(diff)
+			else:
+				diff = diff[0]
+
+			diff[p] += abs(diff_amount)
+			diff['{0}_in_account_currency'.format(p)] += abs(diff_amount)
+
+			# return accounts
+			if diff and diff['debit'] and diff['credit']:
+				if diff['debit'] > diff['credit']:
+					diff['debit_in_account_currency'] -= diff['credit_in_account_currency']
+					diff['debit'] -= diff['credit']
+					diff['credit_in_account_currency'] = diff['credit'] = 0.0
+				else:
+					diff['credit_in_account_currency'] -= diff['debit_in_account_currency']
+					diff['credit'] -= diff['debit']
+					diff['debit_in_account_currency'] = diff['debit'] = 0.0
+		# Generar Perdidas
+		else:
+			# Generar Perdida Cambiaria
+			# if hayNIOExc == "NIO":
+			# Utilidades Cambiarias - IBWNI
+			diff = list(filter(lambda e: e['account'] == '6.22.002-Pérdida Cambiaria - NI', accounts))
+
+			if not diff:
+			##  Utilidades Cambiarias - IBWNI
+				diff = {'account': '6.22.002-Pérdida Cambiaria - NI', 'account_currency': 'NIO', 'conversion_rate': 1, 'debit': 0.0, 'credit': 0.0, 'debit_in_account_currency': 0.0, 'credit_in_account_currency': 0.0, "tipo_de_cuenta":"Diferencial Cambiario"}
+				accounts.append(diff)
+			else:
+				diff = diff[0]
+
+			diff[p] += abs(diff_amount)
+			diff['{0}_in_account_currency'.format(p)] += abs(diff_amount)
+
+			# return accounts
+			if diff and diff['debit'] and diff['credit']:
+				if diff['debit'] > diff['credit']:
+					diff['debit_in_account_currency'] -= diff['credit_in_account_currency']
+					diff['debit'] -= diff['credit']
+					diff['credit_in_account_currency'] = diff['credit'] = 0.0
+				else:
+					diff['credit_in_account_currency'] -= diff['debit_in_account_currency']
+					diff['credit'] -= diff['debit']
+					diff['debit_in_account_currency'] = diff['debit'] = 0.0
+
 	# # newJe = frappe.new_doc('Journal Entry')
 	# # newJe.update({
 	# # 	'posting_date': today(),
@@ -3434,4 +3490,5 @@ def Aplicar_Deposito_Banco(deudas=None,pagos=None,cuentaBanco=None,regnumber=Non
 	# # 	newJe.append("accounts", accounts)
 
 	# # return {'docs': newJe.as_dict()}
-	return {'docs': tdoc.as_dict()}
+	# return {'docs': tdoc.as_dict()}
+	return accounts,diff_amount

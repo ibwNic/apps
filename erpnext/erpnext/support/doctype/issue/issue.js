@@ -4,7 +4,7 @@ frappe.ui.form.on("Issue", {
 		frm.set_query("customer", function () {
 			return {
 				filters: {
-					"disabled": 0
+					"estado_cliente": "ACTIVO"
 				}
 			};
 		});

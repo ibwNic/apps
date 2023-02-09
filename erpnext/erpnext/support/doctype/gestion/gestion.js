@@ -3,6 +3,7 @@
 
 frappe.ui.form.on('Gestion', {
 	refresh: function(frm) {
+    
 	if(frm.doc.tipo_gestion === 'Cancelaciones' || frm.doc.tipo_gestion === 'Suspension Temporal' ){
         frm.toggle_display("issue", false);
 
@@ -12,34 +13,18 @@ frappe.ui.form.on('Gestion', {
         frm.toggle_display("motivo", false);
 
     }
-	},
-    // before_save(frm){
-    //     if(frm.doc.__islocal){
-    //         frappe.call({
-	// 			"method": "erpnext.support.doctype.gestion.gestion.validar_cliente",
-	// 			"args": {
-	// 				"customer": frm.doc.customer,
-    //                 "tipo_gestion":frm.doc.tipo_gestion
-	// 			}
-	// 			,callback:function(r){
-    //                 console.log(r.message)
-	// 			}
-	// 		})
-    //     }
-    // }
-//     workflow_state:(frm) => {
-//         if (frm.doc.workflow_state === "Seguimiento"){
-//             frm.set_value('priority', 'Alto');
-//         }
-//   }
+	}
 });
 frappe.ui.form.on('Gestion', 'tipo_gestion', function(frm) {
-    if(frm.doc.tipo_gestion === 'Cancelaciones' || frm.doc.tipo_gestion === 'Suspension Temporal' ){
+    if(frm.doc.tipo_gestion === 'Cancelaciones' || frm.doc.tipo_gestion === 'Suspension Temporal'){
         frm.toggle_display("issue", false);
     }
     else{
+        frm.toggle_display("issue", true);
         frm.toggle_display("cambiar_planes", false);
         frm.toggle_display("motivo", false);
+        frm.toggle_display("estado_cancelacion",false);
+        frm.toggle_display("fecha_inicio_suspension_temporal",false);
 
     }
     if(frm.doc.tipo_gestion.length > 0){
@@ -55,6 +40,17 @@ frappe.ui.form.on('Gestion', 'tipo_gestion', function(frm) {
                     frappe.set_route(['Form', 'gestion',r.message]);	
                 }
             }
-        })
+        });
+    if(frm.doc.customer !== undefined && frm.doc.customer.length !== 0 &&   ['Cancelaciones','Suspension Temporal'].includes(frm.doc.tipo_gestion)){
+        frappe.call({					
+            method: "erpnext.support.doctype.gestion.gestion.obtener_planes_de_cliente",
+            args: {"customer":frm.doc.customer, "tipo_gestion": frm.doc.tipo_gestion},
+            callback: function(r) {
+            
+            var doc = frappe.model.sync(r.message)[0];
+            frappe.set_route("Form", doc.doctype, doc.name);
+            }
+        });
+    }
     }
 })

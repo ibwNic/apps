@@ -386,6 +386,10 @@ scheduler_events = {
 		"45 0 * * *": [
 			"erpnext.stock.reorder_item.reorder_item",
 		],
+		# 26 de cada mes
+		"0 9 26 * *": [
+			"erpnext.support.doctype.gestion.gestion.programar_cancelaciones",
+		]
 	},
 	"all": [
 		"erpnext.projects.doctype.project.project.project_status_update_reminder",
