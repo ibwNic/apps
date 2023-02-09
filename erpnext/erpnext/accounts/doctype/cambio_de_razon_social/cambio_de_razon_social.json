@@ -56,7 +56,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-01-11 10:05:13.125563",
+ "modified": "2023-02-08 10:39:32.664112",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Cambio de Razon Social",
@@ -72,6 +72,18 @@
    "read": 1,
    "report": 1,
    "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Back Office",
    "share": 1,
    "write": 1
   }

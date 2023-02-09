@@ -98,7 +98,6 @@ def randStr(chars = string.ascii_uppercase + string.digits, N=4):
 
 @frappe.whitelist()
 def crear_nuevo_contrato(name):
-	#try:
 	subscription_up = frappe.get_doc("Subscription Update",name)
 	if subscription_up.docstatus == 1:
 		frappe.msgprint("El contrato está hecho")
@@ -129,7 +128,7 @@ def crear_nuevo_contrato(name):
 			if plan.plan:			
 				spd = frappe.get_doc("Subscription Plan Detail",  plan.plan)
 			sp = frappe.get_doc("Subscription Plan",  plan.nuevo_plan)
-			plan_row.append([plan.nuevo_plan,spd.qty,spd.direccion,spd.longitud,spd.latitud,sp.billing_interval_count,spd.es_combo,sp.currency,sp.cost,plan.plan, spd.nodo, spd.cost])
+			plan_row.append([plan.nuevo_plan,spd.qty,spd.direccion,spd.longitud,spd.latitud,sp.billing_interval_count,spd.es_combo,sp.currency,plan.coston,plan.plan, spd.nodo, spd.cost,plan.descuento])
 			
 			if plan.plan:
 				old_plan_detail = frappe.get_doc("Subscription Plan Detail",plan.plan)
@@ -201,7 +200,6 @@ def crear_nuevo_contrato(name):
 						# 	})
 						# add_to_bitacora_a.insert()
 						ran = str(randStr(chars='abcdefghijklmnopqrstuvwxyz1234567890'))
-						#frappe.msgprint(ran)
 						frappe.db.sql(""" insert into `tabBitacora Equipos` (name,fecha_transaccion,tipo_transaccion,transaccion,parent,parentfield,parenttype,tercero,idx) 
 									values (%(name)s,%(fecha_transaccion)s,'Subscription Update','Cambio de tipo de Servicio IBW',%(parent)s,"bitacora_equipos","Serial No",%(tercero)s,%(idx)s);""",{"name":ran,"fecha_transaccion":now(),"parent":equipo,"tercero":name,"idx":idx})
 
@@ -251,7 +249,8 @@ def crear_nuevo_contrato(name):
 				"es_combo":item[6],
 				"old_plan": item[9],
 				"nodo": item[10],
-				"service_start":now()
+				"service_start":now(),
+				"descuento":item[12]
 			}
 		suscripcion.append("plans", plans)
 

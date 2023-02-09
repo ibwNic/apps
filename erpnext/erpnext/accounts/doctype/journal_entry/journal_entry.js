@@ -188,7 +188,7 @@ frappe.ui.form.on("Journal Entry", {
 				pm_args = {},
 				minimal_credit_amount = 0.0,
 				series = {
-					"leyda.calderon@ibw.com": "F-",
+					"frania.lainez@ibw.com": "D-",
 					"hegarcia@ibw.com": "I-",
 					"jacquelines.martinez@ibw.com": "H-"
                 },
@@ -203,7 +203,7 @@ frappe.ui.form.on("Journal Entry", {
 					   <th class="text-right">TC</th>
 					   <th class="text-right">Deuda C$</th>
 					   <th class="text-right">C$ Segun  TC {{ data.saldo.tc }}</th>
-					   <th class="text-right">Dif. Cambiario</th>
+					  
 				   </tr>
 				 </tr>
 			   </thead>
@@ -217,7 +217,7 @@ frappe.ui.form.on("Journal Entry", {
 					 <td class="text-right">{{ row.deuda.tc }}</td>
 					 <td class="text-right">{{ format_currency(row.deuda.nio, "NIO", 2) }}</td>
 					 <td class="text-right">{{ format_currency(row.actual.nio, "NIO", 2) }}</td>
-					 <td class="text-right">{{ row.actual.diferencial }}</td>
+					
 				 </tr>
 				 {% } %}
 			   </tbody>
@@ -228,7 +228,7 @@ frappe.ui.form.on("Journal Entry", {
 					<th>&nbsp;</th>
 					<th id="total_nio" class="text-right"></th>
 					<th id="total_actual_nio" class="text-right"></th>
-					<th id="total_diff" class="text-right"></th>
+					
 				  <tr>
 			   </tbody>
 			</table>`,
@@ -1548,7 +1548,7 @@ frappe.ui.form.on("Journal Entry", {
 				result= [],
 				tc = [],
 				series = {
-					"leyda.calderon@ibw.com": "F-",
+					"frania.lainez@ibw.com": "D-",
 					"hegarcia@ibw.com": "I-",
 					"jacquelines.martinez@ibw.com": "H-"
 				},
@@ -1595,8 +1595,8 @@ frappe.ui.form.on("Journal Entry", {
 			 </table>`;
 
 
-			 function set_sum_Totales_Anticipos(data){
-				console.log(data['total_FacturaUSD']);
+			function set_sum_Totales_Anticipos(data){
+				// console.log(data['total_FacturaUSD']);
 				var amounts = {'TotalNIO': 0.0, 'TotalUSD': 0.0};
 
 				amounts.TotalNIO += data['Total_FacturaNIO'];
@@ -1604,7 +1604,7 @@ frappe.ui.form.on("Journal Entry", {
 
 				montos.push(amounts.TotalNIO);
 				montos.push(amounts.TotalUSD);
-				console.log(montos);
+				// console.log(montos);
 				// render_totals_table();
 				// SumaFormaPagos();
 			}
@@ -2125,8 +2125,9 @@ frappe.ui.form.on("Journal Entry", {
 								// d.get_value('Cantidad_Meses');
 								// d.get_value('Monto_de_Factura');
 
-								res = flt(d.get_value('Cantidad_Meses') * d.get_value('Monto_de_Factura'),2);
-								res1 = flt(d.get_value('Cantidad_Meses') * d.get_value('Monto_de_FacturaNIO'),2);
+								res = flt(d.get_value('Cantidad_Meses') * d.get_value('Monto_de_Factura'));
+								// res1 = flt(d.get_value('Cantidad_Meses') * d.get_value('Monto_de_FacturaNIO'),4);
+								res1 = flt(res * d.get_value('conversion_rate'),2);
 								data.total_FacturaUSD = res;
 								data.Total_FacturaNIO = res1;
 								set_sum_Totales_Anticipos(data);
@@ -3347,7 +3348,7 @@ frappe.ui.form.on("Journal Entry", {
 				Cambios = {},
 				tc = [],
 				series = {
-					"leyda.calderon@ibw.com": "F-",
+					"frania.lainez@ibw.com": "D-",
 					"hegarcia@ibw.com": "I-",
 					"jacquelines.martinez@ibw.com": "H-"
                 },

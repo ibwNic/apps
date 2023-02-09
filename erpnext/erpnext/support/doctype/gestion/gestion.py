@@ -44,12 +44,47 @@ class Gestion(Document):
 					self.reload()
 					return
 		self.reload()
-	
+
+	# def before_save(self):
+	# 	clientes = frappe.db.sql(""" select name from  `tabCustomer` where name not in 
+	# 		( select distinct customer from  `tabGestion` where workflow_state != 'Finalizado' and tipo_gestion = %(tipo_gestion)s) 
+	# 		and estado_cliente = 'ACTIVO';""",{"tipo_gestion":self.tipo_gestion})
+	# 	clientes = [c[0] for c in clientes]
+
+	# 	if self.customer not in clientes:			
+	# 		# frappe.throw(_("El cliente {0} tiene una gestion de tipo {1} no finalizada.").format(
+	# 		# 					frappe.bold(self.customer), frappe.bold(self.tipo_gestion)
+	# 		# 				),
+	# 		# 				title=_("no se puede crear gestion"),)
+	# 		# frappe.msgprint(
+	# 		# 	_("El cliente {0} tiene una gestion de tipo {1} no finalizada.").format(
+	# 		# 					frappe.bold(self.customer), frappe.bold(self.tipo_gestion)
+	# 		# 				),
+	# 		# 	title=_("no se puede crear gestion"),
+	# 		# 	#raise_exception="Cliente con gestion existente"
+	# 		# )
+	# 		frappe.msgprint(_("Item Code required at Row No {0}").format(self.customer), raise_exception=True)
+			# frappe.db.rollback(self.customer)
 		
 
 @frappe.whitelist()		
-def validar_cliente(customer):
-	return customer
+def validar_cliente(customer,tipo_gestion):
+	query = frappe.db.sql(""" select distinct customer, name from  `tabGestion` where workflow_state != 'Finalizado' 
+	and tipo_gestion = %(tipo_gestion)s;""",{"tipo_gestion":tipo_gestion})
+	clientes = [c[0] for c in query]
+	names = [n[1] for n in query]
+	if customer in clientes:
+		frappe.msgprint(frappe._('El cliente {0} tiene una gestion de tipo {1} no finalizada').format(customer,tipo_gestion),"No se pudo crear la gestion")
+
+		# frappe.throw(_("El cliente {0} tiene una gestion de tipo {1} no finalizada.").format(
+		# 					frappe.bold(customer), frappe.bold(tipo_gestion)
+		# 				),
+		# 				title=_("no se puede crear gestion"),)
+		return names[clientes.index(customer)] 	
+# 		frappe.msgprint("No se pudo crear la gestion",frappe._('El cliente {0} tiene una gestion de tipo {1} no finalizada').format(customer,tipo_gestion))
+# 		#raise Exception("no se puede crear gestion")
+# 		frappe.db.rollback()
+
 
 @frappe.whitelist()
 def get_address(customer):

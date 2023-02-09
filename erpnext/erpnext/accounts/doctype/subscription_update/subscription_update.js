@@ -62,7 +62,7 @@ frappe.ui.form.on('Subscription Update', {
 							}
 						}) 
 				
-				console.log(localStorage.getItem("planes"))
+				//console.log(localStorage.getItem("planes"))
 				if (plan && !(localStorage.getItem("planes"))) {
 					if(plan.includes("+ TV")){
 						return {
@@ -83,13 +83,13 @@ frappe.ui.form.on('Subscription Update', {
 						return {
 							filters: {
 								activo: 1,
-								es_corporativo:0
+								es_corporativo:0,
+								tarifa_ibw:1
 							}
 						}
 					}
 				}
 				else if(plan && localStorage.getItem("planes")){
-					console.log("entraaqui")
 					return {
 						filters: {
 							name: ['in', localStorage.getItem("planes").split(",")]
@@ -99,7 +99,8 @@ frappe.ui.form.on('Subscription Update', {
 				else{
 					return {
 						filters: {
-							activo: 1
+							activo: 1,
+							tarifa_ibw:1
 						}
 					}
 				}
@@ -175,7 +176,37 @@ frappe.ui.form.on("Subscription Update", "customer", function(frm) {
 			}
 			})
 
-		}
-		
+		}		
 });
 
+frappe.ui.form.on("Subscription Update Planes", {
+	calculate: function(frm, cdt, cdn) {
+		let row = frappe.get_doc(cdt, cdn);
+		let costo = row.coston;
+		let descuento = row.descuento;
+		frappe.model.set_value(cdt, cdn, "coston", costo-costo*(descuento/100));
+	},
+	descuento: function(frm, cdt, cdn) {
+		let row = frappe.get_doc(cdt, cdn);
+		frm.trigger("calculate", cdt, cdn);
+		if(row.descuento==0 || !row.descuento){
+			frappe.db.get_value("Subscription Plan", {"name": row.nuevo_plan},"cost",function(res){
+				res.cost;
+			}).then(r =>{
+					var rest=r.message;
+					frappe.model.set_value(cdt, cdn, "coston", rest.cost);
+			})
+		}
+	},
+	nuevo_plan: function(frm, cdt, cdn) {
+		let row = frappe.get_doc(cdt, cdn);
+		frappe.db.get_value("Subscription Plan", {"name": row.nuevo_plan},"cost",function(res){
+			res.cost;
+		}).then(r =>{
+				var rest=r.message;
+				frappe.model.set_value(cdt, cdn, "coston", rest.cost);
+				frm.trigger("calculate", cdt, cdn);
+		})
+		
+	},
+})

@@ -13,19 +13,20 @@ frappe.ui.form.on('Gestion', {
 
     }
 	},
-    before_save(frm){
-        if(frm.doc.__islocal){
-            frappe.call({
-				"method": "erpnext.support.doctype.gestion.gestion.validar_cliente",
-				"args": {
-					"customer": frm.doc.customer
-				}
-				,callback:function(r){
-                    console.log(r.message)
-				}
-			})
-        }
-    }
+    // before_save(frm){
+    //     if(frm.doc.__islocal){
+    //         frappe.call({
+	// 			"method": "erpnext.support.doctype.gestion.gestion.validar_cliente",
+	// 			"args": {
+	// 				"customer": frm.doc.customer,
+    //                 "tipo_gestion":frm.doc.tipo_gestion
+	// 			}
+	// 			,callback:function(r){
+    //                 console.log(r.message)
+	// 			}
+	// 		})
+    //     }
+    // }
 //     workflow_state:(frm) => {
 //         if (frm.doc.workflow_state === "Seguimiento"){
 //             frm.set_value('priority', 'Alto');
@@ -35,11 +36,25 @@ frappe.ui.form.on('Gestion', {
 frappe.ui.form.on('Gestion', 'tipo_gestion', function(frm) {
     if(frm.doc.tipo_gestion === 'Cancelaciones' || frm.doc.tipo_gestion === 'Suspension Temporal' ){
         frm.toggle_display("issue", false);
-
     }
     else{
         frm.toggle_display("cambiar_planes", false);
         frm.toggle_display("motivo", false);
 
+    }
+    if(frm.doc.tipo_gestion.length > 0){
+        frappe.call({
+            "method": "erpnext.support.doctype.gestion.gestion.validar_cliente",
+            "args": {
+                "customer": frm.doc.customer,
+                "tipo_gestion":frm.doc.tipo_gestion
+            }
+            ,callback:function(r){
+                console.log(r.message)
+                if(r.message!==undefined){
+                    frappe.set_route(['Form', 'gestion',r.message]);	
+                }
+            }
+        })
     }
 })

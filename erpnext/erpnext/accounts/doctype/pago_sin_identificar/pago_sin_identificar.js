@@ -79,6 +79,45 @@ frappe.ui.form.on('Pago Sin Identificar', {
 					<th id="total_diff" class="text-right"></th>
 				  <tr>
 			   </tbody>
+			</table>`,
+			tmp_pm_table = `<table class="table table-condensed table-bordered">
+			   <thead>
+				 <tr>
+				   <th>Factura</th>
+				   <th>Moneda</th>
+				   <th class="text-right">Monto $</th>
+				   <th class="text-right">Monto C$</th>
+				   <th class="text-right">&nbsp;</th>
+				 </tr>
+			   </thead>
+			   <tbody>
+				 {% var totals = {"pm_total_usd": 0.0, "pm_total_nio": 0.0}; %}
+				 {% for (var i = 0, l = data.length; i < l; i++) { %}
+				 {% var row = data[i]; %}
+				 <tr>
+				   <td>{{ row.Factura }}</th>
+				   <td>{{ {"NIO": "C$", "USD": "$"}[row.moneda] }}</th>
+				   <td class="text-right">{{ format_currency(row.moneda === "USD" ? flt(row.monto) : flt(row.monto) / flt(tc,2), "USD", 2) }}</th>
+				   <td class="text-right">{{ format_currency(row.moneda === "USD" ? flt(row.monto) * flt(tc) : flt(row.monto), "NIO", 2) }}</th>
+				   <td><button class="btn btn-danger btn-xs remove" data-idx="{{ i }}"><span class="icon icon-remove">
+				 	<svg class="icon icon-sm" style>
+						<use class href="#icon-delete"></use>
+					</svg>
+				   </span></button>
+				   </td>
+				 </tr>
+				 {% totals.pm_total_usd += (row.moneda === "USD" ? flt(row.monto) : flt(row.monto) / flt(tc)) %}
+				 {% totals.pm_total_nio += (row.moneda === "USD" ? flt(row.monto) * flt(tc) : flt(row.monto)) %}
+				 {% } %}
+			   </tbody>
+			   <tbody>
+				 <tr>
+				   <th colspan="2" class="centrado">&nbsp; TOTAL 2</th>
+				   <th class="text-right" id="pm_total_usd">{{ format_currency(totals.pm_total_usd, "USD", 2) }}</th>
+				   <th class="text-right" id="pm_total_nio">{{ format_currency(totals.pm_total_nio, "NIO", 2) }}</th>
+				   <th>&nbsp;</th>
+				 </tr>
+			   </tbody>
 			</table>`;
 			
 			 
@@ -99,7 +138,7 @@ frappe.ui.form.on('Pago Sin Identificar', {
 
 			// Aqui para asignar el otro Js
 			function render_totals_table(){
-				totals.length = 0;
+				// totals.length = 0;
 				// var tc = flt(d.get_value("conversion_rate"));
 				// if (d.fields_dict.debits_wrapper.$wrapper.find("#total_usd").length){
 				// 	totals.push({
@@ -121,7 +160,7 @@ frappe.ui.form.on('Pago Sin Identificar', {
                 //     });
 				// }
 				// pm_args.pagos = payments
-				// d.fields_dict.totals_wrapper.$wrapper.find("#totals_wrapper").html(frappe.render(tmp_tt_table, {"data": totals}));
+				// d.fields_dict.totals_wrapper.$wrapper.find("#totals_wrapper").html(frappe.render(tmp_pm_table));
 			}
 
 
@@ -130,23 +169,26 @@ frappe.ui.form.on('Pago Sin Identificar', {
 			}
 
 			function SumaFormaPagos() {
-				var sumaMonto1 =0,sumaMonto2 = 0,sumaMonto1Conver = 0,sumaMonto2Conver = 0;
+				var sumaMonto1 = 0,sumaMonto2 = 0;
 				console.log(payments);
 				totals.length = 0;
 				for(let i = 0; i < payments.length; i++){
-					if (payments[i]['moneda'] == "C$"){
+					if (payments[i]['moneda'] == "NIO"){
 						console.log("Entra");
 						sumaMonto1 += payments[i]['monto'];
 						// sumaMonto1Conver = flt(sumaMonto1 * tc[0],2);
 					}
-					if (payments[i]['moneda'] == "$"){
+					if (payments[i]['moneda'] == "USD"){
+						console.log("Entra");
 						sumaMonto2 += payments[i]['monto'];
 						// sumaMonto2Conver = flt(sumaMonto2 / tc[0],2);
 					}
 				}
 				// console.log(sumaMonto1,sumaMonto1Conver);
-				TotalesNIO = sumaMonto1 + (sumaMonto2 * tc[0]);
-				TotalesUSD = flt(sumaMonto2 + sumaMonto1 / tc[0],2);
+				// TotalesNIO = sumaMonto1 + (sumaMonto2 * tc[0]);
+				// TotalesUSD = flt(sumaMonto2 + sumaMonto1 / tc[0],2);
+				TotalesNIO = flt(sumaMonto1);
+				TotalesUSD = flt(sumaMonto2);
 
 				totals.push({
 					MontoUSD: TotalesUSD,
@@ -411,7 +453,7 @@ frappe.ui.form.on('Pago Sin Identificar', {
 				// 	// 	// amount_field.$input.val(null).trigger("change");
 				// 	// });
 				// }
-				function set_sum_on_check(wrapper, dc, data){
+				function set_sum_on_check(wrapper, dc, datas){
 					wrapper.find('input[type="checkbox"]').on('change', function(){
 						var amounts = {'usd': 0.0, 'nio': 0.0, 'actual_nio': 0.0, 'diff': 0.0};
 						// var montos = {'usd': 0.0, 'nio': 0.0, 'actual_nio': 0.0};
@@ -421,7 +463,7 @@ frappe.ui.form.on('Pago Sin Identificar', {
 						wrapper.find('input[type="checkbox"]:checked').each(function(){
 							pm_args[dc].push({'link_doctype': $(this).data('doctype'), 'link_name': $(this).val()});
 							factura.push($(this).val());
-							frappe.utils.filter_dict(data, {'name': $(this).val()}).forEach(function(d){
+							frappe.utils.filter_dict(datas, {'name': $(this).val()}).forEach(function(d){
 								amounts.usd += d.deuda.usd;
 								amounts.nio += d.deuda.nio;
 								amounts.actual_nio += d.actual.nio;
@@ -436,16 +478,21 @@ frappe.ui.form.on('Pago Sin Identificar', {
 						// montosUSD.push(amounts.usd);
 						// montosC$.push(amounts.actual_nio);
 						// montosC$.push(amounts.nio);
-						wrapper.find('#total_usd').text(format_currency(amounts.usd, 'USD', 2));
-						wrapper.find('#total_nio').text(format_currency(amounts.nio, 'NIO', 2));
-						wrapper.find('#total_actual_nio').text(format_currency(amounts.actual_nio, 'NIO', 2));
-						wrapper.find('#total_diff').text(amounts.diff.toFixed(2));
-						// wrapper.find('#Banco').text(tcB);
-						// console.log(montos);
+						console.log(amounts);
+						d.fields_dict.debits_wrapper.$wrapper.find("#total_usd").text(format_currency(amounts.usd, 'USD', 2));
+						d.fields_dict.debits_wrapper.$wrapper.find("#total_nio").text(format_currency(amounts.nio, 'NIO', 2));
+						d.fields_dict.debits_wrapper.$wrapper.find("#total_actual_nio").text(format_currency(amounts.actual_nio, 'NIO', 2));
+						d.fields_dict.debits_wrapper.$wrapper.find("#total_diff").text(amounts.diff.toFixed(2));
+						// wrapper.find('#total_usd').text(format_currency(amounts.usd, 'USD', 2));
+						// wrapper.find('#total_nio').text(format_currency(amounts.nio, 'NIO', 2));
+						// wrapper.find('#total_actual_nio').text(format_currency(amounts.actual_nio, 'NIO', 2));
+						// wrapper.find('#total_diff').text(amounts.diff.toFixed(2));
+
 						// selectMonto(montos);
-						render_totals_table();
+						// render_totals_table();
 						var data = factura; 
-						create_payments_area(data)
+						create_payments_area(data);
+						// SumaFormaPagos();
 					});
 				}
 
@@ -534,7 +581,7 @@ frappe.ui.form.on('Pago Sin Identificar', {
 						"monto": MotoAnticipo
 					});
 					// console.log(currency_field.get_value());
-					SumaFormaPagos();
+					// SumaFormaPagos();
 					function render_payments(){
 						d.fields_dict.FormasDePagos_wrapper.$wrapper.find("#payments_wrapper").html(
 							frappe.render(tmp_pm_tableAnticipo, {"data": payments, "tc": flt(d.get_value("conversion_rate")) || 1.0})
@@ -542,7 +589,7 @@ frappe.ui.form.on('Pago Sin Identificar', {
 							var idx = cint($(this).data('idx'));
 							payments.splice(idx,1);
 							render_payments();
-							SumaFormaPagos();
+							// SumaFormaPagos();
 							// render_totals_table();
 						});
 					};
@@ -616,23 +663,23 @@ frappe.ui.form.on('Pago Sin Identificar', {
 					// fields.mode_of_payment = mode_of_payment_field;
 	
 	
-					var currency_field = frappe.ui.form.make_control({
-						df: {
-							fieldtype: 'Select',
-							options: ['USD','NIO'],
-							fieldname: 'currency',
-							label: 'Moneda',
-							// placeholder: 'Moneda',
-							reqd: 0
-						},
-						parent: d.fields_dict.totals_wrapper.$wrapper.find("#currency_wrapper").empty(),
-						frm: frm,
-						doctype: frm.doctype,
-						docname: frm.docname,
-						only_input: true
-					});
-					currency_field.make_input();
-					fields.currency = currency_field;
+					// var currency_field = frappe.ui.form.make_control({
+					// 	df: {
+					// 		fieldtype: 'Select',
+					// 		options: ['USD','NIO'],
+					// 		fieldname: 'currency',
+					// 		label: 'Moneda',
+					// 		// placeholder: 'Moneda',
+					// 		reqd: 0
+					// 	},
+					// 	parent: d.fields_dict.totals_wrapper.$wrapper.find("#currency_wrapper").empty(),
+					// 	frm: frm,
+					// 	doctype: frm.doctype,
+					// 	docname: frm.docname,
+					// 	only_input: true
+					// });
+					// currency_field.make_input();
+					// fields.currency = currency_field;
 	
 					// Personalizado
 					// var amount_field = frappe.ui.form.make_control({
@@ -933,7 +980,7 @@ frappe.ui.form.on('Pago Sin Identificar', {
 					// });
 					// fields.change_nio = change_nio_field;
 	
-					toggle_action([mode_of_payment_field, currency_field, amount_field],
+					toggle_action([mode_of_payment_field, amount_field],
 						d.fields_dict.totals_wrapper.$wrapper);
 	
 	
@@ -944,11 +991,11 @@ frappe.ui.form.on('Pago Sin Identificar', {
 						if (d.fields_dict.totals_wrapper.$wrapper.find("#action").hasClass("hidden")) return;
 	
 						payments.push({
-							"tipo_de_pago": mode_of_payment_field.get_value(),
-							"moneda": currency_field.get_value(),
+							"Factura": mode_of_payment_field.get_value(),
+							"moneda": frm.doc.moneda,
 							"monto": amount_field.get_value()
 						});
-	
+						SumaFormaPagos();
 						function render_payments(){
 							d.fields_dict.totals_wrapper.$wrapper.find("#payments_wrapper").html(
 								frappe.render(tmp_pm_table, {"data": payments, "tc": flt(d.get_value("conversion_rate")) || 1.0})
@@ -956,58 +1003,16 @@ frappe.ui.form.on('Pago Sin Identificar', {
 								var idx = cint($(this).data('idx'));
 								payments.splice(idx,1);
 								render_payments();
-								render_totals_table();
+								SumaFormaPagos();
+								// render_totals_table();
 							});
 						};
 						render_payments();
-						render_totals_table();
+						
+						// render_totals_table();
 						mode_of_payment_field.$input.val(null).trigger("change");
-						currency_field.$input.val(null).trigger("change");
-						amount_field.$input.val(null).trigger("change");
-	
-						// IMPORTANTE
-						// console.log({"data": payments, "tc": flt(d.get_value("conversion_rate")) || 1.0});
-	
-						///////////////////////////////////////////////////////////////////
-						// var num = amount_field.get_value();
-						// console.log(num);
-						// if(montos.includes(num)){
-						// 		console.log("Valida el arreglo");
-						// 		if (d.fields_dict.totals_wrapper.$wrapper.find("#action").hasClass("hidden")) return;
-	
-						// 	payments.push({
-						// 		"tipo_de_pago": mode_of_payment_field.get_value(),
-						// 		"moneda": currency_field.get_value(),
-						// 		"monto": amount_field.get_value()
-						// 	});
-	
-						// 	function render_payments(){
-						// 		d.fields_dict.totals_wrapper.$wrapper.find("#payments_wrapper").html(
-						// 			frappe.render(tmp_pm_table, {"data": payments, "tc": flt(d.get_value("conversion_rate")) || 1.0})
-						// 		).find("button.remove").off('click').on('click', function(){
-						// 			var idx = cint($(this).data('idx'));
-						// 			payments.splice(idx,1);
-						// 			render_payments();
-						// 			render_totals_table();
-						// 		});
-						// 	};
-						// 	console.log({"data": payments, "tc": flt(d.get_value("conversion_rate")) || 1.0});
-						// 	render_payments();
-						// 	render_totals_table();
-						// 	mode_of_payment_field.$input.val(null).trigger("change");
-						// 	currency_field.$input.val(null).trigger("change");
-						// 	amount_field.$input.val(null).trigger("change");
-						// }else {
-						// 	frappe.msgprint('Lo sentimos no es igual a los montos totales');
-						// 	console.log("No paso");
-						// 	// render_payments();
-						// 	// render_totals_table();
-						// 	mode_of_payment_field.$input.val(null).trigger("change");
-						// 	currency_field.$input.val(null).trigger("change");
-						// 	amount_field.$input.val(null).trigger("change");
-						// }
-						//////////////////////////////////////////////////////////////////////////
-	
+						// currency_field.$input.val(null).trigger("change");
+						amount_field.$input.val(null).trigger("change");	
 	
 					});
 					// Validacion de boton limpiar
@@ -1053,44 +1058,6 @@ frappe.ui.form.on('Pago Sin Identificar', {
 											let values = r.message;
 											TituloName(values.customer_name);
 										})
-										// console.log(d.get_value('customer').customer_name)
-										// frappe.call({
-										// 	// erpnext.support.doctype.issue.issue.get_plan_Susc_cust"
-										// 	'method': 'erpnext.accounts.doctype.journal_entry.journal_entry.ChecarAnticipo',
-										// 	'args': {
-										// 		'Customer': d.get_value('customer')
-										// 	},
-										// 	'callback': function(res){
-
-										// 		console.log(res.message)
-										// 		if (res.message == 0){
-										// 			frappe.msgprint({
-										// 				title: __('Advertencia'),
-										// 				indicator: 'red',
-										// 				message: __('Lo sentimos, no tiene un anticipo resgistrado!')
-										// 			});
-										// 			d.set_value("customer",null);
-										// 		}else{
-										// 			get_exchange();
-										// 			// create_payments_areaAnticipo();
-										// 			d.set_value("Monto_de_Factura",res.message[0][3]);
-										// 			d.set_value("Anticipo",res.message[0][0]);
-
-										// 			frappe.call({
-										// 				'method': 'erpnext.accounts.doctype.journal_entry.journal_entry.Factura_Anticipos',
-										// 				'args': {
-										// 					'Customer': d.get_value('customer')
-										// 				},
-										// 				'callback': function(r){
-										// 					console.log(r.message[0][0])
-										// 				d.set_value('Monto_de_FacturaNIO',r.message[0][1])
-										// 				d.set_value('Factura',r.message[0][0])
-										// 				}
-										// 			});
-										// 			mostrarFactura(res.message[0][3]);
-										// 		}
-										// 	}
-										// });
 									}
 								},
 							// on_make: d.get_value('customer').refresh(),
@@ -1170,31 +1137,6 @@ frappe.ui.form.on('Pago Sin Identificar', {
 							reqd: 1,
 							read_only: 1
 						},
-
-						// {
-						// 	fieldtype: "Int",
-						// 	label: "# de Meses de Anticipo",
-						// 	precision: 1,
-						// 	// options: "Customer",
-						// 	fieldname: "Cantidad_Meses",
-						// 	// on_make: ,
-						// 	change: function () {
-						// 		var res = 0;
-						// 		var res1 = 0;
-						// 		var data = {'total_FacturaUSD':0.0, 'Total_FacturaNIO':0.0};
-						// 		d.get_value('Cantidad_Meses');
-						// 		d.get_value('Monto_de_Factura');
-
-						// 		res = flt(d.get_value('Cantidad_Meses') * d.get_value('Monto_de_Factura'),2);
-						// 		res1 = flt(d.get_value('Cantidad_Meses') * d.get_value('Monto_de_FacturaNIO'),2);
-						// 		data.total_FacturaUSD = res;
-						// 		data.Total_FacturaNIO = res1;
-						// 		set_sum_Totales_Anticipos(data);
-						// 		// d.set_value("Monto_de_FacturaNIO",total);
-						// 		d.set_value('TotalNIO',res1);
-						// 		d.set_value('TotalUSD',res);
-						// 	}
-						// },
 						{
 							fieldtype: "Section Break",
 						},
@@ -1221,87 +1163,11 @@ frappe.ui.form.on('Pago Sin Identificar', {
 							// on_make: assign_df_to_input,
 							// change: get_outstanding_details
 						},
-						// {
-						// 	fieldtype: "Column Break"
-						// 	// fieldtype: "Section Break",
-						// 	// label: __("Total")
-						// },
-						// {
-						// 	fieldtype: "Float",
-						// 	label: "Total $",
-						// 	precision: 2,
-						// 	read_only: 1,
-						// 	// options: "Customer",
-						// 	fieldname: "TotalUSD",
-						// 	// on_make: assign_df_to_input,
-						// 	// change: get_outstanding_details
-						// },
-						// {
-						// 	fieldtype: "Column Break"
-						// 	// fieldtype: "Section Break",
-						// 	// label: __("Total")
-						// },
-						// {
-						// 	fieldtype: "Float",
-						// 	label: "Total C$",
-						// 	precision: 2,
-						// 	// options: "Customer",
-						// 	fieldname: "TotalNIO",
-						// 	read_only: 1,
-						// 	// on_make: assign_df_to_input,
-						// 	// change: get_outstanding_details
-						// },
 						{
 							// fieldtype: "Column Break",
 							fieldtype: "Section Break",
 							label: __("Forma de Pagos")
 						},
-						// {
-						// // fieldtype: 'Select',
-						// // options: [null].concat(data.tipos_de_pago),
-						// // fieldname: 'mode_of_payment',
-						// // label: 'Tipo de Pago',
-						// // // // placeholder: 'Tipo de Pago',
-						// // reqd: 1
-						// 	fieldtype: 'Select',
-						// 	label: 'Tipo de Pago',
-						// 	options: ['Efectivo','Cheque','Tarjeta de Credito'],
-						// 	fieldname: "mode_of_payment",
-						// 	reqd: 1
-						// 	// on_make: assign_df_to_input,
-						// 	// change: get_outstanding_details
-						// },
-						// {
-						// 	fieldtype: "Column Break",
-						// 	// fieldtype: "Section Break",
-						// },
-						// {
-						// 	fieldtype: 'Select',
-						// 	label: 'Moneda',
-						// 	options: ['C$','$'],
-						// 	fieldname: "currency",
-						// 	reqd: 1
-						// 	// on_make: assign_df_to_input,
-						// 	// change: get_outstanding_details
-						// },
-						// {
-						// 	fieldtype: "Column Break",
-						// 	// fieldtype: "Section Break",
-						// },
-						// {
-						// 	fieldtype: 'Float',
-						// 	label: 'Monto',
-						// 	precision: 2,
-						// 	// options: ['C$','$'],
-						// 	fieldname: "Monto",
-						// 	reqd: 1
-						// 	// on_make: assign_df_to_input,
-						// 	// change: get_outstanding_details
-						// },
-						// {
-						// 	// fieldtype: "Column Break",
-						// 	fieldtype: "Section Break",
-						// },
 						{
 							fieldtype: "Section Break",
 							label: __("Deudas")
@@ -1324,12 +1190,12 @@ frappe.ui.form.on('Pago Sin Identificar', {
 					   <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6">
 						<div class="row">
 							<div class="col-sm-4 col-md-4 col-lg-4 col-xl-4 style="padding-left: 0px;""> Tipo de pago</div>
-							<div class="col-sm-4 col-md-4 col-lg-4 col-xl-4" style="padding-left: 0px;"> Moneda</div>
+							
 						</div>
 	
 					   <div class="row">
 								<div class="col-sm-12 col-md-4 col-lg-4 col-xl-4" id="mode_of_payment_wrapper" style="padding-left: 0px;"></div>
-								<div class="col-sm-2 col-md-2 col-lg-2 col-xl-2" id="currency_wrapper" style="padding-left: 0px;"></div>
+								
 								<div class="col-sm-4 col-md-3 col-lg-3  col-xl-3" id="amount_wrapper" style="padding-left: 0px;"></div>
 								<div class="col-sm-2 col-md-2 col-lg-2 col-xl-2" id="action_wrapper" style="padding-left: 0px;">
 									<button class="btn btn-primary hidden" role="button" id="action">Agregar</button>
@@ -1399,50 +1265,71 @@ frappe.ui.form.on('Pago Sin Identificar', {
 			d.get_primary_btn().text('Aplicar Deposito').off('click').on('click', function(){
 				// console.log(TotalesNIO);
 				// var dc; 
-				if (d.get_value('customer') && d.get_value('sales_invoice')){
-					payments.push({'link_doctype':'Sales Invoice', 'link_name': d.get_value('sales_invoice')});
-					payments2.push({"tipo_de_pago":"Deposito","moneda":d.get_value('moneda'),"monto":d.get_value('Monto')});
-					// pm_args['deudas'] = [];
-					// pm_args['pagos'] = [];
-					pm_args.deudas = payments;
-					pm_args.pagos = payments2;
+				console.log(totals);
+				if (frm.doc.moneda == 'USD'){
+					if(totals[0]['MontoUSD'] <= frm.doc.monto){
+						pm_args.pagos = payments;
+						pm_args['cuentaBanco'] = d.get_value('cuenta');
+						var values = d.get_values();
+						[
+							['customer', 'regnumber'],
+							['sales_invoice', 'factura'],
+							['conversion_rate', 'tc'],
+							['posting_date', 'fecha']
+						].forEach(function(pair){
+							var v = values[pair[0]];
+							if (v) pm_args[pair[1]] = v;
+						});
+						console.log(Object.keys(pm_args).map(function(k) { return k + ': ' + JSON.stringify(pm_args[k]) }).join('\n'));
+							// AQUI
+						// frappe.call({
+						// 	'method': "erpnext.api.Aplicar_Deposito_Banco",
+						// 	'args': pm_args,
+						// 	'callback': function (r) {
+						// 		// console.log(r.message)
+						// 			if (r.message) {
+						// 				// console.log(r.message)
+						// 				var doc = frappe.model.sync(r.message)[0];
+						// 				frappe.set_route("Form", doc.doctype, doc.name);
+						// 		}
+						// 	}
+						// });
+						d.hide();
+					}else{
+						frappe.msgprint({
+							title: __('Advertencia'),
+							indicator: 'red',
+							message: __('El monto total registrado, no puede ser mayor al monto depositado!')
+						});
+					}
+				}
+				// console.log(payments);
+				if (d.get_value('customer')){
+					console.log(payments);
+					
+					
+					// payments.push({'link_doctype':'Sales Invoice', 'link_name': d.get_value('sales_invoice')});
+					// payments2.push({"tipo_de_pago":"Deposito","moneda":d.get_value('moneda'),"monto":d.get_value('Monto')});
+					// // pm_args['deudas'] = [];
+					// // pm_args['pagos'] = [];
+					// pm_args.deudas = payments;
+					// pm_args.pagos = payments2;
 
 					// pm_args['deudas'].push({'link_doctype':'Sales Invoice', 'link_name': d.get_value('sales_invoice')});
 					// pm_args['pagos'].push({"tipo_de_pago":"Deposito","moneda":d.get_value('moneda'),"monto":d.get_value('Monto')});
-					pm_args['cuentaBanco'] = d.get_value('cuenta');
+					
 					// pagos: [{"tipo_de_pago":"Deposito","moneda":"usd","monto":34.5}]
 					// pm_args.pagos = payments;
-					var values = d.get_values();
-					[
-						['customer', 'regnumber'],
-						['sales_invoice', 'factura'],
-						['conversion_rate', 'tc'],
-						['posting_date', 'fecha']
-					].forEach(function(pair){
-						var v = values[pair[0]];
-						if (v) pm_args[pair[1]] = v;
-					});
+					
 					// console.log(values);
 					// console.log(pm_args);
 					// var arg = JSON.parse(pm_args);
 					var jsonCompleto = JSON.stringify(pm_args);
-					console.log(jsonCompleto);
-					console.log(Object.keys(pm_args).map(function(k) { return k + ': ' + JSON.stringify(pm_args[k]) }).join('\n'));
+					// console.log(jsonCompleto);
 					
-					frappe.call({
-						'method': "erpnext.api.Aplicar_Deposito_Banco",
-						'args': pm_args,
-						'callback': function (r) {
-							// console.log(r.message)
-								if (r.message) {
-									// console.log(r.message)
-									var doc = frappe.model.sync(r.message)[0];
-									frappe.set_route("Form", doc.doctype, doc.name);
-							}
-						}
-					});
+					
 
-					d.hide();
+					
 				}else{
 					frappe.msgprint({
 								title: __('Advertencia'),

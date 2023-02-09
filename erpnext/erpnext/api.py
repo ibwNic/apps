@@ -3313,6 +3313,8 @@ def Aplicar_Deposito_Banco(deudas=None,pagos=None,cuentaBanco=None,regnumber=Non
 	# if isinstance(tc, six.string_types):
 	# 	tc = json.loads(tc, object_pairs_hook=frappe._dict)
 	
+	# return deudas,pagos
+
 	
 	# return fecha
 	# entry = deudas
@@ -3328,7 +3330,12 @@ def Aplicar_Deposito_Banco(deudas=None,pagos=None,cuentaBanco=None,regnumber=Non
 		field = '{0}_in_account_currency'.format(prefix)
 		ret.update({'account': account, 'account_currency': account_currency})
 		if deuda.link_doctype == "Sales Invoice":
-			ret[field] = frappe.db.get_value(deuda.link_doctype, deuda.link_name, 'outstanding_amount')
+			# Asignarle el monto que digito en el Deposito
+			# ret[field] = frappe.db.get_value(deuda.link_doctype, deuda.link_name, 'outstanding_amount')
+			for monto in pagos: 
+				if monto.Factura == deuda.link_name:
+					ret[field] = monto.monto
+			
 			if account_currency == 'USD':
 				er = frappe.db.get_value(deuda.link_doctype, deuda.link_name, 'conversion_rate')
 			else:
@@ -3340,8 +3347,8 @@ def Aplicar_Deposito_Banco(deudas=None,pagos=None,cuentaBanco=None,regnumber=Non
 			ret['exchange_rate'] = er
 		accounts.append(ret)
 	
-	
-
+	# return accounts
+	# mode = 'Depositos'
 	currency_map = {
 		'nio': 'NIO',
 		'c$': 'NIO',
@@ -3364,7 +3371,7 @@ def Aplicar_Deposito_Banco(deudas=None,pagos=None,cuentaBanco=None,regnumber=Non
 				prefix = 'debit'
 				field = '{0}_in_account_currency'.format(prefix)
 
-				row = {'account': cuentaBanco, 'account_currency': currency, 'mode_of_payment':entry.tipo_de_pago}
+				row = {'account': cuentaBanco, 'account_currency': currency, 'mode_of_payment':'Depositos'}
 				row[field] = flt(entry.monto, 2)
 
 				if currency == 'NIO':
@@ -3378,8 +3385,9 @@ def Aplicar_Deposito_Banco(deudas=None,pagos=None,cuentaBanco=None,regnumber=Non
 				row['exchange_rate'] = flt(compute_tc(row[field], row[prefix]),4)
 				accounts.append(row)
 
-	
-	diff_amount = None
+	# return accounts
+
+	# diff_amount = None
 	tdoc = None
 	try:
 		tdoc = frappe.new_doc('Journal Entry').update({
@@ -3398,32 +3406,32 @@ def Aplicar_Deposito_Banco(deudas=None,pagos=None,cuentaBanco=None,regnumber=Non
 
 
 	
-	# newJe = frappe.new_doc('Journal Entry')
-	# newJe.update({
-	# 	'posting_date': today(),
-	# 	'posting_time': today(),
-	# 	'accounts':accounts,
-	# 	'multi_currency': True,
-	# 	# 'observacion': 'Se revertio el pag'
-	# })
+	# # newJe = frappe.new_doc('Journal Entry')
+	# # newJe.update({
+	# # 	'posting_date': today(),
+	# # 	'posting_time': today(),
+	# # 	'accounts':accounts,
+	# # 	'multi_currency': True,
+	# # 	# 'observacion': 'Se revertio el pag'
+	# # })
 
-	# newJe.append("accounts", accounts)
+	# # newJe.append("accounts", accounts)
 
-	# for m in accounts:
-	# 	item1 = newJe.append('accounts', {"item_code": ""})				
-	# 	item1.schedule_date = nowdate()
-	# 	item1.item_code = m[0]
-	# 	item1.qty=int(m[1])*int(cantidad)
+	# # for m in accounts:
+	# # 	item1 = newJe.append('accounts', {"item_code": ""})				
+	# # 	item1.schedule_date = nowdate()
+	# # 	item1.item_code = m[0]
+	# # 	item1.qty=int(m[1])*int(cantidad)
 
-	# for item in je.accounts:
-	# 		# frappe.msgprint(str(item))
-	# 	accounts = {
-	# 			"tipo_de_pago": item.mode_of_payment,
-	# 			"moneda": item.account_currency,
-	# 			"montousd":item.debit_in_account_currency,
-	# 			"montonio": item.debit,
-	# 		}
-	# 	newJe.append("accounts", accounts)
+	# # for item in je.accounts:
+	# # 		# frappe.msgprint(str(item))
+	# # 	accounts = {
+	# # 			"tipo_de_pago": item.mode_of_payment,
+	# # 			"moneda": item.account_currency,
+	# # 			"montousd":item.debit_in_account_currency,
+	# # 			"montonio": item.debit,
+	# # 		}
+	# # 	newJe.append("accounts", accounts)
 
-	# return {'docs': newJe.as_dict()}
+	# # return {'docs': newJe.as_dict()}
 	return {'docs': tdoc.as_dict()}
