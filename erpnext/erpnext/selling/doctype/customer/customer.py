@@ -780,4 +780,6 @@ def get_issues(name):
 
 @frappe.whitelist()
 def obtener_estado_de_cuenta(name):
-	return frappe.db.sql("call build_estado_cuenta(%(name)s);",{"name":name})
+	cuentas =  frappe.db.sql("call build_estado_cuenta(%(name)s);",{"name":name})
+	rev = cuentas[::-1]
+	return rev

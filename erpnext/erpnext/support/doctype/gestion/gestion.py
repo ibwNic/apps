@@ -30,8 +30,8 @@ class Gestion(Document):
 			if self.tipo_gestion == 'Cancelaciones':
 				if self.estado_cancelacion == 'Aceptada':
 					frappe.db.sql(""" update `tabGestion` set estado = 'Aceptado' where name = %(name)s; """,{"name":self.name})
-				elif self.estado_cancelacion == 'Retenida' and self.medida_retencion:
-					frappe.db.sql(""" update `tabGestion` set estado = 'Finalizado' where name = %(name)s; """,{"name":self.name})
+				# elif self.estado_cancelacion == 'Retenida' and self.medida_retencion:
+				# 	frappe.db.sql(""" update `tabGestion` set estado = 'Finalizado' where name = %(name)s; """,{"name":self.name})
 			else:
 				frappe.db.sql(""" update `tabGestion` set estado = 'Finalizado' where name = %(name)s; """,{"name":self.name})
 		if self.workflow_state == 'En Proceso':
@@ -95,7 +95,7 @@ def estado_gestion(name):
 		if gestion.estado_cancelacion == 'Aceptada':
 			frappe.db.sql(""" update `tabGestion` set estado = 'Aceptado' where name = %(name)s; """,{"name":name})
 		elif gestion.estado_cancelacion == 'Retenida' and gestion.medida_retencion:
-			frappe.db.sql(""" update `tabGestion` set estado = 'Finalizado' where name = %(name)s; """,{"name":name})
+			frappe.db.sql(""" update `tabGestion` set estado = 'Retenido' where name = %(name)s; """,{"name":name})
 	except:
 		pass
 

@@ -16,6 +16,7 @@
   "moneda",
   "banco",
   "monto",
+  "saldo",
   "section_break_6",
   "detalles",
   "amended_from"
@@ -68,8 +69,7 @@
    "fieldname": "detalles",
    "fieldtype": "Table",
    "label": "Detalles",
-   "options": "Pago Sin Identificar Detalles",
-   "read_only": 1
+   "options": "Pago Sin Identificar Detalles"
   },
   {
    "fieldname": "column_break_3",
@@ -110,12 +110,19 @@
    "fieldtype": "Date",
    "label": "Fecha Deposito",
    "reqd": 1
+  },
+  {
+   "fieldname": "saldo",
+   "fieldtype": "Currency",
+   "label": "Saldo",
+   "options": "moneda",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-02-07 11:12:31.648751",
+ "modified": "2023-02-10 16:55:13.400276",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Pago Sin Identificar",

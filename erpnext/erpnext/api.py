@@ -3292,7 +3292,7 @@ def validate_payment_entriesDepositos(entries, accounts, messages, tc, dc='d'):
 
 # Depositos de BAnco
 @frappe.whitelist()
-def Aplicar_Deposito_Banco(deudas=None,pagos=None,cuentaBanco=None,regnumber=None, tc=None,fecha=None,dc='c',_ui_=True):
+def Aplicar_Deposito_Banco(deudas=None,pagos=None,cuentaBanco=None,regnumber=None, tc=None,fecha=None,ID_pago_ZZ = None,dc='c',_ui_=True):
 	from erpnext.accounts.party import get_party_account, get_party_account_currency
 
 	
@@ -3372,7 +3372,7 @@ def Aplicar_Deposito_Banco(deudas=None,pagos=None,cuentaBanco=None,regnumber=Non
 				prefix = 'debit'
 				field = '{0}_in_account_currency'.format(prefix)
 
-				row = {'account': cuentaBanco, 'account_currency': currency, 'mode_of_payment':'Depositos'}
+				row = {'account': cuentaBanco, 'account_currency': currency, 'mode_of_payment':'Deposito'}
 				row[field] = flt(entry.monto, 2)
 
 				if currency == 'NIO':
@@ -3385,7 +3385,24 @@ def Aplicar_Deposito_Banco(deudas=None,pagos=None,cuentaBanco=None,regnumber=Non
 				row[prefix] = compute_nio(row[field], er)
 				row['exchange_rate'] = flt(compute_tc(row[field], row[prefix]),4)
 				accounts.append(row)
+	
+	# Variable para verificar si viene un pago en Cordobas
+	hayNIO = "USD"
 
+	#Pase para poner el tipo de cuenta e identificar lo que aumenta o disminuye en los cierres
+	facs = list(filter(lambda acc: acc.get("reference_type") == "Sales Invoice", accounts))
+
+	for acc in facs:
+		acc['tipo_de_cuenta']="Pagado"
+
+	facs = list(filter(lambda acc: acc.get("reference_type") != "Sales Invoice", accounts))
+
+	for acc in facs:
+		acc['tipo_de_cuenta']="Recibido"
+
+		if acc['account_currency']=="NIO":
+			hayNIO = acc['account_currency']
+	
 	# return accounts
 
 	diff_amount = None
@@ -3469,6 +3486,7 @@ def Aplicar_Deposito_Banco(deudas=None,pagos=None,cuentaBanco=None,regnumber=Non
 		'posting_time': today(),
 		'accounts':accounts,
 		'multi_currency': True,
+		'codigo_deposito_zzz' : ID_pago_ZZ,
 		'tipo_de_pago' : "DepositoBanco",
 		'aplico_deposito_banco':1
 		# 'observacion': 'Se revertio el pag'
@@ -3477,5 +3495,5 @@ def Aplicar_Deposito_Banco(deudas=None,pagos=None,cuentaBanco=None,regnumber=Non
 	# # newJe.append("accounts", accounts)
 
 	# # return {'docs': newJe.as_dict()}
-	# return {'docs': tdoc.as_dict()}
-	return newJe
+	return {'docs': newJe.as_dict()}
+	# return accounts

@@ -3,7 +3,15 @@
 
 frappe.ui.form.on('Pago Sin Identificar', {
 	refresh: function(frm) {
+		if (frm.doc.saldo === 0){
+			frappe.db.set_value('Pago Sin Identificar', frm.doc.name, {
+				'docstatus': 1,
+				'aplicado': 1
+			})
+			// frm.set_value('aplicado',1);
+		}
 
+		
 		cur_frm.cscript.AplicarDepostos = function(frm){
 			// console.log(frm.doc.cliente);
 			function Crear_Deposito(pm_args,values){
@@ -1022,6 +1030,7 @@ frappe.ui.form.on('Pago Sin Identificar', {
 				if (frm.doc.moneda == 'USD'){
 					if( totals[0]['MontoUSD'] > 0 && totals[0]['MontoUSD'] <= frm.doc.monto){
 						pm_args.pagos = payments;
+						pm_args.ID_pago_ZZ = frm.doc.name; 
 						pm_args['cuentaBanco'] = d.get_value('cuenta');
 						var values = d.get_values();
 						Crear_Deposito(pm_args,values);
@@ -1072,3 +1081,19 @@ frappe.ui.form.on("Pago Sin Identificar", "fecha_deposito", function(frm){
 		})
 	}
 });
+
+frappe.ui.form.on("Pago Sin Identificar", "monto", function(frm){
+	if (frm.doc.saldo== null || frm.doc.saldo){
+		frm.set_value('saldo',frm.doc.monto);
+	}
+	
+});
+
+frappe.ui.form.on('Pago Sin Identificar', {
+    // frm passed as the first parameter
+    after_save(frm) {
+        cur_frm.set_df_property('monto', 'read_only',1)
+		cur_frm.set_df_property('saldo', 'read_only',1)
+	
+    }
+})

@@ -1399,3 +1399,4 @@ def aplicar_promocion(promo,name):
 			else:
 				frappe.db.set_value("Subscription Plan Detail",plan.name,"cost",frappe.db.get_value("Subscription Plan",plan.plan,"cost"))
 
+ 

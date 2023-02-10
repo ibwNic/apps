@@ -118,35 +118,7 @@ frappe.ui.form.on("Issue", {
 				}
 			}
 		})
-		// if(frm.doc.tipo_de_orden =='Tramite') {
-				
-			
-		// 	}	
 
-		frm.set_query('issue_type', function(d){
-				return {
-					filters: {
-						nivel_problema: 100,
-						
-							}
-						}
-					})
-
-		
-		frm.set_query('sub_averia', function(d){
-			return {
-				filters: {
-					nivel_problema: 100,
-		}
-			}
-		})
-		frm.set_query('detalla_avaria', function(d){
-					return {
-						filters: {
-							nivel_problema: 100,
-				}
-			}
-		})	
 
 
         if (frm.doc.customer !== undefined) {
@@ -200,6 +172,7 @@ frappe.ui.form.on("Issue", {
     //     			}
 	// 	   })
 	//    }
+
 
         //Glen
         if (frm.doc.issue_type !== undefined && frm.doc.sub_averia !== undefined) {

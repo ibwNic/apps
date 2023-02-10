@@ -302,12 +302,14 @@ def crear_nuevo_contrato(name):
 	
 	frappe.msgprint(frappe._('Nueva Suscripción con ID {0}').format(suscripcion.name))
 	frappe.db.sql(""" update  `tabSubscription Update` set nuevo_contrato= %(newplan)s , docstatus=1 
-		where name= %(name)s ; """, {"newplan":suscripcion.name, "name":name})		
+		where name= %(name)s ; """, {"newplan":suscripcion.name, "name":name})	
+	if subscription_up.gestion:
+		frappe.db.set_value("Detalle Cambio de Razon Social", {"parenttype":"Gestion","parent":subscription_up.gestion, "contrato":subscription_up.contrato},"nuevo_contrato",subscription_up.name)
+	
 	return suscripcion.name
 	# except Exception as e:
 	# 	frappe.msgprint(frappe._('Fatality Error Project {0} ').format(e))	
-
-
+	
 @frappe.whitelist()
 def filtrar_planes_nuevos(customer):
 	cg = frappe.db.get_value("Customer",customer,'customer_group')

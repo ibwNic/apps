@@ -50,8 +50,8 @@ class JournalEntry(AccountsController):
 			cierre = registrarPagoEnElCierre(self, 0, True)
 			frappe.msgprint(str(cierre))
 
-		# if self.tipo_de_pago == "DepositoBanco":
-		# 	self.Registrar_DepositoBanco()
+		if self.aplico_deposito_banco == 1 and self.docstatus != 0:
+			self.Registrar_DepositoBanco()
 
 		if self.voucher_type == "Opening Entry":
 			self.is_opening = "Yes"
@@ -150,12 +150,12 @@ class JournalEntry(AccountsController):
 		
 
 		# Se modifica el cierre para no tomar en cuenta el movimiento cancelado
-		if self.docstatus==2 and self.ui==1 and self.aplicco_reversion == 0:
+		if self.docstatus==2 and self.ui==1 and self.aplicco_reversion == 0 and self.aplico_deposito_banco == 0:
 			res = movimentarPagoEnElCierre(self,0,True)
 			frappe.msgprint(str(res))
 
 	def on_update(self):
-		if self.docstatus == 0 and self.ui==1 and self.aplicco_reversion == 0:
+		if self.docstatus == 0 and self.ui==1 and self.aplicco_reversion == 0 and self.aplico_deposito_banco == 0:
 			# try:
 				res = obtenerCierreCaja(True)
 				if res == 1:
@@ -477,60 +477,82 @@ class JournalEntry(AccountsController):
 		except Exception as e:
 			frappe.msgprint(frappe._('Fatality Error Project {0} ').format(e))
 	
-	# def Registrar_DepositoBanco(self):
-	# 	accounts = []
-	# 	# frappe.msgprint("Entra")
-	# 	try:
-	# 		je = frappe.get_doc('Journal Entry',self.name)
-	# 		sumaMonto = 0
-	# 		for monto in je.accounts:
-	# 			if monto.debit:
-	# 				sumaMonto += monto.debit
+	def Registrar_DepositoBanco(self):
+		accounts = []
+		# frappe.msgprint("Entra")
+		try:
+			je = frappe.get_doc('Journal Entry',self.name)
+			sumaMonto = 0
+			for monto in je.accounts:
+				if monto.debit_in_account_currency and monto.tipo_de_cuenta=="Recibido":
+					sumaMonto += monto.debit_in_account_currency
 
-	# 		# doc = frappe.get_doc('Pago Sin Identificar', id)
-	# 		# doc.title = 'Test'
-	# 		# doc.save()
+			PagoSinIdentificar = frappe.get_doc('Pago Sin Identificar', self.codigo_deposito_zzz)
+			facturas = []
 
-	# 		Depositos = frappe.new_doc('Deposito en Garantia')
-	# 		Depositos.cliente = je.customerdeposito
-	# 		# print(je.customerdeposito)
-	# 		Depositos.fecha = je.posting_date
-	# 		Depositos.tipo_de_documento = 'Journal Entry'
-	# 		Depositos.nombre_del_documento=je.name
-	# 		# Depositos.meses_anticipo = je.meses_anticipo
-	# 		Depositos.tasa_de_cambio = je.tasa_de_cambiodeposito
-	# 		Depositos.currency='NIO'
-	# 		Depositos.monto = sumaMonto
-	# 		# Depositos.modo_de_pagos = current_invoice_end
+			PagoSinIdentificar.saldo = flt(PagoSinIdentificar.monto - sumaMonto,2)
+			for acc in je.accounts:
+				if acc.tipo_de_cuenta == 'Pagado':
+					# facturas.append(acc.reference_name)
 
-	# 		for item in je.accounts:
-	# 			# frappe.msgprint(str(item))
-	# 			if item.account != "2.01.001.002.001-Depósitos de Clientes - NI":
-	# 				accounts = {
-	# 						"tipo_de_pago": item.mode_of_payment,
-	# 						"moneda": item.account_currency,
-	# 						"montousd":item.debit_in_account_currency,
-	# 						"montonio": item.debit,
-	# 					}
-	# 				Depositos.append("pagos", accounts)
+					detalles = {
+					"documento": je.name,
+					"fecha": today(),
+					"currency":acc.account_currency,
+					"tasa_de_cambio":acc.exchange_rate,
+					"monto": flt(acc.credit_in_account_currency),
+					"factura": acc.reference_name
+					}
+					PagoSinIdentificar.append("detalles", detalles)
+			
+			# for det in facturas:
+				
+			# PagoSinIdentificar.aplicado = 1
+			PagoSinIdentificar.flags.ignore_permissions = True
+			PagoSinIdentificar.save()
+			PagoSinIdentificar.submit()
+			frappe.db.commit()
+			
+			# Depositos = frappe.new_doc('Deposito en Garantia')
+			# Depositos.cliente = je.customerdeposito
+			# # print(je.customerdeposito)
+			# Depositos.fecha = je.posting_date
+			# Depositos.tipo_de_documento = 'Journal Entry'
+			# Depositos.nombre_del_documento=je.name
+			# # Depositos.meses_anticipo = je.meses_anticipo
+			# Depositos.tasa_de_cambio = je.tasa_de_cambiodeposito
+			# Depositos.currency='NIO'
+			# Depositos.monto = sumaMonto
+			# # Depositos.modo_de_pagos = current_invoice_end
 
-	# 		Depositos.save()
+			# for item in je.accounts:
+			# 	# frappe.msgprint(str(item))
+			# 	if item.account != "2.01.001.002.001-Depósitos de Clientes - NI":
+			# 		accounts = {
+			# 				"tipo_de_pago": item.mode_of_payment,
+			# 				"moneda": item.account_currency,
+			# 				"montousd":item.debit_in_account_currency,
+			# 				"montonio": item.debit,
+			# 			}
+			# 		Depositos.append("pagos", accounts)
 
-	# 		# suscripcion_actualizar = frappe.get_doc("Subscription",  suscripcion.name)
-	# 		# suscripcion_actualizar.update(
-	# 		# 	{
-	# 		# 		"current_invoice_start":str(nowdate()),
-	# 		# 		"current_invoice_end":formatdate(frappe.utils.get_last_day(str(nowdate())), "yyyy-MM-dd")
-	# 		# 	}
-	# 		# )
-	# 		# suscripcion_actualizar.save()
-	# 		# frappe.db.set_value('Opportunity', name, 'suscripcion', suscripcion.name)
-	# 		# frappe.msgprint(frappe._('Nueva Suscripción con ID {0}').format(suscripcion.name))
+			# Depositos.save()
 
-	# 		# return suscripcion.name
+			# suscripcion_actualizar = frappe.get_doc("Subscription",  suscripcion.name)
+			# suscripcion_actualizar.update(
+			# 	{
+			# 		"current_invoice_start":str(nowdate()),
+			# 		"current_invoice_end":formatdate(frappe.utils.get_last_day(str(nowdate())), "yyyy-MM-dd")
+			# 	}
+			# )
+			# suscripcion_actualizar.save()
+			# frappe.db.set_value('Opportunity', name, 'suscripcion', suscripcion.name)
+			# frappe.msgprint(frappe._('Nueva Suscripción con ID {0}').format(suscripcion.name))
 
-	# 	except Exception as e:
-	# 		frappe.msgprint(frappe._('Fatality Error Project {0} ').format(e))
+			# return suscripcion.name
+
+		except Exception as e:
+			frappe.msgprint(frappe._('Fatality Error Project {0} ').format(e))
 
 	def Validacion_Accounts_MontoRecibidosGuardar(self):
 		# accounts = []
