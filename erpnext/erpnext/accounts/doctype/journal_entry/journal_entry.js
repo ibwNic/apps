@@ -2338,7 +2338,7 @@ frappe.ui.form.on("Journal Entry", {
 						// 	var values = d.get_values();
 						// 	[
 						// 		['customer', 'regnumber'],
-						// 		['sales_invoice', 'factura'],
+						// 		['sales_invoice', 'factura'],re
 						// 		['conversion_rate', 'tc'],
 						// 		['posting_date', 'fecha']
 						// 	].forEach(function(pair){

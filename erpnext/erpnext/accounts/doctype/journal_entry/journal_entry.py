@@ -39,16 +39,19 @@ class JournalEntry(AccountsController):
 
 	def validate(self):
 		# Se agrega registro al cierre
-		if self.docstatus == 0 and self.ui==1 and self.aplicco_reversion == 0:
+		if self.docstatus == 0 and self.ui==1 and self.aplicco_reversion == 0 and self.aplico_deposito_banco == 0:
 			# try:
 				res = obtenerCierreCaja(True)
 				if res == 1:
 					raise Exception("Debe de cerrar caja antes de empezar hacer transacciones Validar")
 
 		# Registrar el pago en el cierre
-		if self.docstatus == 1 and self.ui==1 and self.aplicco_reversion == 0:
+		if self.docstatus == 1 and self.ui==1 and self.aplicco_reversion == 0 and self.aplico_deposito_banco == 0:
 			cierre = registrarPagoEnElCierre(self, 0, True)
 			frappe.msgprint(str(cierre))
+
+		# if self.tipo_de_pago == "DepositoBanco":
+		# 	self.Registrar_DepositoBanco()
 
 		if self.voucher_type == "Opening Entry":
 			self.is_opening = "Yes"
@@ -89,7 +92,7 @@ class JournalEntry(AccountsController):
 			self.title = self.get_title()
 
 	def on_submit(self):
-		if self.docstatus == 0 and self.ui==1 and self.aplicco_reversion == 0:
+		if self.docstatus == 0 and self.ui==1 and self.aplicco_reversion == 0 and self.aplico_deposito_banco == 0:
 			# try:
 				res = obtenerCierreCaja(True)
 				if res == 1:
@@ -113,6 +116,7 @@ class JournalEntry(AccountsController):
 			self.Crear_Anticipo()
 		if self.tipo_de_pago == "Deposito":
 			self.Crear_Deposito()
+		
 
 		# self.Validacion_Accounts_MontoRecibidosGuardar()
 		# self.validar_montos_vueltos()
@@ -472,6 +476,61 @@ class JournalEntry(AccountsController):
 
 		except Exception as e:
 			frappe.msgprint(frappe._('Fatality Error Project {0} ').format(e))
+	
+	# def Registrar_DepositoBanco(self):
+	# 	accounts = []
+	# 	# frappe.msgprint("Entra")
+	# 	try:
+	# 		je = frappe.get_doc('Journal Entry',self.name)
+	# 		sumaMonto = 0
+	# 		for monto in je.accounts:
+	# 			if monto.debit:
+	# 				sumaMonto += monto.debit
+
+	# 		# doc = frappe.get_doc('Pago Sin Identificar', id)
+	# 		# doc.title = 'Test'
+	# 		# doc.save()
+
+	# 		Depositos = frappe.new_doc('Deposito en Garantia')
+	# 		Depositos.cliente = je.customerdeposito
+	# 		# print(je.customerdeposito)
+	# 		Depositos.fecha = je.posting_date
+	# 		Depositos.tipo_de_documento = 'Journal Entry'
+	# 		Depositos.nombre_del_documento=je.name
+	# 		# Depositos.meses_anticipo = je.meses_anticipo
+	# 		Depositos.tasa_de_cambio = je.tasa_de_cambiodeposito
+	# 		Depositos.currency='NIO'
+	# 		Depositos.monto = sumaMonto
+	# 		# Depositos.modo_de_pagos = current_invoice_end
+
+	# 		for item in je.accounts:
+	# 			# frappe.msgprint(str(item))
+	# 			if item.account != "2.01.001.002.001-Depósitos de Clientes - NI":
+	# 				accounts = {
+	# 						"tipo_de_pago": item.mode_of_payment,
+	# 						"moneda": item.account_currency,
+	# 						"montousd":item.debit_in_account_currency,
+	# 						"montonio": item.debit,
+	# 					}
+	# 				Depositos.append("pagos", accounts)
+
+	# 		Depositos.save()
+
+	# 		# suscripcion_actualizar = frappe.get_doc("Subscription",  suscripcion.name)
+	# 		# suscripcion_actualizar.update(
+	# 		# 	{
+	# 		# 		"current_invoice_start":str(nowdate()),
+	# 		# 		"current_invoice_end":formatdate(frappe.utils.get_last_day(str(nowdate())), "yyyy-MM-dd")
+	# 		# 	}
+	# 		# )
+	# 		# suscripcion_actualizar.save()
+	# 		# frappe.db.set_value('Opportunity', name, 'suscripcion', suscripcion.name)
+	# 		# frappe.msgprint(frappe._('Nueva Suscripción con ID {0}').format(suscripcion.name))
+
+	# 		# return suscripcion.name
+
+	# 	except Exception as e:
+	# 		frappe.msgprint(frappe._('Fatality Error Project {0} ').format(e))
 
 	def Validacion_Accounts_MontoRecibidosGuardar(self):
 		# accounts = []
@@ -2038,8 +2097,7 @@ def Obtener_cuentas(AsientoContable):
 		'reference_type':acc.reference_type,
 		'tipo_de_cuenta':acc.tipo_de_cuenta,
 		'account_currency_pago':acc.account_currency_pago,
-		'doctype':acc.doctype,
-		'aplicco_reversion': 1
+		'doctype':acc.doctype
 		}
 		accounts.append(accouts)
 
@@ -2079,6 +2137,7 @@ def Obtener_cuentas(AsientoContable):
 		'posting_time': today(),
 		'accounts':accounts,
 		'multi_currency': True,
+		'aplicco_reversion': 1,
 		'observacion': 'Se revertio el pago'
 	})
 

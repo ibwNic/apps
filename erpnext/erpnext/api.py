@@ -1034,6 +1034,7 @@ def obtenerCierreCaja(for_owner=False):
 		else:
 			return 1
 
+# Reversion de Pagos
 @frappe.whitelist()
 def Obtener_cuentass(AsientoContable):
 	je = frappe.get_doc('Journal Entry',AsientoContable)
@@ -3462,33 +3463,19 @@ def Aplicar_Deposito_Banco(deudas=None,pagos=None,cuentaBanco=None,regnumber=Non
 					diff['credit'] -= diff['debit']
 					diff['debit_in_account_currency'] = diff['debit'] = 0.0
 
-	# # newJe = frappe.new_doc('Journal Entry')
-	# # newJe.update({
-	# # 	'posting_date': today(),
-	# # 	'posting_time': today(),
-	# # 	'accounts':accounts,
-	# # 	'multi_currency': True,
-	# # 	# 'observacion': 'Se revertio el pag'
-	# # })
+	newJe = frappe.new_doc('Journal Entry')
+	newJe.update({
+		'posting_date': today(),
+		'posting_time': today(),
+		'accounts':accounts,
+		'multi_currency': True,
+		'tipo_de_pago' : "DepositoBanco",
+		'aplico_deposito_banco':1
+		# 'observacion': 'Se revertio el pag'
+	})
 
 	# # newJe.append("accounts", accounts)
 
-	# # for m in accounts:
-	# # 	item1 = newJe.append('accounts', {"item_code": ""})				
-	# # 	item1.schedule_date = nowdate()
-	# # 	item1.item_code = m[0]
-	# # 	item1.qty=int(m[1])*int(cantidad)
-
-	# # for item in je.accounts:
-	# # 		# frappe.msgprint(str(item))
-	# # 	accounts = {
-	# # 			"tipo_de_pago": item.mode_of_payment,
-	# # 			"moneda": item.account_currency,
-	# # 			"montousd":item.debit_in_account_currency,
-	# # 			"montonio": item.debit,
-	# # 		}
-	# # 	newJe.append("accounts", accounts)
-
 	# # return {'docs': newJe.as_dict()}
 	# return {'docs': tdoc.as_dict()}
-	return accounts,diff_amount
+	return newJe
