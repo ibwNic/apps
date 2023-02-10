@@ -1391,28 +1391,11 @@ def aplicar_promocion(promo,name):
 			continue
 		else:
 			if descuento > 0:
-				if frappe.db.get_value("Subscription Plan",plan.plan,"cost") == plan.cost:			
-					frappe.db.set_value("Subscription Plan Detail",plan.name,"cost",plan.cost-(plan.cost*descuento)/100)
+				if frappe.db.get_value("Subscription Plan",plan.plan,"cost") == plan.cost:	
+					if plan.es_combo:	
+						frappe.db.set_value("Subscription Plan Detail",plan.name,"cost",((plan.cost + 5)-((plan.cost + 5)*descuento)/100) - 5)
+					else:	
+						frappe.db.set_value("Subscription Plan Detail",plan.name,"cost",plan.cost-(plan.cost*descuento)/100)
 			else:
 				frappe.db.set_value("Subscription Plan Detail",plan.name,"cost",frappe.db.get_value("Subscription Plan",plan.plan,"cost"))
 
-
-
-# @frappe.whitelist()
-# def actualizar_fecha_subscription(name):
-
-
-# 	if frappe.db.exists("Subscription", name):
-# 		suscripcion = frappe.get_doc("Subscription",  name)
-# 		start_date = suscripcion.start_date
-# 		end_date = suscripcion.end_date
-# 		current_invoice_start = str(add_months(formatdate(start_date,"dd-MM-yyyy"), 1))
-# 		current_invoice_end = formatdate(frappe.utils.get_last_day(current_invoice_start), "yyyy-MM-dd")
-# 		current_invoice_start =  current_invoice_start[0:8] + '01'
-# 		suscripcion.update(
-# 			{
-# 				"current_invoice_start":current_invoice_start,
-# 				"current_invoice_end":current_invoice_end
-# 			}
-# 		)
-# 		suscripcion.save()

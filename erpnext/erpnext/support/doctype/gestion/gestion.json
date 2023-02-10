@@ -112,8 +112,9 @@
   }
  ],
  "index_web_pages_for_search": 1,
+ "is_submittable": 1,
  "links": [],
- "modified": "2023-02-03 10:28:14.358538",
+ "modified": "2023-02-10 10:00:13.722472",
  "modified_by": "Administrator",
  "module": "Support",
  "name": "Gestion",
@@ -153,6 +154,7 @@
    "read": 1,
    "report": 1,
    "role": "Support Team",
+   "select": 1,
    "share": 1,
    "write": 1
   }

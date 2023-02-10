@@ -182,7 +182,7 @@ def programar_cancelaciones():
 				p_cerrados = 0
 				susc = frappe.get_doc("Subscription",spd.parent)
 				for plan in susc.plans:
-					if plan.estado_plan not in ('Activo','Inactivo'):
+					if plan.estado_plan not in ('Activo','Inactivo','SUSPENDIDO: Manual','SUSPENDIDO: Temporal'):
 						p_cerrados += 1
 				if p_cerrados == len(susc.plans):
 					frappe.db.sql(""" update `tabSubscription` set workflow_state = 'Terminado' where name = %(subsc)s; """,{"subsc":spd.parent})
@@ -202,6 +202,7 @@ def programar_cancelaciones():
 				od.descripcion = frappe._('Ejecutar Desinstalación de {0}').format(spd.plan)
 				od.tipo = 'Customer'
 				od.tercero = g[1]
+				od.nombre = frappe.db.get_value("Customer",g[1],"customer_name")
 				od.plan_de_subscripcion = spd.name
 				od.direccion_de_instalacion = spd.direccion
 				od.portafolio = str(portafolio[0][0])

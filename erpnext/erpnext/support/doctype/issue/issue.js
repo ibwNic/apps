@@ -110,37 +110,45 @@ frappe.ui.form.on("Issue", {
 
             }
             
-			if(frm.doc.tipo_de_orden !=='Tramite'){
-	            frm.set_query('issue_type', function(d){
-                return {
-                    filters: {
-                        nivel_problema: 100,
-            }
-        }
-    })}
-    
-    frm.set_query('averia_masivo', function(d){
-        return {
-            filters: {
-                 workflow_state: "Abierto"
-            }
-        }
-    })
-    
-        frm.set_query('sub_averia', function(d){
-        return {
-            filters: {
-                nivel_problema: 100,
-    }
-        }
-    })
-    frm.set_query('detalla_avaria', function(d){
-                return {
-                    filters: {
-                        nivel_problema: 100,
-            }
-        }
-    })
+
+		frm.set_query('averia_masivo', function(d){
+			return {
+				filters: {
+						workflow_state: "Abierto"
+				}
+			}
+		})
+		// if(frm.doc.tipo_de_orden =='Tramite') {
+				
+			
+		// 	}	
+
+		frm.set_query('issue_type', function(d){
+				return {
+					filters: {
+						nivel_problema: 100,
+						
+							}
+						}
+					})
+
+		
+		frm.set_query('sub_averia', function(d){
+			return {
+				filters: {
+					nivel_problema: 100,
+		}
+			}
+		})
+		frm.set_query('detalla_avaria', function(d){
+					return {
+						filters: {
+							nivel_problema: 100,
+				}
+			}
+		})	
+
+
         if (frm.doc.customer !== undefined) {
             frappe.db.get_value("Customer", {"name": frm.doc.customer},"customer_name",function(res){ 
         res.customer_name; }).then(r =>{ var rest=r.message;
