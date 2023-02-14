@@ -232,7 +232,7 @@ frappe.ui.form.on('Pago Sin Identificar', {
 				});
 				// pm_args['deudas'] = [];
 				// pm_args['deudas'].push({'link_doctype':'Sales Invoice', 'link_name': d.get_value('Factura')});
-				// pm_args.pagos = payments;
+				pm_args.pagos = payments;
 				// console.log(tc[0]);
 			}
 
@@ -355,34 +355,34 @@ frappe.ui.form.on('Pago Sin Identificar', {
 				}
 
 
-				function mostrarFactura(MotoAnticipo){
-					// if (d.fields_dict.FormasDePagos_wrapper.$wrapper.find("#action").hasClass("hidden")) return;
-					payments.length = 0;
-					payments.push({
-						"tipo_de_pago": " ",
-						"moneda": " ",
-						"monto": MotoAnticipo
-					});
-					// console.log(currency_field.get_value());
-					// SumaFormaPagos();
-					function render_payments(){
-						d.fields_dict.FormasDePagos_wrapper.$wrapper.find("#payments_wrapper").html(
-							frappe.render(tmp_pm_tableAnticipo, {"data": payments, "tc": flt(d.get_value("conversion_rate")) || 1.0})
-						).find("button.remove").off('click').on('click', function(){
-							var idx = cint($(this).data('idx'));
-							payments.splice(idx,1);
-							render_payments();
-							// SumaFormaPagos();
-							// render_totals_table();
-						});
-					};
-					render_payments();
-					// tc.push(d.get_value("conversion_rate"));
-					// console.log(tc[0]);
-					// mode_of_payment_field.$input.val(null).trigger("change");
-					// currency_field.$input.val(null).trigger("change");
-					// amount_field.$input.val(null).trigger("change");
-				}
+				// function mostrarFactura(MotoAnticipo){
+				// 	// if (d.fields_dict.FormasDePagos_wrapper.$wrapper.find("#action").hasClass("hidden")) return;
+				// 	payments.length = 0;
+				// 	payments.push({
+				// 		"tipo_de_pago": " ",
+				// 		"moneda": " ",
+				// 		"monto": MotoAnticipo
+				// 	});
+				// 	// console.log(currency_field.get_value());
+				// 	// SumaFormaPagos();
+				// 	function render_payments(){
+				// 		d.fields_dict.FormasDePagos_wrapper.$wrapper.find("#payments_wrapper").html(
+				// 			frappe.render(tmp_pm_tableAnticipo, {"data": payments, "tc": flt(d.get_value("conversion_rate")) || 1.0})
+				// 		).find("button.remove").off('click').on('click', function(){
+				// 			var idx = cint($(this).data('idx'));
+				// 			payments.splice(idx,1);
+				// 			render_payments();
+				// 			// SumaFormaPagos();
+				// 			// render_totals_table();
+				// 		});
+				// 	};
+				// 	render_payments();
+				// 	// tc.push(d.get_value("conversion_rate"));
+				// 	// console.log(tc[0]);
+				// 	// mode_of_payment_field.$input.val(null).trigger("change");
+				// 	// currency_field.$input.val(null).trigger("change");
+				// 	// amount_field.$input.val(null).trigger("change");
+				// }
 
 				function assign_df_to_input(df){
 					df.refresh();
@@ -749,7 +749,7 @@ frappe.ui.form.on('Pago Sin Identificar', {
 							
 						}
 						else {
-								console.log('No hay elementos duplicados ');
+								// console.log('No hay elementos duplicados ');
 								SumaFormaPagos();
 								function render_payments(){
 									d.fields_dict.totals_wrapper.$wrapper.find("#payments_wrapper").html(
@@ -1019,46 +1019,79 @@ frappe.ui.form.on('Pago Sin Identificar', {
 			// d.$wrapper.find(".modal-dialog").css({"top":"5%"});
 			// d.$wrapper.find(".modal-content").css({"width": "120%","left": "-10%"});
 
-			//VALIDACION  DE DEPOSITOS DE BANCOS
+			//VALIDACION  DE DEPOSITOS DE BANCOS  DEL BOTON
 			d.get_primary_btn().text('Aplicar Deposito').off('click').on('click', function(){
 
 				console.log(totals);
-
-
+				// pm_args.pagos = payments;
+				console.log(Object.keys(pm_args).length === 0);
+				
+				// console.log(pm_args.deudas.length,pm_args.pagos.length);
 				// return 0
-
-				if (frm.doc.moneda == 'USD'){
-					if( totals[0]['MontoUSD'] > 0 && totals[0]['MontoUSD'] <= frm.doc.monto){
-						pm_args.pagos = payments;
-						pm_args.ID_pago_ZZ = frm.doc.name; 
-						pm_args['cuentaBanco'] = d.get_value('cuenta');
-						var values = d.get_values();
-						Crear_Deposito(pm_args,values);
-						d.hide();
-					}else{
-						frappe.msgprint({
-							title: __('Advertencia'),
-							indicator: 'red',
-							message: __('El monto TOTAL FACTURA, no puede ser mayor al monto depositado!')
-						});
-					}
-				}else if (frm.doc.moneda == 'NIO'){
-					if(totals[0]['MontoNIO'] <= frm.doc.monto){
-						console.log('Entra');
-					}else{
-						frappe.msgprint({
-							title: __('Advertencia'),
-							indicator: 'red',
-							message: __('El monto TOTAL FACTURA, no puede ser mayor al monto depositado!')
-						});
-					}
-				}else{
+				// console.log(pm_args.length);
+				if (Object.keys(pm_args).length === 0){
 					frappe.msgprint({
-						title: __('Error '),
+						title: __('Advertencia'),
 						indicator: 'red',
-						message: __('No ha registrado ningun un deposito')
+						message: __('No ha seleccionado facturas!')
 					});
+
 				}
+				// if (pm_args.deudas.length){
+				// 	frappe.msgprint({
+				// 		title: __('Advertencia'),
+				// 		indicator: 'red',
+				// 		message: __('Debe de digistar todas las facturas que selecciono con su monto!')
+				// 	});
+				// 	return 0
+				// }
+
+				// pm_args.pagos = payments;
+				console.log(pm_args.deudas.length,pm_args.pagos.length);
+				if (pm_args.deudas.length != pm_args.pagos.length){
+					frappe.msgprint({
+						title: __('Advertencia'),
+						indicator: 'red',
+						message: __('Debe de digistar todas las facturas que selecciono con su monto!')
+					});
+					// return 0
+				}else {
+					if (frm.doc.moneda == 'USD'){
+						if( totals[0]['MontoUSD'] > 0 && totals[0]['MontoUSD'] <= frm.doc.monto){
+							pm_args.pagos = payments;
+							pm_args.ID_pago_ZZ = frm.doc.name; 
+							pm_args['cuentaBanco'] = d.get_value('cuenta');
+							var values = d.get_values();
+							Crear_Deposito(pm_args,values);
+							d.hide();
+						}else{
+							frappe.msgprint({
+								title: __('Advertencia'),
+								indicator: 'red',
+								message: __('El monto TOTAL FACTURA, no puede ser mayor al monto depositado!')
+							});
+						}
+					}else if (frm.doc.moneda == 'NIO'){
+						if(totals[0]['MontoNIO'] <= frm.doc.monto){
+							console.log('Entra');
+						}else{
+							frappe.msgprint({
+								title: __('Advertencia'),
+								indicator: 'red',
+								message: __('El monto TOTAL FACTURA, no puede ser mayor al monto depositado!')
+							});
+						}
+					}else{
+						frappe.msgprint({
+							title: __('Error '),
+							indicator: 'red',
+							message: __('No ha registrado ningun un deposito')
+						});
+					}
+				}
+
+				
+				
 			});
 		}
 

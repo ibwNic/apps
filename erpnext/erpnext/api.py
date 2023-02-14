@@ -722,6 +722,7 @@ def registrarPagoEnElCierre(pago, idDealer=0, for_owner=False):
 		# 	detail.amount -= acc.credit_in_account_currency
 		# 	detail.amount_in_company_currency -= acc.credit
 
+	# PARA ASIGNARLE EL NOMBRE DE ANTICIPO O DEPOSITO DE GARANTIA
 	if pago.get("customerdeposito") or pago.get("customer"):
 			if pago.get("customerdeposito"):
 				codigoCliente = pago.get("customerdeposito")
@@ -782,6 +783,7 @@ def registrarPagoEnElCierre(pago, idDealer=0, for_owner=False):
 					"usd": flt(pago.accounts[a].debit_in_account_currency,2)
 				})
 
+	# REGISTRAR PAGOS EN EL CIERRE EN LA TABLA MONTO RECIDOS
 	if pago.monto_recibido_dolares:
 		if not cierre.get("montosrecibidos", {"modo_de_pago": "Efectivo"}):
 			cierre.append("montosrecibidos", {

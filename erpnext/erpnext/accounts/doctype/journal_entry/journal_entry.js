@@ -57,6 +57,15 @@ frappe.ui.form.on("Journal Entry", {
 				}, __('Make'));
 		}
 
+		var series = {
+			"frania.lainez@ibw.com": "D-",
+			"hegarcia@ibw.com": "I-",
+			"jacquelines.martinez@ibw.com": "H-",
+			"glendy.garcia@ibw.com": "G-"
+		};
+		series[frappe.user.name] && frm.doc.__islocal && frm.set_value('naming_series', series[frappe.user.name]);
+		frm.toggle_enable('naming_series', false);
+
 		cur_frm.cscript.make_customer_payment = function(frm){
             function aplicar_Pagos (values){
 					// var values = d.get_values();
@@ -88,6 +97,7 @@ frappe.ui.form.on("Journal Entry", {
 									cur_frm.refresh_fields()
 									cur_frm.set_value("posting_date", pm_args.fecha);
 									cur_frm.set_value("multi_currency", 1);
+									cur_frm.set_value("regnumber", d.get_value("customer"));
 									// cur_frm.set_value("monto_recibido_dolares", fields.montoUSD.get_value());
 									// cur_frm.set_value("monto_recibido_cordobas", fields.montoNIO.get_value());
 									if (fields.montoUSD.get_value() == null && fields.montoNIO.get_value() == null) {
@@ -100,13 +110,14 @@ frappe.ui.form.on("Journal Entry", {
 										cur_frm.set_value("monto_recibido_cordobas", fields.montoNIO.get_value());
 										cur_frm.set_value("vuelto_en_dolares", Cambios.CambioUSD);
 										cur_frm.set_value("vuelto_en_cordobas", Cambios.CambioNIO);
+										cur_frm.set_value("tc_banco", TCBanco);
 									}
 									
 									cur_frm.trigger("validate");
 
 									// No cambiar
-									series[frappe.user.name] && frm.doc.__islocal && frm.set_value('naming_series', series[frappe.user.name]);
-									frm.toggle_enable('naming_series', false);
+									// series[frappe.user.name] && frm.doc.__islocal && frm.set_value('naming_series', series[frappe.user.name]);
+									// frm.toggle_enable('naming_series', false);
 									d.hide();
 								} else {
 									frappe.msgprint(res.message.messages.join("<br/>"));
@@ -187,11 +198,11 @@ frappe.ui.form.on("Journal Entry", {
 				fields = {},
 				pm_args = {},
 				minimal_credit_amount = 0.0,
-				series = {
-					"frania.lainez@ibw.com": "D-",
-					"hegarcia@ibw.com": "I-",
-					"jacquelines.martinez@ibw.com": "H-"
-                },
+				// series = {
+				// 	"frania.lainez@ibw.com": "D-",
+				// 	"hegarcia@ibw.com": "I-",
+				// 	"jacquelines.martinez@ibw.com": "H-"
+                // },
                 tmp_dc_table = `<table class="table table-condensed table-bordered">
 			   <thead>
 				 <tr>
@@ -1221,8 +1232,8 @@ frappe.ui.form.on("Journal Entry", {
 			d.get_primary_btn().text('Crear Pago').off('click').on('click', function(){
 				// console.log(totals[1]);
 				// Validacion de montos
-				var total1 = totals[1]['amount_nio'];
-				var total2 = totals[1]['amount_usd'];
+				var total2 = totals[1]['amount_nio'];
+				var total1 = totals[1]['amount_usd'];
 				var tipopago = 0;
 				var Monto_DigitadoNIO = false;
 				var Monto_DigitadoUSD = false;
@@ -1232,13 +1243,13 @@ frappe.ui.form.on("Journal Entry", {
 				console.log(montos);
 
 				for(let i = 0; i < montos.length; i++){
-					if (montos[i] == total1){
+					if (montos[i] == total2){
 						Monto_DigitadoNIO = true;
 					}
 				}
 
 				for(let i = 0; i < montos.length; i++){
-					if (montos[i] == total2){
+					if (montos[i] == total1){
 						Monto_DigitadoUSD = true;
 					}
 				}
@@ -1250,7 +1261,7 @@ frappe.ui.form.on("Journal Entry", {
 
 
 				// console.log(Monto_Digitado);
-
+				// return 0
 				// montos.includes(total1);
 				// if (montos.includes(total1) || montos.includes(total2))
 				if (Monto_DigitadoNIO == true && Monto_DigitadoUSD == true){
@@ -1374,7 +1385,7 @@ frappe.ui.form.on("Journal Entry", {
 					// 		}
 					// 	}
 					// });
-				}else if (Monto_DigitadoNIO == true && montos.includes(total1)){
+				}else if (Monto_DigitadoNIO == true && montos[1] === total2 || Monto_DigitadoNIO == true && montos[2] === total2){
 					var values = d.get_values();
 					ValidarCamposDigitados(pm_args,tipopago,monedaNIO,monedaUSD,values);
 				} else {
@@ -1437,10 +1448,24 @@ frappe.ui.form.on("Journal Entry", {
 									cur_frm.set_value("multi_currency", 1);
 									cur_frm.set_value("customer",pm_args.regnumber);
 									cur_frm.set_value("tasa_de_cambio",pm_args.tc);
-									cur_frm.set_value("monto_recibido_dolares", fields.montoUSD.get_value());
-									cur_frm.set_value("monto_recibido_cordobas", fields.montoNIO.get_value());
-									cur_frm.set_value("vuelto_en_dolares", Cambios.CambioUSD);
-									cur_frm.set_value("vuelto_en_cordobas", Cambios.CambioNIO);
+									cur_frm.set_value("regnumber", d.get_value("customer"));
+									// cur_frm.set_value("monto_recibido_dolares", fields.montoUSD.get_value());
+									// cur_frm.set_value("monto_recibido_cordobas", fields.montoNIO.get_value());
+									// cur_frm.set_value("vuelto_en_dolares", Cambios.CambioUSD);
+									// cur_frm.set_value("vuelto_en_cordobas", Cambios.CambioNIO);
+									if (fields.montoUSD.get_value() == null && fields.montoNIO.get_value() == null) {
+										cur_frm.set_df_property('monto_recibido_dolares', 'read_only', 1)
+										cur_frm.set_df_property('monto_recibido_cordobas', 'read_only', 1)
+										cur_frm.set_df_property('vuelto_en_dolares', 'read_only',1)
+										cur_frm.set_df_property('vuelto_en_cordobas', 'read_only',1)
+										cur_frm.set_value("tc_banco", TCBanco);
+									}else{
+										cur_frm.set_value("monto_recibido_dolares", fields.montoUSD.get_value());
+										cur_frm.set_value("monto_recibido_cordobas", fields.montoNIO.get_value());
+										cur_frm.set_value("vuelto_en_dolares", Cambios.CambioUSD);
+										cur_frm.set_value("vuelto_en_cordobas", Cambios.CambioNIO);
+										cur_frm.set_value("tc_banco", TCBanco);
+									}
 									cur_frm.set_value("meses_anticipo",d.get_value('Cantidad_Meses'));
 									cur_frm.set_value("tipo_de_pago","Anticipo");
 									cur_frm.set_value("title","Anticipo");
@@ -1602,8 +1627,8 @@ frappe.ui.form.on("Journal Entry", {
 				amounts.TotalNIO += data['Total_FacturaNIO'];
 				amounts.TotalUSD += data['total_FacturaUSD'] ;
 
-				montos.push(amounts.TotalNIO);
-				montos.push(amounts.TotalUSD);
+				montos.push(flt(amounts.TotalNIO,2));
+				montos.push(flt(amounts.TotalUSD,2));
 				// console.log(montos);
 				// render_totals_table();
 				// SumaFormaPagos();
@@ -3109,7 +3134,7 @@ frappe.ui.form.on("Journal Entry", {
 			d.$wrapper.find(".modal-dialog").css({"top":"5%"});
 			d.$wrapper.find(".modal-content").css({"width": "120%","left": "-10%"});
 
-			//VALIDACION  DE ANTICIPACION
+			//VALIDACION  DE ANTICIPO
 			d.get_primary_btn().text('Aplicar Anticipo').off('click').on('click', function(){
 				// console.log(TotalesNIO);
 				// SumaFormaPagos();
@@ -3268,19 +3293,32 @@ frappe.ui.form.on("Journal Entry", {
 									cur_frm.set_value("multi_currency", 1);
 									cur_frm.set_value("customerdeposito",pm_args.regnumber);
 									cur_frm.set_value("tasa_de_cambiodeposito",pm_args.tc);
-									cur_frm.set_value("monto_recibido_dolares", fields.montoUSD.get_value());
-									cur_frm.set_value("monto_recibido_cordobas", fields.montoNIO.get_value());
-									cur_frm.set_value("vuelto_en_dolares", Cambios.CambioUSD);
-									cur_frm.set_value("vuelto_en_cordobas", Cambios.CambioNIO);
+									cur_frm.set_value("regnumber", d.get_value("customer"));
+									// cur_frm.set_value("monto_recibido_dolares", fields.montoUSD.get_value());
+									// cur_frm.set_value("monto_recibido_cordobas", fields.montoNIO.get_value());
+									// cur_frm.set_value("vuelto_en_dolares", Cambios.CambioUSD);
+									// cur_frm.set_value("vuelto_en_cordobas", Cambios.CambioNIO);
 									// cur_frm.set_value("meses_anticipo",d.get_value('Cantidad_Meses'));
+									if (fields.montoUSD.get_value() == null && fields.montoNIO.get_value() == null) {
+										cur_frm.set_df_property('monto_recibido_dolares', 'read_only', 1)
+										cur_frm.set_df_property('monto_recibido_cordobas', 'read_only', 1)
+										cur_frm.set_df_property('vuelto_en_dolares', 'read_only',1)
+										cur_frm.set_df_property('vuelto_en_cordobas', 'read_only',1)
+									}else{
+										cur_frm.set_value("monto_recibido_dolares", fields.montoUSD.get_value());
+										cur_frm.set_value("monto_recibido_cordobas", fields.montoNIO.get_value());
+										cur_frm.set_value("vuelto_en_dolares", Cambios.CambioUSD);
+										cur_frm.set_value("vuelto_en_cordobas", Cambios.CambioNIO);
+										cur_frm.set_value("tc_banco", TCBanco);
+									}
 									cur_frm.set_value("tipo_de_pago","Deposito");
 									cur_frm.set_value("title","Deposito");
 									cur_frm.trigger("validate");
 
 
 									// No cambiar
-									series[frappe.user.name] && frm.doc.__islocal && frm.set_value('naming_series', series[frappe.user.name]);
-									frm.toggle_enable('naming_series', false);
+									// series[frappe.user.name] && frm.doc.__islocal && frm.set_value('naming_series', series[frappe.user.name]);
+									// frm.toggle_enable('naming_series', false);
 									d.hide();
 								} else {
 									frappe.msgprint(res.message.messages.join("<br/>"));
@@ -3396,8 +3434,8 @@ frappe.ui.form.on("Journal Entry", {
 				amounts.TotalNIO += data['Total_FacturaNIO'];
 				amounts.TotalUSD += data['total_FacturaUSD'] ;
 
-				montos.push(amounts.TotalNIO);
-				montos.push(amounts.TotalUSD);
+				montos.push(flt(amounts.TotalNIO,2));
+				montos.push(flt(amounts.TotalUSD,2));
 				console.log(montos);
 				// render_totals_table();
 				// SumaFormaPagos();
