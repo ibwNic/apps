@@ -64,6 +64,7 @@ class ServiceOrder(Document):
 					frappe.db.set_value(self.doctype, self.name, 'workflow_state', 'Atendido')
 					self.reload()
 					return
+			if not self.venta_en_caliente:
 				bitacora_orden = frappe.get_doc({
 					"doctype": "Bitacora Orden",
 					"detalle":"Orden FINALIZADA",
@@ -77,6 +78,62 @@ class ServiceOrder(Document):
 					"idx":idx
 					})
 				bitacora_orden.insert()
+			else:
+				bitacora_abierta = frappe.get_doc({
+					"doctype": "Bitacora Orden",
+					"detalle":"Orden ABIERTA",
+					"fecha_transaccion": self.fecha_solicitud,
+					"usuario":frappe.session.user,
+					"tiempo_transcurrido":0.00,
+					"fecha_definida_por_usuario": self.fecha_solicitud,
+					"parent": self.name,
+					"parentfield":"bitacora_orden",
+					"parenttype": "Service Order",
+					"idx":idx
+					})
+				bitacora_abierta.insert()
+				idx += 1
+				bitacora_seg = frappe.get_doc({
+					"doctype": "Bitacora Orden",
+					"detalle":"Orden cambió de estado ABIERTO a estado SEGUIMIENTO",
+					"fecha_transaccion": self.fecha_seguimiento,
+					"usuario":frappe.session.user,
+					"tiempo_transcurrido":time_diff_in_seconds(self.fecha_seguimiento,self.fecha_solicitud),
+					"fecha_definida_por_usuario": self.fecha_seguimiento,
+					"parent": self.name,
+					"parentfield":"bitacora_orden",
+					"parenttype": "Service Order",
+					"idx":idx
+					})
+				bitacora_seg.insert()
+				idx += 1
+				bitacora_atend = frappe.get_doc({
+					"doctype": "Bitacora Orden",
+					"detalle":"Orden cambió de estado SEGUIMIENTO a estado ATENDIDO",
+					"fecha_transaccion": self.fecha_atendido,
+					"usuario":frappe.session.user,
+					"tiempo_transcurrido":time_diff_in_seconds(self.fecha_atendido,self.fecha_seguimiento),
+					"fecha_definida_por_usuario": self.fecha_atendido,
+					"parent": self.name,
+					"parentfield":"bitacora_orden",
+					"parenttype": "Service Order",
+					"idx":idx
+					})
+				bitacora_atend.insert()
+				idx += 1
+				bitacora_fin = frappe.get_doc({
+					"doctype": "Bitacora Orden",
+					"detalle":"Orden FINALIZADA",
+					"fecha_transaccion": now(),
+					"usuario":frappe.session.user,
+					"tiempo_transcurrido":time_diff_in_seconds(now(),self.fecha_atendido),
+					"fecha_definida_por_usuario": now(),
+					"parent": self.name,
+					"parentfield":"bitacora_orden",
+					"parenttype": "Service Order",
+					"idx":idx
+					})
+				bitacora_fin.insert()
 			frappe.db.set_value(self.doctype, self.name, 'estado_anterior', 'FINALIZADO')
 			frappe.db.set_value(self.doctype, self.name, 'finalizado_por', frappe.session.user)
 			frappe.db.set_value(self.doctype, self.name, 'docstatus', 1)
@@ -212,38 +269,40 @@ class ServiceOrder(Document):
 							add_to_bitacora.insert()
 
 			if self.tipo_de_orden == "DESINSTALACION" and  self.tipo_de_origen=='Subscription':	
-				for equipo in self.equipo_orden_servicio:
-					idx = frappe.db.sql(""" select idx from `tabBitacora Equipos` where parent=%(parent)s ORDER BY fecha_transaccion DESC LIMIT 1 """,{"parent":equipo.serial_no})	
-					try:
-						idx = int(idx[0][0]) + 1
-					except:
-						idx = 1	
-					aprov = False
-					if 'IMOVIL' in self.portafolio:
-						if self.departamento == 'Managua':
-							frappe.msgprint('eliminarAprovisionador ("eliminarYota",equipo.serial_no)')
-							#eliminarAprovisionador ("eliminarYota",equipo.serial_no)
-						else:
-							frappe.msgprint('eliminarAprovisionador ("eliminarNetspan",equipo.serial_no)')
-							# eliminarAprovisionador ("eliminarNetspan",equipo.serial_no)
-						aprov = True
-					if 'HFC' in self.portafolio:
-						frappe.msgprint('eliminarAprovisionador ("eliminarHFC",equipo.serial_no)' + ' ' + equipo.serial_no)
-						# eliminarAprovisionador ("eliminarHFC",equipo.serial_no)
-						aprov = True
-					if aprov:
-						add_to_bitacora = frappe.get_doc({
-							"doctype": "Bitacora Equipos",
-							"fecha_transaccion":now(),
-							"tipo_transaccion": 'Service Order',
-							"transaccion":"Equipo Desaprovisionado",
-							"parent":equipo.serial_no,
-							"parentfield":"bitacora_equipos",
-							"parenttype": "Serial No",
-							"tercero": self.name,
-							"idx":idx
-						})
-						add_to_bitacora.insert()
+				if len(self.equipo_orden_servicio) > 0:
+					
+					for equipo in self.equipo_orden_servicio:
+						idx = frappe.db.sql(""" select idx from `tabBitacora Equipos` where parent=%(parent)s ORDER BY fecha_transaccion DESC LIMIT 1 """,{"parent":equipo.serial_no})	
+						try:
+							idx = int(idx[0][0]) + 1
+						except:
+							idx = 1	
+						aprov = False
+						if 'IMOVIL' in self.portafolio:
+							if self.departamento == 'Managua':
+								frappe.msgprint('eliminarAprovisionador ("eliminarYota",equipo.serial_no)')
+								#eliminarAprovisionador ("eliminarYota",equipo.serial_no)
+							else:
+								frappe.msgprint('eliminarAprovisionador ("eliminarNetspan",equipo.serial_no)')
+								# eliminarAprovisionador ("eliminarNetspan",equipo.serial_no)
+							aprov = True
+						if 'HFC' in self.portafolio:
+							frappe.msgprint('eliminarAprovisionador ("eliminarHFC",equipo.serial_no)' + ' ' + equipo.serial_no)
+							# eliminarAprovisionador ("eliminarHFC",equipo.serial_no)
+							aprov = True
+						if aprov:
+							add_to_bitacora = frappe.get_doc({
+								"doctype": "Bitacora Equipos",
+								"fecha_transaccion":now(),
+								"tipo_transaccion": 'Service Order',
+								"transaccion":"Equipo Desaprovisionado",
+								"parent":equipo.serial_no,
+								"parentfield":"bitacora_equipos",
+								"parenttype": "Serial No",
+								"tercero": self.name,
+								"idx":idx
+							})
+							add_to_bitacora.insert()
 
 				if not frappe.db.exists("Bitacora de Planes", {"subscription_plan_detail": self.plan_de_subscripcion}):
 					bitacora_plan = frappe.get_doc({
@@ -370,6 +429,7 @@ class ServiceOrder(Document):
 									'longitud':self.longitud,
 									'latitud':self.latitud,
 									'service_start':date,
+									'nodo':self.nodo
 								}
 							)
 							spd.save()
@@ -381,7 +441,8 @@ class ServiceOrder(Document):
 							'longitud':self.longitud,
 							'latitud':self.latitud,
 							'service_start':date,
-							'planid':self.plan_de_subscripcion
+							'planid':self.plan_de_subscripcion,
+							'nodo':self.nodo
 						}
 					)
 					spd.save()
@@ -435,17 +496,27 @@ class ServiceOrder(Document):
 				cust.save()
 
 			if self.tipo_de_orden == "REACTIVACION" and  self.tipo_de_origen=='Subscription':
+			
 				upd_spd = frappe.get_doc("Subscription Plan Detail", {"name": self.plan_de_subscripcion})
 				upd_spd.update(
 							{
-							"estado_plan": "Activo",
-							"service_reactivation": now(),
+								"estado_plan": "Activo",
+								"service_reactivation": now(),
 							})
 				upd_spd.save()
+				frappe.db.commit()
 				upd_sus = frappe.get_doc("Subscription", {"name": upd_spd.parent})
+				posting_date = frappe.db.sql(""" select posting_date from `tabSales Invoice` where customer = %(customer)s order by posting_date desc limit 1;""",{"customer":upd_sus.party})
+			
+				if frappe.utils.formatdate(posting_date[0][0], "MMMM") == frappe.utils.formatdate(today(), "MMMM"):
+					workflow_state = 'Activo'
+				else:
+					workflow_state = 'Instalado'
 				upd_sus.update(
 							{
-							"workflow_state":"Activo"
+								"workflow_state":workflow_state,
+								"current_invoice_start":today(),
+								"current_invoice_end": formatdate(frappe.utils.get_last_day(today()), "yyyy-MM-dd")
 							})
 				upd_sus.save()
 				frappe.db.sql(""" update `tabCustomer` set estado_cliente = 'ACTIVO' where name = %(customer)s; """,{"customer":upd_sus.party})
@@ -515,6 +586,8 @@ class ServiceOrder(Document):
 								"idx":idx
 							})
 							add_to_bitacora.insert()
+				# except Exception as e:
+				# 	frappe.msgprint(frappe._('Fatality Error Project {0} ').format(e))
 			
 		if self.workflow_state == "Abierto":
 			if not frappe.db.exists("Bitacora Orden",{"detalle":'Orden ABIERTA',"parent":self.name}):
@@ -523,19 +596,21 @@ class ServiceOrder(Document):
 					idx = int(idx[0][0]) + 1
 				except:
 					idx = 1	
-				bitacora_orden = frappe.get_doc({
-					"doctype": "Bitacora Orden",
-					"detalle":"Orden ABIERTA",
-					"fecha_transaccion": now(),
-					"usuario":frappe.session.user,
-					"tiempo_transcurrido":0.00,
-					"fecha_definida_por_usuario": self.fecha_solicitud,
-					"parent": self.name,
-					"parentfield":"bitacora_orden",
-					"parenttype": "Service Order",
-					"idx":idx
-					})
-				bitacora_orden.insert()
+				if not self.venta_en_caliente:
+					bitacora_orden = frappe.get_doc({
+						"doctype": "Bitacora Orden",
+						"detalle":"Orden ABIERTA",
+						"fecha_transaccion": now(),
+						"usuario":frappe.session.user,
+						"tiempo_transcurrido":0.00,
+						"fecha_definida_por_usuario": self.fecha_solicitud,
+						"parent": self.name,
+						"parentfield":"bitacora_orden",
+						"parenttype": "Service Order",
+						"idx":idx
+						})
+					bitacora_orden.insert()
+
 			frappe.db.set_value(self.doctype, self.name, 'estado_anterior', 'ABIERTO')	
 		if self.workflow_state == "Atendido":
 			try:
@@ -591,6 +666,22 @@ class ServiceOrder(Document):
 					frappe.db.set_value(self.doctype, self.name, 'workflow_state', 'Seguimiento')
 					self.reload()
 					return	
+			if self.tipo_de_orden == 'TRASLADO':
+				if not self.direccion_de_traslado:
+					frappe.msgprint("Ingresar nueva dirección")
+					frappe.db.set_value(self.doctype, self.name, 'workflow_state', 'Seguimiento')
+					self.reload()
+					return
+				if self.latitud_traslado == None or self.longitud_traslado == None or len(self.latitud_traslado) == 0 or len(self.longitud_traslado)==0:
+					frappe.msgprint("Inserte latitud y longitud de traslado")
+					frappe.db.set_value(self.doctype, self.name, 'workflow_state', 'Seguimiento')
+					self.reload()
+					return
+				if not self.nuevo_nodo:
+					frappe.msgprint("Asigne un nuevo nodo")
+					frappe.db.set_value(self.doctype, self.name, 'workflow_state', 'Seguimiento')
+					self.reload()
+					return
 			if len(self.equipo_orden_servicio) > 0:
 				for equipo in self.equipo_orden_servicio:
 					if frappe.db.get_value("Serial No",equipo.serial_no,"warehouse") != frappe.db.get_value("Tecnico",self.tecnico,"almacen"):
@@ -620,19 +711,20 @@ class ServiceOrder(Document):
 					frappe.db.set_value(self.doctype, self.name, 'workflow_state', 'Seguimiento')
 					self.reload()
 					return
-				bitacora_orden = frappe.get_doc({
-					"doctype": "Bitacora Orden",
-					"detalle":"Orden cambió de estado SEGUIMIENTO a estado ATENDIDO",
-					"fecha_transaccion": now(),
-					"usuario":frappe.session.user,
-					"tiempo_transcurrido":time_diff_in_seconds(date,self.fecha_seguimiento),
-					"fecha_definida_por_usuario": date,
-					"parent": self.name,
-					"parentfield":"bitacora_orden",
-					"parenttype": "Service Order",
-					"idx":idx
-					})
-				bitacora_orden.insert()
+				if not self.venta_en_caliente:
+					bitacora_orden = frappe.get_doc({
+						"doctype": "Bitacora Orden",
+						"detalle":"Orden cambió de estado SEGUIMIENTO a estado ATENDIDO",
+						"fecha_transaccion": now(),
+						"usuario":frappe.session.user,
+						"tiempo_transcurrido":time_diff_in_seconds(date,self.fecha_seguimiento),
+						"fecha_definida_por_usuario": date,
+						"parent": self.name,
+						"parentfield":"bitacora_orden",
+						"parenttype": "Service Order",
+						"idx":idx
+						})
+					bitacora_orden.insert()
 			frappe.db.set_value(self.doctype, self.name, 'estado_anterior', 'ATENDIDO')			
 
 		if self.workflow_state == "Seguimiento":
@@ -658,19 +750,20 @@ class ServiceOrder(Document):
 					frappe.db.set_value(self.doctype, self.name, 'workflow_state', 'Abierto')
 					self.reload()
 					return
-				bitacora_orden = frappe.get_doc({
-				"doctype": "Bitacora Orden",
-				"detalle":"Orden cambió de estado ABIERTO a estado SEGUIMIENTO",
-				"fecha_transaccion": now(),
-				"usuario":frappe.session.user,
-				"tiempo_transcurrido":time_diff_in_seconds(date,self.fecha_solicitud),
-				"fecha_definida_por_usuario": date,
-				"parent": self.name,
-				"parentfield":"bitacora_orden",
-				"parenttype": "Service Order",
-				"idx":idx
-				})
-				bitacora_orden.insert()
+				if not self.venta_en_caliente:
+					bitacora_orden = frappe.get_doc({
+					"doctype": "Bitacora Orden",
+					"detalle":"Orden cambió de estado ABIERTO a estado SEGUIMIENTO",
+					"fecha_transaccion": now(),
+					"usuario":frappe.session.user,
+					"tiempo_transcurrido":time_diff_in_seconds(date,self.fecha_solicitud),
+					"fecha_definida_por_usuario": date,
+					"parent": self.name,
+					"parentfield":"bitacora_orden",
+					"parenttype": "Service Order",
+					"idx":idx
+					})
+					bitacora_orden.insert()
 				
 			if self.estado_anterior == 'PENDIENTE':
 				if self.venta_en_caliente == 0:
@@ -689,19 +782,20 @@ class ServiceOrder(Document):
 					frappe.db.set_value(self.doctype, self.name, 'workflow_state', 'Pending')
 					self.reload()
 					return	
-				bitacora_orden = frappe.get_doc({
-					"doctype": "Bitacora Orden",
-					"detalle":"Orden cambió de estado PENDIENTE a estado SEGUIMIENTO",
-					"fecha_transaccion": now(),
-					"usuario":frappe.session.user,
-					"tiempo_transcurrido":time_diff_in_seconds(date,self.fecha_pendiente),
-					"fecha_definida_por_usuario": date,
-					"parent": self.name,
-					"parentfield":"bitacora_orden",
-					"parenttype": "Service Order",
-					"idx":idx
-					})
-				bitacora_orden.insert()	
+				if not self.venta_en_caliente:
+					bitacora_orden = frappe.get_doc({
+						"doctype": "Bitacora Orden",
+						"detalle":"Orden cambió de estado PENDIENTE a estado SEGUIMIENTO",
+						"fecha_transaccion": now(),
+						"usuario":frappe.session.user,
+						"tiempo_transcurrido":time_diff_in_seconds(date,self.fecha_pendiente),
+						"fecha_definida_por_usuario": date,
+						"parent": self.name,
+						"parentfield":"bitacora_orden",
+						"parenttype": "Service Order",
+						"idx":idx
+						})
+					bitacora_orden.insert()	
 
 			frappe.db.set_value(self.doctype, self.name, 'estado_anterior', 'SEGUIMIENTO')	
 
@@ -728,19 +822,20 @@ class ServiceOrder(Document):
 					frappe.db.set_value(self.doctype, self.name, 'workflow_state', 'Atendido')
 					self.reload()
 					return	
-				bitacora_orden = frappe.get_doc({
-					"doctype": "Bitacora Orden",
-					"detalle":"Orden cambió de estado ATENDIDO a estado PENDIENTE",
-					"fecha_transaccion": now(),
-					"usuario":frappe.session.user,
-					"tiempo_transcurrido":time_diff_in_seconds(date,self.fecha_atendido),
-					"fecha_definida_por_usuario": date,
-					"parent": self.name,
-					"parentfield":"bitacora_orden",
-					"parenttype": "Service Order",
-					"idx":idx
-					})
-				bitacora_orden.insert()	
+				if not self.venta_en_caliente:
+					bitacora_orden = frappe.get_doc({
+						"doctype": "Bitacora Orden",
+						"detalle":"Orden cambió de estado ATENDIDO a estado PENDIENTE",
+						"fecha_transaccion": now(),
+						"usuario":frappe.session.user,
+						"tiempo_transcurrido":time_diff_in_seconds(date,self.fecha_atendido),
+						"fecha_definida_por_usuario": date,
+						"parent": self.name,
+						"parentfield":"bitacora_orden",
+						"parenttype": "Service Order",
+						"idx":idx
+						})
+					bitacora_orden.insert()	
 			frappe.db.set_value(self.doctype, self.name, 'estado_anterior', 'PENDIENTE')
 
 		total_abierto = str(frappe.db.sql(""" SELECT  (case when SUM(tiempo_transcurrido) is null then 0 else SUM(tiempo_transcurrido) end) from `tabBitacora Orden`  WHERE detalle = 'Orden cambió de estado ABIERTO a estado SEGUIMIENTO' and parent = %(name)s; """, {"name":self.name})[0][0])

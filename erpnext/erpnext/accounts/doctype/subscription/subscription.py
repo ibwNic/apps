@@ -905,6 +905,9 @@ def get_subscription_updates(name):
 def crear_orden_servicio(name):
 	try:
 		doc = frappe.get_doc("Subscription", name)
+		if doc.campana == 'Referido' and not doc.referido_por:
+			frappe.msgprint("Ingrese cliente de referencia", "No se pudo crear la orden")
+			return
 		combos = tv = gpon = hfc = tv_gpon = tv_hfc = 0
 		for plan in doc.get('plans'):
 			if plan.es_combo==1:
@@ -1218,7 +1221,8 @@ def reactivacion_plan(name, estado):
 							'barrio': direccion.barrio,
 							'direccion': direccion.address_line1,
 							'latitud':upd_spd.latitud,
-							'longitud':upd_spd.longitud
+							'longitud':upd_spd.longitud,
+							'nodo':upd_spd.nodo
 						})
 						od.insert()
 						frappe.msgprint(frappe._('Nueva orden de {0} con ID {1}').format(frappe._(od.tipo_de_orden), od.name))
@@ -1287,7 +1291,8 @@ def traslado_de_plan(name, estado):
 						'barrio': direccion.barrio,
 						'direccion': direccion.address_line1,
 						'latitud':spd.latitud,
-						'longitud':spd.longitud
+						'longitud':spd.longitud,
+						'nodo':spd.nodo
 					})
 					od.insert()
 					frappe.msgprint(frappe._('Nueva orden de {0} con ID {1}').format(frappe._(od.tipo_de_orden), od.name))

@@ -21,6 +21,20 @@ frappe.ui.form.on('Subscription', {
 	},
 	
 	refresh: function(frm) {
+		if(frm.doc.campana != 'Referido'){
+			frm.toggle_display("referido_por", false);
+		}
+		else{
+			frm.toggle_display("referido_por", true); 
+			frm.set_query('referido_por', function() {
+				return {
+					filters : {
+						estado_cliente: 'ACTIVO'
+					}
+				}
+			});
+		}
+		 
 
 		//let f=frappe.db.get_value("Customer", {"name": frm.doc.party},"sales_tax_template")
 
@@ -204,3 +218,14 @@ frappe.ui.form.on('Subscription', {
 		});
 	}
 });
+
+frappe.ui.form.on("Subscription", "campana", function(frm) {
+	if(frm.doc.campana !== 'Referido'){
+		frm.toggle_display("referido_por", false);
+	}
+	else{
+		frm.toggle_display("referido_por", true);  
+		frm.set_df_property('tipo_gestion', 'read_only', false);
+	}
+});
+	

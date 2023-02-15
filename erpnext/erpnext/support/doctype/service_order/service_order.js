@@ -3,7 +3,7 @@
 
 frappe.ui.form.on('Service Order', {
 	refresh: function(frm) {
-		console.log(frm.doc.doctype)
+		
 		if(frm.doc.tipo_de_orden !== "PRESUPUESTO"){
 			frm.toggle_display("bom_de_materiales", false);
 			frm.toggle_display("total_bom_nio", false);
@@ -12,9 +12,33 @@ frappe.ui.form.on('Service Order', {
 		if(!(["INSTALACION","DESINSTALACION","REACTIVACION","TRASLADO"].includes(frm.doc.tipo_de_orden ))){
 			frm.toggle_display("equipo_orden_servicio", false);
 		}
+		if(frm.doc.tipo_de_orden !== 'TRASLADO'){
+			frm.toggle_display("dirección_de_traslado", false);
+			frm.toggle_display("longitud_traslado", false);
+			frm.toggle_display("latitud_traslado", false);
+			frm.toggle_display("nuevo_nodo", false);
+
+		}
+		else{
+			if(frm.doc.tercero !== undefined && frm.doc.tipo === 'Customer'){
+				frappe.call({
+				"method": "erpnext.accounts.doctype.subscription.subscription.get_addresses_user","args":{'party': frm.doc.tercero}, callback: function(r) {
+				//para filtrar en una tabla secundaria:
+				console.log(r.message)
+					frm.set_query('dirección_de_traslado', function(d){            			
+						return {
+								filters: {
+									name: ["in", r.message]
+								}
+							}
+						})
+				}
+			})
+			}
+		}
 		if(frm.doc.tipo_de_orden === "DESINSTALACION" || frm.doc.tipo_de_orden === "REACTIVACION"){
 			frm.set_df_property('equipo_orden_servicio', 'read_only', frm.doc.__islocal ? 0 : 1);
-			frm.set_df_property('nodo', 'read_only', frm.doc.__islocal ? 0 : 1);
+			// frm.set_df_property('nodo', 'read_only', frm.doc.__islocal ? 0 : 1);
 		}
 
 		if(frm.doc.tipo_de_orden !== "SITE SURVEY" && frm.doc.tipo_de_orden !== "PRESUPUESTO"){
@@ -29,6 +53,8 @@ frappe.ui.form.on('Service Order', {
 			frm.set_df_property('fecha_atendido', 'read_only', frm.doc.__islocal ? 0 : 1);
 			frm.set_df_property('fecha_finalizado', 'read_only', frm.doc.__islocal ? 0 : 1);
 
+		}else{
+			frm.set_df_property('fecha_solicitud', 'read_only', false);
 		}
 		frappe.call({
 			"method": "erpnext.crm.doctype.opportunity.opportunity.consultar_rol",

@@ -762,8 +762,9 @@ def get_subscriptions(cliente):
 
 @frappe.whitelist()
 def get_plans_customer(name):
-	planes = frappe.db.sql("""   select name as PlanID, plan, estado_plan, parent as Contrato, service_start 
-			from `tabSubscription Plan Detail` where parent in (select name from `tabSubscription` where party = %(name)s) order by estado_plan asc;""",{"name":name})	
+	planes = frappe.db.sql(""" select spd.plan, spd.estado_plan, spd.parent as Contrato, c.address_line1 as direccion, spd.cost as precio, spd.service_start, spd.currency
+ 	from `tabSubscription Plan Detail` spd inner join `tabSubscription`s on spd.parent = s.name
+ 	inner join `tabCustomer` c on c.name = s.party where s.party = %(name)s order by spd.estado_plan asc;""",{"name":name})	
 	return planes
 
 @frappe.whitelist()

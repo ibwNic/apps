@@ -279,7 +279,7 @@ def aplicar_pago(regnumber=None, fecha=None, tc=None,deudas=None, creditos=None,
 	if regnumber:
 		customer = frappe.db.exists("Customer", {"name": ["like", "%{}".format(regnumber)]})
 
-	tc = tc.replace('\"','')
+	# tc = tc.replace('\"','')
 
 	# Dealer
 	if metadata and 'colector' and 'IDdealer' in metadata:
@@ -622,7 +622,7 @@ def aplicar_pago(regnumber=None, fecha=None, tc=None,deudas=None, creditos=None,
 			'multi_currency': 1,
 			'accounts': accounts,
 			'mode_of_payment': pagos[0]['tipo_de_pago'],
-			'user_remark': 'Aplicacion de Pago ' + fecha,
+			# 'user_remark': 'Recibo de pago' + fecha,
 			'ui': _ui_
 		})
 
@@ -637,7 +637,7 @@ def aplicar_pago(regnumber=None, fecha=None, tc=None,deudas=None, creditos=None,
 			if 'dealer' in metadata:
 				metadata['dealer'] = frappe.db.get_value('Colectores', filters={'iddealer':metadata.pop('dealer')})
 			if 'recibo' in metadata:
-				metadata['ensure_name'] = metadata.pop('recibo')
+				metadata['user_remark'] = metadata.pop('recibo')
 				# return metadata
 				doc.update(metadata)
 
@@ -1285,25 +1285,31 @@ def revertirPago(AprobadoIBW=None,AprobadoExterno=None, Recibo=None, CollectorID
 		}
 	if AprobadoExterno:
 		je = frappe.db.exists("Journal Entry", {'name': ['like', 'I-{}%'.format(AprobadoIBW)], 'cheque_no': AprobadoExterno})
+		
 	elif all([AprobadoIBW, Recibo, CollectorID]):
-		je = frappe.db.exists("Journal Entry", {'name': ['like', 'I-{}%'.format(AprobadoIBW)]})
-	elif AprobadoIBW:
-		je = frappe.db.exists("Journal Entry", {'name': ['like', 'I-{}%'.format(AprobadoIBW)]})
+		# Falta valida si los tres campos pertence a la mismo pago
+		# frappe.db.exists({"Journal Entry": AprobadoIBW, "user_remark":Recibo, })
+		je = frappe.db.exists("Journal Entry", {'name': ['like', 'JV-{}%'.format(AprobadoIBW)]})
+	else:
+		je = frappe.db.exists("Journal Entry", {'name': ['like', 'JV-{}%'.format(AprobadoIBW)]})
 
+	# return je
+	# je = frappe.get_doc("Journal Entry", je)
 	# return je
 	if not je:
 		return {
 			'response': 'Error',
 			'variables': ['AprobadoExterno', 'AprobadoIBW'],
-			'message': 'Unable to find a payment with the args provided'
+			'message': 'No existe pago'
 		}
 	else:
 		try:
 			je = frappe.get_doc("Journal Entry", je)
+			return je
 			je.flags.ignore_permissions = True
-			# Validar el tercer parametro
+			Validar el tercer parametro
 			res = movimentarPagoEnElCierre(je, je.collector,True)
-			# return res
+			# return je
 			if isinstance(res, dict):
 				return res
 			je.flags.ignore_submit_comment = True
@@ -1315,7 +1321,7 @@ def revertirPago(AprobadoIBW=None,AprobadoExterno=None, Recibo=None, CollectorID
 				'variables': ['InternalError'],
 				'messsage': str(e)
 			}
-		return 'OK'
+		return 'Pago cancelado'
 
 @frappe.whitelist(allow_guest=True)
 def cierreTransaciones(idDealer=None):

@@ -26,7 +26,7 @@
    "fieldtype": "Select",
    "in_list_view": 1,
    "label": "Tipo Contrato",
-   "options": "\nRENOVACION\nUPGRADE\nRENOVACION CON UPGRADE\nDOWGRADE\nCAMBIO DE SERVICIO SIN COMISION\nRETENCION\nRENOVACION CON CAMBIO DE SERVICIO\nMIGRACION CON INCREMENTO",
+   "options": "\nRENOVACION\nUPGRADE\nRENOVACION CON UPGRADE\nDOWNGRADE\nCAMBIO DE SERVICIO SIN COMISION\nRETENCION\nRENOVACION CON CAMBIO DE SERVICIO\nMIGRACION CON INCREMENTO",
    "reqd": 1
   },
   {
@@ -40,7 +40,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-02-03 14:54:06.038622",
+ "modified": "2023-02-15 08:59:54.556499",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Subscription Update",

@@ -115,27 +115,28 @@ frappe.ui.form.on("Customer", {
 					var tmp_tt_table = `<table class="table table-striped">
 					<thead>
 					  <tr>
-						<th scope="col">PlanID</th>
 						<th scope="col">Planes</th>
 						<th scope="col">Estado</th>
 						<th scope="col">Contrato</th>
+						<th scope="col">Direccion</th>
+						<th scope="col">Precio</th>
 						<th scope="col">Service Start</th>
 					  </tr>
 					</thead>
 					<tbody>
 					{% for(var i = 0; i < data.length; i++){ %}
 					{%var row = data[i]%}
-					{% if row[2] == 'Activo'%} <tr class="bg-success">{%endif%}
-					{% if row[2] == 'Inactivo'%}<tr class="bg-secondary">{%endif%}
-					{% if row[2] == 'Plan Cerrado'%}<tr class="bg-danger">{%endif%}
-					{% if row[2] == 'SUSPENDIDO: Manual'%}<tr class="bg-warning">{%endif%}
-					{% if row[2] == 'SUSPENDIDO: Temporal'%}<tr class="bg-warning">{%endif%}			
-						<td>{{row[0]}}</td>
-						<th scope="row">{{row[1]}}</th>
-						<td>{{row[2]}}</td>
-						<td><a style="color:white; text-decoration: underline;" href="http://54.210.180.175:8001/app/subscription/{{row[3]}}"><b>{{row[3]}}</b></a></td>
-						<td>{{row[4]}}</td>
-						<td>{{row[5]}}</td>					
+					{% if row[1] == 'Activo'%} <tr class="bg-success">{%endif%}
+					{% if row[1] == 'Inactivo'%}<tr class="bg-secondary">{%endif%}
+					{% if row[1] == 'Plan Cerrado'%}<tr class="bg-danger">{%endif%}
+					{% if row[1] == 'SUSPENDIDO: Manual'%}<tr class="bg-warning">{%endif%}
+					{% if row[1] == 'SUSPENDIDO: Temporal'%}<tr class="bg-warning">{%endif%}			
+						<th scope="row">{{row[0]}}</th>
+						<td>{{row[1]}}</td>
+						<td><a style="color:white; text-decoration: underline;" href="http://54.210.180.175:8001/app/subscription/{{row[2]}}"><b>{{row[2]}}</b></a></td>
+						<td>{{row[3]}}</td>
+						<td>{% if row[6] == 'USD'%}$ {%else%}C$ {%endif%} {{row[4]}}</td>		
+						<td>{{row[5]}}</td>				
 					  </tr>
 					  {% } %}
 					</tbody>

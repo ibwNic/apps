@@ -3,12 +3,9 @@
 
 frappe.ui.form.on('Subscription Update', {
 	refresh: function(frm) {
-		// if(frm.doc.name==='new-subscription-update-1'){
-		// 	frm.toggle_display("actualizar_planes_de_contrato", false);
-		// }
-		// if(!(frm.doc.name.includes("SU"))){
-		// 	frm.toggle_display("actualizar_planes_de_contrato", false);
-		// }
+		if(!frm.doc.gestion)
+        set_field_options("tipo_contrato", ["RENOVACION","UPGRADE","RENOVACION CON UPGRADE","DOWNGRADE","CAMBIO DE SERVICIO SIN COMISION",
+							"RENOVACION CON CAMBIO DE SERVICIO","MIGRACION CON INCREMENTO"])
 
 		if(!frm.doc.__islocal){
 			frm.set_df_property('actualizar_planes_de_contrato', 'read_only', false);
