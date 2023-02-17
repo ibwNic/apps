@@ -253,8 +253,9 @@ def crear_nuevo_contrato(name):
 				"descuento":item[12]
 			}
 		suscripcion.append("plans", plans)
-
-		if item[8] != item[11]:
+		
+		#cambio a detectar
+		if item[8] > item[11]:
 			mismo_precio = False
 	
 	if mismo_precio  and contador_inactivos == 0:

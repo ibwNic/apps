@@ -27,7 +27,7 @@ frappe.ui.form.on('Gestion', 'tipo_gestion', function(frm) {
         frm.toggle_display("fecha_inicio_suspension_temporal",false);
 
     }
-    if(frm.doc.tipo_gestion.length > 0){
+    if(frm.doc.tipo_gestion.length > 0 && frm.doc.customer){
         frappe.call({
             "method": "erpnext.support.doctype.gestion.gestion.validar_cliente",
             "args": {

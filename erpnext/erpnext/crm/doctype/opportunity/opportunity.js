@@ -83,10 +83,7 @@ frappe.ui.form.on("Opportunity", {
 		frappe.call({
 			"method": "erpnext.crm.doctype.opportunity.opportunity.consultar_rol",
 				callback: function(r){
-					// console.log("aqui")
-					// console.log(r.message)
 					
-					//frm.toggle_display("aprobado_por_ventas_corporativas", true);
 					if(!(r.message.includes("Back Office"))){
 						frm.remove_custom_button('Crear Contrato');
 					}
@@ -125,20 +122,6 @@ frappe.ui.form.on("Opportunity", {
 					data.innerHTML = frappe.render(tmp_tt_table, {"data": r.message});
 			   }
 			});
-		/******************************************************** */
-		
-		//if(frm.doc.__islocal){
-			frm.set_value('flujo_neto',flt(frm.doc.total_de_ingresos)-flt(frm.doc.total_de_egresos))
-			frm.set_value('flujo',(flt(frm.doc.flujo_neto)/flt(frm.doc.total_de_ingresos))*100)
-			frm.trigger("calculate_total_egresos");
-			frm.trigger("calculate_total_ingresos");
-			frm.trigger("calculate_flujo_de_caja");
-			frm.trigger("calculate_total_otc");
-			frm.trigger("calculate_total");
-	//   }
-
-		
-		/************************************************************************* */
 		frm.trigger('setup_opportunity_from');
 		erpnext.toggle_naming_series();
 		if (!frm.is_new()) {
@@ -148,33 +131,32 @@ frappe.ui.form.on("Opportunity", {
 			frappe.contacts.clear_address_and_contact(frm);
 		}
 
-		if(!frm.is_new() && doc.status!=="Lost") {
-			// if(doc.items){
-			// 	frm.add_custom_button(__('Supplier Quotation'),
-			// 		function() {
-			// 			frm.trigger("make_supplier_quotation")
-			// 		}, __('Create'));
+		// if(!frm.is_new() && doc.status!=="Lost") {
+		// 	// if(doc.items){
+		// 	// 	frm.add_custom_button(__('Supplier Quotation'),
+		// 	// 		function() {
+		// 	// 			frm.trigger("make_supplier_quotation")
+		// 	// 		}, __('Create'));
 
-			// 	frm.add_custom_button(__('Request For Quotation'),
-			// 		function() {
-			// 			frm.trigger("make_request_for_quotation")
-			// 		}, __('Create'));
-			// }
+		// 	// 	frm.add_custom_button(__('Request For Quotation'),
+		// 	// 		function() {
+		// 	// 			frm.trigger("make_request_for_quotation")
+		// 	// 		}, __('Create'));
+		// 	// }
 
-			// if (frm.doc.opportunity_from != "Customer") {
-			// 	frm.add_custom_button(__('Customer'),
-			// 		function() {
-			// 			frm.trigger("make_customer")
-			// 		}, __('Create'));
-			// }
+		// 	// if (frm.doc.opportunity_from != "Customer") {
+		// 	// 	frm.add_custom_button(__('Customer'),
+		// 	// 		function() {
+		// 	// 			frm.trigger("make_customer")
+		// 	// 		}, __('Create'));
+		// 	// }
 
-			// frm.add_custom_button(__('Quotation'),
-			// 	function() {
-			// 		frm.trigger("create_quotation")
-			// 	}, __('Create'));
-
+		// 	// frm.add_custom_button(__('Quotation'),
+		// 	// 	function() {
+		// 	// 		frm.trigger("create_quotation")
+		// 	// 	}, __('Create'));
 		
-		}
+		// }
 
 		if(!frm.doc.__islocal && frm.perm[0].write && frm.doc.docstatus==0) {
 			if(frm.doc.status==="Open") {
@@ -183,10 +165,7 @@ frappe.ui.form.on("Opportunity", {
 					frm.save();
 				});
 					if(frm.doc.opportunity_type === 'Nuevo Contrato'){
-						frm.add_custom_button(__("Crear Contrato"), function() {
-							// frm.set_value("status", "Closed");
-							//frm.save();
-							
+						frm.add_custom_button(__("Crear Contrato"), function() {						
 							let total = 0;
 							frm.doc.items.forEach(item => {
 								total += item.precio_del_plan;						
@@ -199,7 +178,6 @@ frappe.ui.form.on("Opportunity", {
 								frappe.msgprint(__("Debe Seleccionar un cliente antes de intentar hacer un contrato"));
 							}
 							if(frm.doc.status==="Open" && frm.doc.customer !== undefined && frm.doc.customer !== "" && frm.doc.ingresos_mrc===total) {
-								//console.log("crear contrato")
 								frappe.call({
 									"method": "erpnext.crm.doctype.opportunity.opportunity.crear_sus_por_items",
 									"args": {
@@ -209,8 +187,7 @@ frappe.ui.form.on("Opportunity", {
 											console.log(r.message)	
 											if(r.message!=undefined){
 												frappe.set_route(['Form', 'subscription',r.message]);	
-											}
-															
+											}												
 									}
 								})
 							}
@@ -230,14 +207,12 @@ frappe.ui.form.on("Opportunity", {
 								frappe.msgprint(__("Debe Seleccionar un cliente antes de intentar hacer un contrato"));
 							}
 							if(frm.doc.status==="Open" && frm.doc.customer !== undefined && frm.doc.customer !== "" && frm.doc.ingresos_mrc===total) {
-								//console.log("crear contrato")
 								frappe.call({
 									"method": "erpnext.crm.doctype.opportunity.opportunity.crear_plan",
 									"args": {
 											"name": frm.doc.name,
 										},
 										callback: function(r){
-											//console.log(r.message)	
 											frm.reload_doc();				
 									}
 								})
@@ -263,6 +238,16 @@ frappe.ui.form.on("Opportunity", {
 		} else {
 			frappe.contacts.clear_address_and_contact(frm);
 		}
+	},
+	before_save(frm){
+		frm.set_value('flujo_neto',flt(frm.doc.total_de_ingresos)-flt(frm.doc.total_de_egresos))
+		frm.set_value('flujo',(flt(frm.doc.flujo_neto)/flt(frm.doc.total_de_ingresos))*100)
+		frm.trigger("calculate_total_egresos");
+		frm.trigger("calculate_total_ingresos");
+		frm.trigger("calculate_flujo_de_caja");
+		frm.trigger("calculate_total_otc");
+		frm.trigger("calculate_total");
+
 	},
 
 	calculate_Precios_planes: function(frm) {
@@ -344,7 +329,6 @@ frappe.ui.form.on("Opportunity", {
 		frm.set_currency_labels(["base_opportunity_amount", "base_total"], company_currency);
 		frm.set_currency_labels(["opportunity_amount", "total"], frm.doc.currency);
 
-		// toggle fields
 		frm.toggle_display(["conversion_rate", "base_opportunity_amount", "base_total"],
 			frm.doc.currency != company_currency);
 		frm.toggle_display(["base_total_otc", "total_de_egresos_nio"],
@@ -370,20 +354,22 @@ frappe.ui.form.on("Opportunity", {
 			total += item.amount;
 			base_total += item.base_amount;
 		})
+		frm.doc.otros_gastos_recurrentes.forEach(item => {
+			total += item.amount;
+			base_total += item.base_amount;
+		})
 
 		frm.set_value({
 			'total': flt(total),
 			'base_total': flt(base_total)
 		});
 	},
-	/******************************************************************************************************* */
 	calculate_total_otc: function(frm) {
 		let total = 0, base_total = 0;
 		frm.doc.productos_otc.forEach(item => {
 			total += item.amount;
 			base_total += item.base_amount;
 		})
-
 		frm.set_value({
 			'total_otc': flt(total),
 			'base_total_otc': flt(base_total)
@@ -449,13 +435,10 @@ frappe.ui.form.on("Opportunity", {
 		else{
 			frm.set_value('payback',0)
 		}
-		//console.log(flujo_neto_arr)
 		frappe.call({
 			"method": "erpnext.crm.doctype.opportunity.opportunity.calculate_tir","args":{'arr':flujo_neto_arr}, callback: function(r) {
-					//console.log(r.message)
 					frm.set_value('tir',r.message)
 			}})
-		// console.log(frm.doc.tir)	
 		frm.set_value('van_mrc',flt(flt(frm.doc.van)/flt(frm.doc.mrc),2))
 	}
 });
@@ -467,14 +450,10 @@ frappe.ui.form.on("Opportunity Item", {
 		let row = frappe.get_doc(cdt, cdn);
 		uom = row.uom;
 		uom = uom.replace(' Mbps', '');
-		
 		compresion = row.compresion;
 		compresion = compresion.replace(':1','');	
-		
 		let proveedor = row.proveedor;
 		let unidad = row.tasa;
-		
-		
 		if(proveedor === "IBW"){
 			frappe.model.set_value(cdt, cdn, "rate", (unidad*uom)/compresion);
 			frappe.model.set_value(cdt, cdn, "precio_tercero", 0);
@@ -548,6 +527,22 @@ frappe.ui.form.on("Opportunity Item OTC", {
 	},
 })
 
+frappe.ui.form.on("Gastos Recurrentes", {
+	calculate: function(frm, cdt, cdn) {
+		let row = frappe.get_doc(cdt, cdn);
+		frappe.model.set_value(cdt, cdn, "amount", row.rate * row.qty);
+		frappe.model.set_value(cdt, cdn, "base_rate", flt(frm.doc.conversion_rate) * flt(row.rate));
+		frappe.model.set_value(cdt, cdn, "base_amount", flt(frm.doc.conversion_rate) * flt(row.amount));
+		frm.trigger("calculate_total");
+		frm.trigger("calculate_total_egresos");
+	},
+	rate: function(frm, cdt, cdn) {
+		frm.trigger("calculate", cdt, cdn);
+	},
+	qty: function(frm, cdt, cdn) {
+		frm.trigger("calculate", cdt, cdn);
+	},
+})
 frappe.ui.form.on("Opportunity", "porcentaje_comision_v", function(frm) {
 	let total_mrc = frm.doc.ingresos_mrc
 	let porcentaje = Math.abs(frm.doc.porcentaje_comision_v)
@@ -627,9 +622,6 @@ frappe.ui.form.on("Opportunity", "total_de_egresos", function(frm) {
 frappe.ui.form.on("Opportunity", "flujo_neto", function(frm) {
 	frm.set_value('flujo',(flt(frm.doc.flujo_neto)/flt(frm.doc.total_de_ingresos))*100)
 });
-/************************************************************************************************************** */
-
-// TODO commonify this code
 erpnext.crm.Opportunity = class Opportunity extends frappe.ui.form.Controller {
 	onload() {
 

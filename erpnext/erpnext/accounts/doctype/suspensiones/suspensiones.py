@@ -196,7 +196,6 @@ def process_de_Suspencion(name):
 			clientes.append(cliente[0])
 		
 	clientes = str(clientes).replace("[","(").replace("]",")")
-	#clientes = clientes.replace("[","(").replace("]",")")
 	query = """select spd.name,s.name,i.item_group,s.party from `tabItem` i
 			inner join `tabSubscription Plan`sp on i.name=sp.item
 			inner join `tabSubscription Plan Detail` spd on sp.name=spd.plan
@@ -209,7 +208,6 @@ def process_de_Suspencion(name):
 	portafolio_list = []
 	[portafolio_list.append(item[2]) for item in plans if item[2] not in portafolio_list]
 
-
 	portafolios = dict()
 
 	for p in portafolio_list:		
@@ -217,7 +215,6 @@ def process_de_Suspencion(name):
 	for item_group in plans: 
 		portafolios[item_group[2]].append([item_group[3], item_group[1], item_group[0],item_group[2]])
 
-	
 	for portafolio in portafolios:
 		if portafolio == 'ITV':
 			continue
@@ -236,8 +233,7 @@ def process_de_Suspencion(name):
 			equipos = frappe.db.sql("""select name, item_code from `tabSerial No` where name in (select equipo from `tabSubscription Plan Equipos` where parent = %(parent)s)""",{"parent":susc[1]})	
 			if equipos:
 				
-				for e in equipos:
-					
+				for e in equipos:				
 					so_detalle = frappe.new_doc('SO Detalle Clientes Suspendidos')
 					so_detalle.parent =  od.name
 					so_detalle.parentfield = "so_detalle_clientes_suspendidos"
@@ -248,7 +244,6 @@ def process_de_Suspencion(name):
 					so_detalle.equipos = e[0]
 					so_detalle.modelo = e[1]
 					so_detalle.save()	
-	
 			else:		
 				so_detalle = frappe.new_doc('SO Detalle Clientes Suspendidos')
 				so_detalle.parent =  od.name

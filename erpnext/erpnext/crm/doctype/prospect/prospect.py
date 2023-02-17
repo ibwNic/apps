@@ -149,43 +149,46 @@ def get_opportunities(prospect):
 @frappe.whitelist()
 def vincular_prospecto(name,lead_name,status,prospect=None):
 	if prospect != None:
-		if not frappe.db.exists("Prospect Lead", {"lead":name}):
-			lead = frappe.get_doc({
-				'doctype': "Prospect Lead",
-				'lead': name,
-				'lead_name': lead_name,
-				'parent':prospect,
-				'status':status,
-				'parentfield': 'leads',
-				'parenttype':'Prospect'			
-			})	
-			lead.insert()
-		direcciones = frappe.db.get_values("Dynamic Link",{"link_doctype": "Prospect","parenttype": "Address", "link_name": prospect},"parent")
-		for dir in direcciones:
-			if not frappe.db.exists("Dynamic Link", {"parent":dir[0], "link_doctype":"Lead","link_name":name}):
-				dir = frappe.get_doc({
-					'doctype': "Dynamic Link",
-					'link_doctype': "Lead",
-					'link_name':  name,
-					'link_title': lead_name,
-					'parent': dir[0],
-					'parentfield': "links",
-					'parenttype':"Address"
-				})
-				dir.insert()
-		contactos = frappe.db.get_values("Dynamic Link",{"link_doctype": "Prospect","parenttype": "Contact", "link_name": prospect},"parent")
-		for con in contactos:
-			if not frappe.db.exists("Dynamic Link", {"parent":con[0], "link_doctype":"Lead","link_name":name}):
-				con = frappe.get_doc({
-					'doctype': "Dynamic Link",
-					'link_doctype': "Lead",
-					'link_name':  name,
-					'link_title': lead_name,
-					'parent': con[0],
-					'parentfield': "links",
-					'parenttype':"Contact"
-				})
-				con.insert()
+		try:
+			if not frappe.db.exists("Prospect Lead", {"lead":name}):
+				lead = frappe.get_doc({
+					'doctype': "Prospect Lead",
+					'lead': name,
+					'lead_name': lead_name,
+					'parent':prospect,
+					'status':status,
+					'parentfield': 'leads',
+					'parenttype':'Prospect'			
+				})	
+				lead.insert()
+			direcciones = frappe.db.get_values("Dynamic Link",{"link_doctype": "Prospect","parenttype": "Address", "link_name": prospect},"parent")
+			for dir in direcciones:
+				if not frappe.db.exists("Dynamic Link", {"parent":dir[0], "link_doctype":"Lead","link_name":name}):
+					dir = frappe.get_doc({
+						'doctype': "Dynamic Link",
+						'link_doctype': "Lead",
+						'link_name':  name,
+						'link_title': lead_name,
+						'parent': dir[0],
+						'parentfield': "links",
+						'parenttype':"Address"
+					})
+					dir.insert()
+			contactos = frappe.db.get_values("Dynamic Link",{"link_doctype": "Prospect","parenttype": "Contact", "link_name": prospect},"parent")
+			for con in contactos:
+				if not frappe.db.exists("Dynamic Link", {"parent":con[0], "link_doctype":"Lead","link_name":name}):
+					con = frappe.get_doc({
+						'doctype': "Dynamic Link",
+						'link_doctype': "Lead",
+						'link_name':  name,
+						'link_title': lead_name,
+						'parent': con[0],
+						'parentfield': "links",
+						'parenttype':"Contact"
+					})
+					con.insert()
+		except:
+			pass
 		#return direcciones
 
 @frappe.whitelist()

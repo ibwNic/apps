@@ -201,6 +201,7 @@ class Lead(SellingController, CRMNote):
 			filters={"lead": self.name},
 			fields=["parent"],
 		)
+	
 
 	def has_customer(self):
 		return frappe.db.get_value("Customer", {"lead_name": self.name})
@@ -294,14 +295,11 @@ class Lead(SellingController, CRMNote):
 
 @frappe.whitelist()
 def make_customer(source_name, target_doc=None):
-	# customer = frappe.db.get_value("Prospect Lead", {"lead": source_name},'customer')
-	# if not customer:
-	try:	
+	customer = frappe.db.get_value("Prospect Lead", {"lead": source_name},'customer')
+	if not customer:	
 		return _make_customer(source_name, target_doc, True)
-	except Exception as e:
-			frappe.msgprint(frappe._(' Fatality Error Project {0} ').format(e))
-	# else:
-	# 	frappe.msgprint("Ya existe un cliente para este LEAD")
+	else:
+		frappe.msgprint("Ya existe un cliente para este LEAD")
 
 
 def _make_customer(source_name, target_doc=None, ignore_permissions=False):

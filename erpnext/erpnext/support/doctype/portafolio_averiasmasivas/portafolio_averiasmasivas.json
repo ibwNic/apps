@@ -11,14 +11,15 @@
  "fields": [
   {
    "fieldname": "portafolio",
-   "fieldtype": "Data",
-   "label": "Portafolio"
+   "fieldtype": "Link",
+   "label": "Portafolio",
+   "options": "Item Group"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2022-10-27 09:17:08.770383",
+ "modified": "2023-02-17 10:02:14.901418",
  "modified_by": "Administrator",
  "module": "Support",
  "name": "Portafolio AveriasMasivas",
