@@ -46,7 +46,7 @@ class Gestion(Document):
 
 @frappe.whitelist()		
 def validar_cliente(customer,tipo_gestion):
-	query = frappe.db.sql(""" select distinct customer, name from  `tabGestion` where workflow_state != 'Finalizado' 
+	query = frappe.db.sql(""" select distinct customer, name from  `tabGestion` where workflow_state not in ('Finalizado', 'Cancelado') 
 	and tipo_gestion = %(tipo_gestion)s;""",{"tipo_gestion":tipo_gestion})
 	clientes = [c[0] for c in query]
 	names = [n[1] for n in query]
@@ -98,6 +98,20 @@ def estado_gestion(name):
 			frappe.db.sql(""" update `tabGestion` set estado = 'Retenido' where name = %(name)s; """,{"name":name})
 	except:
 		pass
+
+@frappe.whitelist()
+def ocultar_actualizacion(name):
+	# try:
+	g = frappe.get_doc("Gestion",name)
+	nc = 0
+	for plan in g.cambiar_planes:
+		if plan.nuevo_contrato:
+			nc += 1
+	if nc ==len(g.cambiar_planes):
+		frappe.db.set_value("Gestion",name,"convertido",1)
+	# except Exception as e:
+	# 	frappe.msgprint("error: " + e)
+
 
 def programar_suspensiones_temporales():
 	""" suspender planes, contratos y clientes desde gestiones finalizadas """
@@ -256,3 +270,4 @@ def programar_cancelaciones():
 				bitacora_detalle.insert()
 
 		frappe.db.sql(""" update `tabGestion` set convertido = 1 where name = %(name)s;""",{"name":g[0]})
+

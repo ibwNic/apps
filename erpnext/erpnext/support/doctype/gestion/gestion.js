@@ -3,7 +3,14 @@
 
 frappe.ui.form.on('Gestion', {
 	refresh: function(frm) {
-    
+        if(frm.doc.convertido === 0){
+            frappe.call({					
+                method: "erpnext.support.doctype.gestion.gestion.ocultar_actualizacion",
+                args: {"name":frm.doc.name},
+                callback: function(r) {                   
+                }
+            });
+        }
 	if(frm.doc.tipo_gestion === 'Cancelaciones' || frm.doc.tipo_gestion === 'Suspension Temporal' ){
         frm.toggle_display("issue", false);
 

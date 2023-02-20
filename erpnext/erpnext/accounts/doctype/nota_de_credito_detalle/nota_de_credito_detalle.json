@@ -1,7 +1,7 @@
 {
  "actions": [],
  "autoname": "autoincrement",
- "creation": "2023-02-01 16:02:31.584545",
+ "creation": "2023-02-14 15:46:33.222545",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
@@ -37,9 +37,8 @@
   },
   {
    "fieldname": "monto",
-   "fieldtype": "Currency",
-   "label": "Monto",
-   "options": "currency"
+   "fieldtype": "Data",
+   "label": "Monto"
   },
   {
    "fieldname": "factura",
@@ -51,10 +50,10 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-02-14 15:46:27.661721",
+ "modified": "2023-02-14 15:46:33.222545",
  "modified_by": "Administrator",
  "module": "Accounts",
- "name": "Pago Sin Identificar Detalles",
+ "name": "Nota de Credito Detalle",
  "naming_rule": "Autoincrement",
  "owner": "Administrator",
  "permissions": [],

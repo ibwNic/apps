@@ -330,6 +330,16 @@ class Subscription(Document):
 		# todo: deal with users who collect prepayments. Maybe a new Subscription Invoice doctype?
 		self.set_subscription_status()
 
+
+	def generate_invoice_tv_add(self,plan):
+		try:
+			doctype = "Sales Invoice"
+			invoice = self.create_invoice_tv_add(plan)
+			self.append("invoices", {"document_type": doctype, "invoice": invoice.name})
+			self.save()
+		except Exception as e:
+			frappe.msgprint(frappe._('generate_invoice_tv_add : Fatality Error Project {0} ').format(e))
+
 	def generate_invoice(self, prorate=0):
 		"""
 		Creates a `Invoice` for the `Subscription`, updates `self.invoices` and
@@ -371,6 +381,125 @@ class Subscription(Document):
 			frappe.msgprint(frappe._('generate_invoice : Fatality Error Project {0} ').format(e))
 
 
+	def create_invoice_tv_add(self,plan):
+		try:
+			
+			doctype = "Sales Invoice"
+			invoice = frappe.new_doc(doctype)
+			invoice.naming_series = "B-"
+			invoice.tipo_factura="TV Adicional"
+			company = self.get("company") or get_default_company()
+			if not company:
+				frappe.throw(
+					_("Company is mandatory was generating invoice. Please set default company in Global Defaults")
+				)
+
+			invoice.company = company
+			invoice.set_posting_time = 1
+		
+			invoice.posting_date = now()
+
+			invoice.due_date =add_days(now(), 20)
+
+			invoice.cost_center = self.cost_center
+
+			if doctype == "Sales Invoice":
+				invoice.customer = self.party
+			else:
+				invoice.supplier = self.party
+				if frappe.db.get_value("Supplier", self.party, "tax_withholding_category"):
+					invoice.apply_tds = 1
+
+			invoice.currency = get_party_account_currency("Customer", self.party, company)
+			paralela =get_exchange_rate('USD','NIO', today(), throw=True)
+		
+
+			if invoice.currency == "USD":
+				invoice.conversion_rate=paralela
+			else:
+				invoice.conversion_rate=1
+
+
+			## Add dimensions in invoice for subscription:
+			accounting_dimensions = get_accounting_dimensions()
+
+			for dimension in accounting_dimensions:
+				if self.get(dimension):
+					invoice.update({dimension: self.get(dimension)})
+
+			# Subscription is better suited for service items. I won't update `update_stock`
+			# for that reason
+			# items_list = self.get_items_from_plans(self.plans, invoice.currency,paralela,prorate)
+			
+			if invoice.currency=="NIO":
+				items_list = {
+				"item_code": 'TV Adicional GPON' if 'GPON' in plan else 'TV Adicional HFC' ,
+				"qty": 1,
+				"rate": (5)*float(paralela),
+				"cost_center": '',
+				"plan_detail":plan,
+				}
+
+			else:
+				items_list = {
+					"item_code": 'TV Adicional GPON' if 'GPON' in plan else 'TV Adicional HFC',
+					"qty": 1,
+					"rate":5,
+					"cost_center": '',
+					"plan_detail":plan,
+				}
+			
+
+			items_list["cost_center"] = self.cost_center
+			invoice.append("items", items_list)
+
+			# Taxes
+			tax_template = frappe.db.get_value("Customer", {"name": self.party}, "sales_tax_template")
+			if tax_template !="":
+				invoice.taxes_and_charges = tax_template
+				invoice.set_taxes()
+			
+
+
+			# Due date
+			if self.days_until_due:
+				invoice.append(
+					"payment_schedule",
+					{
+						"due_date": add_days(invoice.posting_date, cint(self.days_until_due)),
+						"invoice_portion": 100,
+					},
+				)
+			
+			# Discounts
+			if self.is_trialling():
+				invoice.additional_discount_percentage = 100
+			else:
+				if self.additional_discount_percentage:
+					invoice.additional_discount_percentage = self.additional_discount_percentage
+
+				if self.additional_discount_amount:
+					invoice.discount_amount = self.additional_discount_amount
+
+				if self.additional_discount_percentage or self.additional_discount_amount:
+					discount_on = self.apply_additional_discount
+					invoice.apply_discount_on = discount_on if discount_on else "Grand Total"
+			
+			# Subscription period
+			invoice.from_date = self.current_invoice_start
+			invoice.to_date = self.current_invoice_end
+
+			invoice.flags.ignore_mandatory = True
+
+			invoice.set_missing_values()
+			invoice.save()
+			invoice.submit()
+			# if self.submit_invoice:
+			# 	invoice.submit()
+
+			return invoice
+		except Exception as e:
+			frappe.msgprint(frappe._('generate_invoice tv : Fatality Error Project {0} ').format(e))
 
 	def create_invoice(self, prorate):
 		try:
@@ -981,66 +1110,67 @@ def crear_orden_servicio(name):
 
 @frappe.whitelist()
 def crear_orden_Desinstalacion(name):
+	try:
+		doc = frappe.get_doc("Subscription", name)
 
-	doc = frappe.get_doc("Subscription", name)
-
-	for plan in doc.get('plans'):
-		var = False
-		status =''
-		if frappe.db.exists("Service Order", {"tipo_de_origen": "Subscription","tipo_de_orden":"DESINSTALACION","nombre_de_origen":doc.name,"plan_de_subscripcion":plan.name}):
-			so= frappe.get_doc("Service Order", {"tipo_de_origen": "Subscription","tipo_de_orden":"DESINSTALACION","nombre_de_origen":doc.name,"plan_de_subscripcion":plan.name})
-			if so.workflow_state=="Cancelado":
-				status = "Pasa"
+		for plan in doc.get('plans'):
+			var = False
+			status =''
+			if frappe.db.exists("Service Order", {"tipo_de_origen": "Subscription","tipo_de_orden":"DESINSTALACION","nombre_de_origen":doc.name,"plan_de_subscripcion":plan.name}):
+				so= frappe.get_doc("Service Order", {"tipo_de_origen": "Subscription","tipo_de_orden":"DESINSTALACION","nombre_de_origen":doc.name,"plan_de_subscripcion":plan.name})
+				if so.workflow_state=="Cancelado":
+					status = "Pasa"
+				else:
+					status = "No Pasa"
 			else:
-				status = "No Pasa"
-		else:
-			var = True
+				var = True
 
-		if status=="Pasa" or var:
-			if plan.estado_plan=="Plan Cerrado":
-				portafolio=get_portafolio_plan(plan.plan)
-				direccion=frappe.get_doc("Address", plan.direccion)
-				# frappe.msgprint("entra a la condicion del plan")
-				od = frappe.get_doc({
-					'doctype': "Service Order",
-					'tipo_de_orden': "DESINSTALACION",
-					'workflow_state': "Abierto",
-					'tipo_de_origen': doc.doctype,
-					'nombre_de_origen': doc.name,
-					'descripcion': frappe._('Ejecutar Desinstalcion de {0}').format(plan.plan),
-					'tipo': 'Customer',
-					'tercero': doc.party,
-					'plan_de_subscripcion': plan.name,
-					'direccion_de_instalacion': plan.direccion,
-					'portafolio': str(portafolio[0][0]),
-					'departamento': direccion.departamento,
-					'municipio': direccion.municipio,
-					'barrio': direccion.barrio,
-					'direccion': direccion.address_line1,
-					'vendedor':doc.vendedor,
-					'nodo':plan.nodo,
-					'latitud':plan.latitud,
-					'longitud':plan.longitud
-				})
-				od.insert()
-				frappe.msgprint(frappe._('Nueva orden de {0} con ID {1}').format(frappe._(od.tipo_de_orden), od.name))
+			if status=="Pasa" or var:
+				if plan.estado_plan=="Plan Cerrado":
+					portafolio=get_portafolio_plan(plan.plan)
+					direccion=frappe.get_doc("Address", plan.direccion)
+					# frappe.msgprint("entra a la condicion del plan")
+					od = frappe.get_doc({
+						'doctype': "Service Order",
+						'tipo_de_orden': "DESINSTALACION",
+						'workflow_state': "Abierto",
+						'tipo_de_origen': doc.doctype,
+						'nombre_de_origen': doc.name,
+						'descripcion': frappe._('Ejecutar Desinstalcion de {0}').format(plan.plan),
+						'tipo': 'Customer',
+						'tercero': doc.party,
+						'plan_de_subscripcion': plan.name,
+						'direccion_de_instalacion': plan.direccion,
+						'portafolio': str(portafolio[0][0]),
+						'departamento': direccion.departamento,
+						'municipio': direccion.municipio,
+						'barrio': direccion.barrio,
+						'direccion': direccion.address_line1,
+						#'vendedor':doc.vendedor,
+						'nodo':plan.nodo,
+						'latitud':plan.latitud,
+						'longitud':plan.longitud
+					})
+					od.insert()
+					frappe.msgprint(frappe._('Nueva orden de {0} con ID {1}').format(frappe._(od.tipo_de_orden), od.name))
 
-				for equipos in doc.get('equipos'):
-					if plan.name==equipos.plan:
-						# frappe.msgprint("entra a la segunda condicion")
-						code = frappe.db.get_value('Serial No', {"name": equipos.equipo}, 'item_code')
-						eos = frappe.get_doc({
-						'doctype': "Equipo_Orden_Servicio",
-						'serial_no': equipos.equipo,
-						'parent': od.name,
-						'parenttype': "Service Order",
-						'parentfield': "equipo_orden_servicio",
-						'item_code': code
-						})
-						eos.insert()
-			else:
-				frappe.msgprint("No se pueden crear ordenes de trabajo para planes activos")
-
+					for equipos in doc.get('equipos'):
+						if plan.name==equipos.plan:
+							# frappe.msgprint("entra a la segunda condicion")
+							code = frappe.db.get_value('Serial No', {"name": equipos.equipo}, 'item_code')
+							eos = frappe.get_doc({
+							'doctype': "Equipo_Orden_Servicio",
+							'serial_no': equipos.equipo,
+							'parent': od.name,
+							'parenttype': "Service Order",
+							'parentfield': "equipo_orden_servicio",
+							'item_code': code
+							})
+							eos.insert()
+				else:
+					frappe.msgprint("No se pueden crear ordenes de trabajo para planes activos")
+	except Exception as e:
+				frappe.msgprint(frappe._('Get Item : Fatality Error Project {0} ').format(e))
 
 
 
@@ -1404,4 +1534,59 @@ def aplicar_promocion(promo,name):
 			else:
 				frappe.db.set_value("Subscription Plan Detail",plan.name,"cost",frappe.db.get_value("Subscription Plan",plan.plan,"cost"))
 
- 
+@frappe.whitelist()
+def tv_adicional(name):
+	plan = frappe.get_doc("Subscription Plan Detail",name)
+	if(plan.plan in ("TV Combo GPON","TV Combo HFC","Servicio TV HFC")):
+		subs = frappe.get_doc("Subscription", {"name": plan.parent})
+		portafolio=get_portafolio_plan(plan.plan)
+		portafolio = str(portafolio[0][0])	
+		var = False
+		status =''
+		if frappe.db.exists("Service Order", {"tipo_de_origen": "Subscription","tipo_de_orden":"INSTALACION OTC","nombre_de_origen":subs.name,"plan_de_subscripcion":name}):
+			so= frappe.get_doc("Service Order", {"tipo_de_origen": "Subscription","tipo_de_orden":"INSTALACION OTC","nombre_de_origen":subs.name,"plan_de_subscripcion":name})
+			if so.workflow_state=="Cancelado" or so.workflow_state=="Finalizado":
+				status = "Pasa"
+			else:
+				status = "No Pasa"
+		else:
+			var = True
+		if status=="Pasa" or var:		
+			direccion=frappe.get_doc("Address", plan.direccion)
+			od = frappe.get_doc({
+				'doctype': "Service Order",
+				'tipo_de_orden': "INSTALACION OTC",
+				'workflow_state': "Abierto",
+				'tipo_de_origen': "Subscription",
+				'nombre_de_origen': subs.name,
+				'descripcion': frappe._('Ejecutar instalación de TV ADICIONAL'),
+				'tipo': 'Customer',
+				'tercero': subs.party,
+				'plan_de_subscripcion': name,
+				'direccion_de_instalacion': plan.direccion,
+				'portafolio': portafolio,
+				'departamento': direccion.departamento,
+				'municipio': direccion.municipio,
+				'barrio': direccion.barrio,
+				'direccion': direccion.address_line1,
+				'latitud':plan.latitud,
+				'longitud':plan.longitud,
+				'nodo':plan.nodo
+			})
+			od.insert()
+			frappe.msgprint(frappe._('Nueva orden de {0} con ID {1}').format(frappe._(od.tipo_de_orden), od.name))
+		else:
+			frappe.msgprint("Ya existe una orden de instalacion de tv adicional para este contrato")
+
+@frappe.whitelist()
+def factura_tv_adicional(name):
+	try:
+		plan = frappe.get_doc("Subscription Plan Detail",name)	
+		susc = frappe.get_doc("Subscription", plan.parent)
+		if(plan.plan in ("TV Combo GPON","TV Combo HFC","Servicio TV HFC")):
+			factura=Subscription.generate_invoice_tv_add(susc,plan.plan)
+			frappe.msgprint(frappe._('Factura B : {0} ').format(factura))
+
+			
+	except Exception as e:
+		frappe.msgprint(frappe._('factura_tv_adicional : Fatality Error Project {0} ').format(e))

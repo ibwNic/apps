@@ -19,7 +19,9 @@
   {
    "fieldname": "cantidad",
    "fieldtype": "Int",
-   "label": "Cantidad"
+   "in_list_view": 1,
+   "label": "Cantidad",
+   "reqd": 1
   },
   {
    "fieldname": "uom",
@@ -32,7 +34,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-01-10 08:33:04.871019",
+ "modified": "2023-02-20 09:05:46.538999",
  "modified_by": "Administrator",
  "module": "Support",
  "name": "Materiales detalles",

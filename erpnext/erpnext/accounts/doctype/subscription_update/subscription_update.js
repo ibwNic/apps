@@ -3,6 +3,16 @@
 
 frappe.ui.form.on('Subscription Update', {
 	refresh: function(frm) {
+		frm.set_query('customer', function(d){
+			return {
+				filters: {
+					estado_cliente: "Activo",
+				}
+			}
+		})
+		if(frm.doc.tipo_contrato ===  'RETENCION'){
+			frm.set_df_property('gestion', 'read_only', true);
+		}
 		if(!frm.doc.gestion)
         set_field_options("tipo_contrato", ["RENOVACION","UPGRADE","RENOVACION CON UPGRADE","DOWNGRADE","CAMBIO DE SERVICIO SIN COMISION",
 							"RENOVACION CON CAMBIO DE SERVICIO","MIGRACION CON INCREMENTO"])

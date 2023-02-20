@@ -41,9 +41,10 @@ class JournalEntry(AccountsController):
 		# Se agrega registro al cierre
 		if self.docstatus == 0 and self.ui==1 and self.aplicco_reversion == 0 and self.aplico_deposito_banco == 0:
 			# try:
-				res = obtenerCierreCaja(True)
-				if res == 1:
-					raise Exception("Debe de cerrar caja antes de empezar hacer transacciones Validar")
+			# frappe.msgprint('Entra')
+			res = obtenerCierreCaja(True)
+			if res == 1:
+				raise Exception("Debe de cerrar caja antes de empezar hacer transacciones")
 
 		# Registrar el pago en el cierre
 		if self.docstatus == 1 and self.ui==1 and self.aplicco_reversion == 0 and self.aplico_deposito_banco == 0:
@@ -52,6 +53,11 @@ class JournalEntry(AccountsController):
 
 		if self.aplico_deposito_banco == 1 and self.docstatus != 0:
 			self.Registrar_DepositoBanco()
+		# Registrar Anticipos o depositos despues de validar 
+		if self.tipo_de_pago == "Anticipo" and self.docstatus != 0:
+			self.Crear_Anticipo()
+		if self.tipo_de_pago == "Deposito" and self.docstatus != 0:
+			self.Crear_Deposito()
 
 		if self.voucher_type == "Opening Entry":
 			self.is_opening = "Yes"
@@ -94,9 +100,10 @@ class JournalEntry(AccountsController):
 	def on_submit(self):
 		if self.docstatus == 0 and self.ui==1 and self.aplicco_reversion == 0 and self.aplico_deposito_banco == 0:
 			# try:
-				res = obtenerCierreCaja(True)
-				if res == 1:
-					raise Exception("Debe de cerrar caja antes de empezar hacer transacciones Submit")
+			# frappe.msgprint('Entra en submit')
+			res = obtenerCierreCaja(True)
+			if res == 1:
+				raise Exception("Debe de cerrar caja antes de empezar hacer transacciones")
 
 		self.Validacion_Accounts_MontoRecibidosValidar()
 		if self.validar_montos_vueltos():
@@ -111,11 +118,11 @@ class JournalEntry(AccountsController):
 		self.update_advance_paid()
 		self.update_inter_company_jv()
 		self.update_invoice_discounting()
-		# self.Validacion_Accounts()
-		if self.tipo_de_pago == "Anticipo":
-			self.Crear_Anticipo()
-		if self.tipo_de_pago == "Deposito":
-			self.Crear_Deposito()
+		# self.Validacion_Accounts() No borrar
+		# if self.tipo_de_pago == "Anticipo":
+		# 	self.Crear_Anticipo()
+		# if self.tipo_de_pago == "Deposito":
+		# 	self.Crear_Deposito()
 		
 
 		# self.Validacion_Accounts_MontoRecibidosGuardar()
@@ -157,9 +164,11 @@ class JournalEntry(AccountsController):
 	def on_update(self):
 		if self.docstatus == 0 and self.ui==1 and self.aplicco_reversion == 0 and self.aplico_deposito_banco == 0:
 			# try:
-				res = obtenerCierreCaja(True)
-				if res == 1:
-					raise Exception("Debe de cerrar caja antes de empezar hacer transacciones update")
+			# frappe.msgprint('Entra update')
+			res = obtenerCierreCaja(True)
+			# frappe.msgprint(str(res))
+			if res == 1:
+				raise Exception("Debe de cerrar caja antes de empezar hacer transacciones")
 
 		# frappe.msgprint("LLEgo")
 		# Validacion de montos recibidos
@@ -577,7 +586,7 @@ class JournalEntry(AccountsController):
 							recibioEfectivoNIO = True
 
 			if recibioEfectivoUSD:
-				if sumaMontoUSD > self.monto_recibido_dolares:
+				if sumaMontoUSD > self.monto_recibido_dolares and not self.collector and not self.dealer:
 					ErrorUSD = True
 					frappe.msgprint("El monto que recibio en Dolares no puede ser menor al monto que recibio!")
 					frappe.db.set_value(self.doctype, self.name, 'docstatus', 0)
@@ -587,7 +596,7 @@ class JournalEntry(AccountsController):
 					return
 
 			if recibioEfectivoNIO:
-				if sumaMontoNIO > self.monto_recibido_cordobas:
+				if sumaMontoNIO > self.monto_recibido_cordobas and not self.collector and not self.dealer:
 					frappe.msgprint("El monto que recibio en Cordobas no puede ser menor al monto que recibio!")
 					frappe.db.set_value(self.doctype, self.name, 'docstatus', 0)
 					frappe.db.set_value(self.doctype, self.name, 'monto_recibido_dolares', 0)
@@ -653,7 +662,7 @@ class JournalEntry(AccountsController):
 							recibioEfectivoNIO = True
 
 			if recibioEfectivoUSD:
-				if sumaMontoUSD > self.monto_recibido_dolares:
+				if sumaMontoUSD > self.monto_recibido_dolares and not self.collector and not self.dealer:
 					frappe.msgprint("El monto que recibio en Dolares no puede ser menor al monto que recibio!")
 					frappe.db.set_value(self.doctype, self.name, 'docstatus', 0)
 					frappe.db.set_value(self.doctype, self.name, 'vuelto_en_cordobas', 0)
@@ -662,7 +671,7 @@ class JournalEntry(AccountsController):
 					return
 
 			if recibioEfectivoNIO:
-				if sumaMontoNIO > self.monto_recibido_cordobas:
+				if sumaMontoNIO > self.monto_recibido_cordobas and not self.collector and not self.dealer:
 					frappe.msgprint("El monto que recibio en Cordobas no puede ser menor al monto que recibio!")
 					frappe.db.set_value(self.doctype, self.name, 'monto_recibido_dolares', 0)
 					frappe.db.set_value(self.doctype, self.name, 'vuelto_en_dolares', 0)
@@ -1957,7 +1966,7 @@ def make_reverse_journal_entry(source_name, target_doc=None):
 def Factura_pendiente(Customer):
 	Fact = frappe.db.sql(
 		"""
-		select name from `tabSales Invoice` where docstatus=1 and customer=%(Customer)s and outstanding_amount>0 limit 1""",
+		select name from `tabSales Invoice` where docstatus=1 and customer=%(Customer)s and outstanding_amount >=  1 and status = 'Paid' limit 1""",
 		{"Customer": Customer},
 	)
 

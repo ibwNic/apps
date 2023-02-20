@@ -61,7 +61,8 @@ frappe.ui.form.on("Journal Entry", {
 			"frania.lainez@ibw.com": "D-",
 			"hegarcia@ibw.com": "I-",
 			"jacquelines.martinez@ibw.com": "H-",
-			"glendy.garcia@ibw.com": "G-"
+			"glendy.garcia@ibw.com": "G-",
+			// 'octavio.aguirre@ibw.com':"O-"
 		};
 		series[frappe.user.name] && frm.doc.__islocal && frm.set_value('naming_series', series[frappe.user.name]);
 		frm.toggle_enable('naming_series', false);

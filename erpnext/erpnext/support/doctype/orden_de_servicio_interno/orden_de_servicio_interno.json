@@ -33,6 +33,7 @@
   "direccion",
   "materiales_tab",
   "materiales_detalles",
+  "materiales_retirados",
   "bitacora_tab",
   "total_abierto",
   "column_break_26",
@@ -180,7 +181,7 @@
   {
    "fieldname": "materiales_detalles",
    "fieldtype": "Table",
-   "label": "Materiales detalles",
+   "label": "Materiales Instalados",
    "options": "Materiales detalles"
   },
   {
@@ -240,11 +241,17 @@
    "fieldtype": "Link",
    "label": "Nodo",
    "options": "Nodo"
+  },
+  {
+   "fieldname": "materiales_retirados",
+   "fieldtype": "Table",
+   "label": "Materiales Retirados",
+   "options": "Materiales detalles"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-02-17 14:46:01.857385",
+ "modified": "2023-02-20 09:04:14.348961",
  "modified_by": "Administrator",
  "module": "Support",
  "name": "Orden de Servicio Interno",

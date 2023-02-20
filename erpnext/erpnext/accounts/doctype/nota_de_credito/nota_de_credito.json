@@ -10,39 +10,52 @@
   "regnumber",
   "nombre",
   "tipo_cliente",
-  "gestion",
+  "portafolio",
   "tipo_de_nota",
+  "column_break_5",
+  "fecha",
   "no_recibo",
-  "monto"
+  "tasa_de_cambio",
+  "moneda",
+  "monto",
+  "descripcion_de_solicitud_section",
+  "gestion",
+  "descripcion_solicitud",
+  "aplicacion_de_nc_section",
+  "detalle"
  ],
  "fields": [
   {
    "fieldname": "regnumber",
    "fieldtype": "Link",
    "label": "Regnumber",
-   "options": "Customer"
+   "options": "Customer",
+   "read_only": 1
   },
   {
    "fieldname": "nombre",
    "fieldtype": "Data",
-   "label": "Nombre"
+   "label": "Nombre",
+   "read_only": 1
   },
   {
    "fieldname": "tipo_cliente",
    "fieldtype": "Data",
-   "label": "Tipo Cliente"
+   "label": "Tipo Cliente",
+   "read_only": 1
   },
   {
    "fieldname": "gestion",
    "fieldtype": "Link",
    "label": "Gestion",
-   "options": "Gestion"
+   "options": "Gestion",
+   "read_only": 1
   },
   {
    "fieldname": "tipo_de_nota",
    "fieldtype": "Select",
    "label": "Tipo de Nota",
-   "options": "Descuento\nCanje\nLimpieza"
+   "options": "Problemas Tecnicos\nCanje Comercial\nError de Facturacion\nCambio de Planes\nDescuento Recuperacion de Mora\nBorra Saldo\nLimpieza"
   },
   {
    "fieldname": "no_recibo",
@@ -52,12 +65,71 @@
   {
    "fieldname": "monto",
    "fieldtype": "Float",
-   "label": "Monto"
+   "in_list_view": 1,
+   "label": "Monto",
+   "precision": "2",
+   "reqd": 1
+  },
+  {
+   "default": "USD",
+   "fieldname": "moneda",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Moneda",
+   "options": "USD\nNIO",
+   "reqd": 1
+  },
+  {
+   "fieldname": "descripcion_de_solicitud_section",
+   "fieldtype": "Section Break",
+   "label": "Descripcion de Solicitud"
+  },
+  {
+   "fieldname": "descripcion_solicitud",
+   "fieldtype": "Small Text",
+   "in_list_view": 1,
+   "label": "Descripcion Solicitud",
+   "reqd": 1
+  },
+  {
+   "fieldname": "aplicacion_de_nc_section",
+   "fieldtype": "Section Break",
+   "label": "Aplicacion de NC"
+  },
+  {
+   "fieldname": "tasa_de_cambio",
+   "fieldtype": "Float",
+   "label": "Tasa de Cambio",
+   "precision": "4",
+   "read_only": 1
+  },
+  {
+   "fieldname": "detalle",
+   "fieldtype": "Table",
+   "label": "Detalle",
+   "options": "Nota de Credito Detalle"
+  },
+  {
+   "fieldname": "column_break_5",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "fecha",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Fecha",
+   "reqd": 1
+  },
+  {
+   "fieldname": "portafolio",
+   "fieldtype": "Data",
+   "label": "Portafolio",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-02-07 12:07:48.974021",
+ "modified": "2023-02-17 15:30:03.963723",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Nota de Credito",

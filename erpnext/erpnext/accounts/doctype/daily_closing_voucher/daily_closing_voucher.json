@@ -42,6 +42,7 @@
    "fieldtype": "Date",
    "in_list_view": 1,
    "label": "Posting Date",
+   "read_only": 1,
    "reqd": 1
   },
   {
@@ -93,8 +94,7 @@
    "fieldname": "references",
    "fieldtype": "Table",
    "label": "References",
-   "options": "Daily Closing Reference",
-   "read_only": 1
+   "options": "Daily Closing Reference"
   },
   {
    "fieldname": "cancelled_sb",
@@ -105,8 +105,7 @@
    "fieldname": "cancelled",
    "fieldtype": "Table",
    "label": "Cancelled",
-   "options": "Daily Closing Cancelled Reference",
-   "read_only": 1
+   "options": "Daily Closing Cancelled Reference"
   },
   {
    "fieldname": "amended_from",
@@ -126,13 +125,15 @@
    "fieldname": "tipo",
    "fieldtype": "Select",
    "label": "Tipo",
-   "options": "User\nColectores"
+   "options": "User\nColectores",
+   "read_only": 1
   },
   {
    "fieldname": "tercero",
    "fieldtype": "Dynamic Link",
    "label": "Tercero",
-   "options": "tipo"
+   "options": "tipo",
+   "read_only": 1
   },
   {
    "fieldname": "totales_modo_de_pagos",
@@ -162,7 +163,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-01-25 09:10:46.113110",
+ "modified": "2023-02-16 17:03:32.532441",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Daily Closing Voucher",
