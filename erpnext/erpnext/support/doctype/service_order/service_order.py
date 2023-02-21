@@ -36,8 +36,8 @@ class ServiceOrder(Document):
 				solucion = self.solucion
 			except:
 				solucion = None
-			if not solucion:u
-				frappe.msgprint("Inserte na solución")
+			if not solucion:
+				frappe.msgprint("Inserte una solución")
 				frappe.db.set_value(self.doctype, self.name, 'workflow_state', 'Seguimiento')
 				self.reload()
 				return
@@ -641,13 +641,6 @@ class ServiceOrder(Document):
 						frappe.db.set_value(self.doctype, self.name, 'workflow_state', 'Seguimiento')
 						self.reload()
 						return
-				if len(self.equipo_orden_servicio) > 0:
-					for equipo in self.equipo_orden_servicio:
-						if frappe.db.get_value("Serial No",equipo.serial_no,"warehouse") != frappe.db.get_value("Tecnico",self.tecnico,"almacen"):
-							frappe.msgprint("El equipo " + equipo.serial_no + " no pertenece a la bodega del técnico")
-							frappe.db.set_value(self.doctype, self.name, 'workflow_state', 'Seguimiento')
-							self.reload()
-							return
 			if not solucion:
 				frappe.msgprint("Inserte una solución")
 				frappe.db.set_value(self.doctype, self.name, 'workflow_state', 'Seguimiento')
@@ -689,13 +682,13 @@ class ServiceOrder(Document):
 					frappe.db.set_value(self.doctype, self.name, 'workflow_state', 'Seguimiento')
 					self.reload()
 					return
-			# if len(self.equipo_orden_servicio) > 0:
-			# 	for equipo in self.equipo_orden_servicio:
-			# 		if frappe.db.get_value("Serial No",equipo.serial_no,"warehouse") != frappe.db.get_value("Tecnico",self.tecnico,"almacen"):
-			# 			frappe.msgprint("El equipo " + equipo.serial_no + " no pertenece a la bodega del técnico")
-			# 			frappe.db.set_value(self.doctype, self.name, 'workflow_state', 'Seguimiento')
-			# 			self.reload()
-			# 			return
+			if len(self.equipo_orden_servicio) > 0:
+				for equipo in self.equipo_orden_servicio:
+					if frappe.db.get_value("Serial No",equipo.serial_no,"warehouse") != frappe.db.get_value("Tecnico",self.tecnico,"almacen"):
+						frappe.msgprint("El equipo " + equipo.serial_no + " no pertenece a la bodega del técnico")
+						frappe.db.set_value(self.doctype, self.name, 'workflow_state', 'Seguimiento')
+						self.reload()
+						return
 			idx = frappe.db.sql(""" select idx from `tabBitacora Orden` where parent=%(parent)s ORDER BY fecha_transaccion DESC LIMIT 1 """,{"parent":self.name})	
 			try:
 				idx = int(idx[0][0]) + 1
