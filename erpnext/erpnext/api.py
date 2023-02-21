@@ -3559,9 +3559,10 @@ def Aplicar_Nota_Credito(deudas=None,pagos=None,cuentaBanco=None,regnumber=None,
 	# if isinstance(regnumber, six.string_types):
 	# 	regnumber = json.loads(regnumber, object_pairs_hook=frappe._dict)
 
-	if isinstance(cuentaBanco, six.string_types):
-		cuentaBanco = json.loads(cuentaBanco, object_pairs_hook=frappe._dict)
+	# if isinstance(cuentaBanco, six.string_types):
+	# 	cuentaBanco = json.loads(cuentaBanco, object_pairs_hook=frappe._dict)
 
+	
 	# if isinstance(fecha, six.string_types):
 	# 	fecha = json.loads(fecha, object_pairs_hook=frappe._dict)
 
@@ -3577,7 +3578,7 @@ def Aplicar_Nota_Credito(deudas=None,pagos=None,cuentaBanco=None,regnumber=None,
 	customer = regnumber
 	accounts = []
 	tcF = []
-
+	
 	# return deudas.link_doctype
 	for deuda in deudas:
 		ret = {'party_type': 'Customer', 'party': customer, 'reference_type': deuda.link_doctype, 'reference_name': deuda.link_name}
@@ -3607,7 +3608,9 @@ def Aplicar_Nota_Credito(deudas=None,pagos=None,cuentaBanco=None,regnumber=None,
 		accounts.append(ret)
 		tcF.append(tcFa)
 
-	# return accounts,tcF
+	
+	
+	# return tcF
 	# mode = 'Depositos'
 	currency_map = {
 		'nio': 'NIO',
@@ -3646,9 +3649,13 @@ def Aplicar_Nota_Credito(deudas=None,pagos=None,cuentaBanco=None,regnumber=None,
 					# er = tc
 					# A la misma tasa de la factura
 					# er = accounts[0]['exchange_rate']
-					# Recorrer la mismta facuta con su tc
-					if entry.Factura in tcF:
-					er = tcF.tc
+					# # Recorrer la mismta facuta con su tc
+					for tcc in tcF:
+						if entry.Factura == tcc['reference_name']:
+						# if entry.Factura in tcF:
+							er = tcc['tc']
+						tcc.pop('reference_name')
+						tcc.pop('tc')
 				# row[prefix] = compute_nio(row[field], er)
 				# er = 1.0
 				row[prefix] = compute_nio(row[field], er)
@@ -3672,7 +3679,7 @@ def Aplicar_Nota_Credito(deudas=None,pagos=None,cuentaBanco=None,regnumber=None,
 		if acc['account_currency']=="NIO":
 			hayNIO = acc['account_currency']
 
-	return accounts
+	# return accounts,tcF
 
 	diff_amount = None
 	tdoc = None
@@ -3756,8 +3763,8 @@ def Aplicar_Nota_Credito(deudas=None,pagos=None,cuentaBanco=None,regnumber=None,
 		'accounts':accounts,
 		'multi_currency': True,
 		'codigo_nota_credito' : codigo_nota_credito,
-		'tipo_de_pago' : "DepositoBanco",
-		'aplico_deposito_banco':1
+		# 'tipo_de_pago' : "DepositoBanco",
+		# 'aplico_deposito_banco':1
 		# 'observacion': 'Se revertio el pag'
 	})
 

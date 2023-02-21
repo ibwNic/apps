@@ -496,7 +496,6 @@ class Subscription(Document):
 			invoice.submit()
 			# if self.submit_invoice:
 			# 	invoice.submit()
-
 			return invoice
 		except Exception as e:
 			frappe.msgprint(frappe._('generate_invoice tv : Fatality Error Project {0} ').format(e))
