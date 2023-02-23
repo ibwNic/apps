@@ -154,7 +154,7 @@ frappe.ui.form.on("User", {
 				},
 				__("Password")
 			);
-
+		
 			if (frappe.user.has_role("System Manager")) {
 				frappe.db.get_single_value("LDAP Settings", "enabled").then((value) => {
 					if (value === 1 && frm.doc.name != "Administrator") {
@@ -259,6 +259,27 @@ frappe.ui.form.on("User", {
 			}
 			frm.dirty();
 		}
+	},
+	after_save: function (frm) {
+		// if (frappe.user.has_role("Administrador Tecnicos")){
+		// 		frappe.call({
+		// 			method: "frappe.core.doctype.user.user.permisos_tecnicos",
+		// 		});
+		// 	}
+		frappe.call({
+			"method": "erpnext.crm.doctype.opportunity.opportunity.consultar_rol",
+				callback: function(r){
+					
+					if(r.message.includes("Administrador Tecnicos")){
+						//if (frappe.user.has_role("Administrador Tecnicos")){
+								frappe.call({
+									method: "frappe.core.doctype.user.user.permisos_tecnicos",
+								});
+							//}
+					}
+			
+			}
+		});
 	},
 	validate: function (frm) {
 		if (frm.roles_editor) {

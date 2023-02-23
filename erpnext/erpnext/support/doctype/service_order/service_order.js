@@ -1,9 +1,21 @@
 // Copyright (c) 2022, Frappe Technologies Pvt. Ltd. and contributors
 // For license information, please see license.txt
-
 frappe.ui.form.on('Service Order', {
 	refresh: function(frm) {
-		
+		frm.set_query('tecnico', function(d){
+			return {
+				filters: {
+					 activo: 1
+				}
+			}
+		})
+		frm.fields_dict.cuadrilla_tecnica.grid.get_field("tecnico").get_query = function(doc, cdt, cdn){
+			return {
+				filters: {		
+					activo:1
+				}
+			}
+		}
 		if(frm.doc.tipo_de_orden !== "PRESUPUESTO"){
 			frm.toggle_display("bom_de_materiales", false);
 			frm.toggle_display("total_bom_nio", false);
@@ -69,6 +81,16 @@ frappe.ui.form.on('Service Order', {
 						frm.fields_dict.bom_de_materiales.grid.toggle_display("precio", false);
 						frm.fields_dict.bom_de_materiales.grid.toggle_display("total", false);
 	
+						}
+						if(r.message.includes("O&M") && !(r.message.includes("Back Office")) && !(r.message.includes("Administrador Tecnicos"))){
+							frm.toggle_display("fecha_seguimiento", false);
+							frm.toggle_display("fecha_solicitud", false);
+							frm.toggle_display("fecha_pendiente", false);
+							frm.toggle_display("fecha_atendido", false);
+							frm.toggle_display("fecha_finalizado", false);
+							frm.toggle_display("ordered_on_stock", false);
+							frm.toggle_display("direccion_de_instalacion", false);
+							frm.toggle_display("cuadrilla_tecnica", false);
 						}		
 			}
 		});

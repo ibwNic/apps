@@ -48,7 +48,7 @@ class Lead(SellingController, CRMNote):
 				direccion = None
 			if not direccion:
 				frappe.msgprint(
-					msg='Requerido ingresar dirección para aprobar iniciativa',
+					msg='Requerido ingresar dirección aprobar iniciativa',
 					title='No se pudo aprobar',
 					indicator='red'
 				)
@@ -65,7 +65,7 @@ class Lead(SellingController, CRMNote):
 				phones = None
 			if not phones:
 				frappe.msgprint(
-					msg='Requerido ingresar contacto para aprobar iniciativa. Debe haber al menos un teléfono marcado como principal.',
+					msg='Requerido ingresar contacto aprobar iniciativa. Debe haber al menos un teléfono marcado como principal.',
 					title='No se pudo aprobar',
 					indicator='red'
 				)
@@ -201,7 +201,6 @@ class Lead(SellingController, CRMNote):
 			filters={"lead": self.name},
 			fields=["parent"],
 		)
-	
 
 	def has_customer(self):
 		return frappe.db.get_value("Customer", {"lead_name": self.name})
@@ -295,6 +294,14 @@ class Lead(SellingController, CRMNote):
 
 @frappe.whitelist()
 def make_customer(source_name, target_doc=None):
+	# customer = frappe.db.get_value("Prospect Lead", {"lead": source_name},'customer')
+	# if not customer:
+# 	try:	
+# 		return _make_customer(source_name, target_doc, True)
+# 	except Exception as e:
+# 			frappe.msgprint(frappe._(' Fatality Error Project {0} ').format(e))
+	# else:
+	# 	frappe.msgprint("Ya existe un cliente para este LEAD")
 	customer = frappe.db.get_value("Prospect Lead", {"lead": source_name},'customer')
 	if not customer:	
 		return _make_customer(source_name, target_doc, True)
@@ -325,6 +332,7 @@ def _make_customer(source_name, target_doc=None, ignore_permissions=False):
 					"contact_no": "phone_1",
 					"fax": "fax_1",
 				},
+				"field_no_map": ["disabled"],
 			}
 		},
 		target_doc,
@@ -433,7 +441,7 @@ def get_lead_details(lead, posting_date=None, company=None):
 		{
 			"territory": lead.territory,
 			"customer_name": lead.company_name or lead.lead_name,
-			"contact_display": " ".join(filter(None, [lead.salutation, lead.lead_name])),
+			"contact_display": " ".join(filter(None, [lead.lead_name])),
 			"contact_email": lead.email_id,
 			"contact_mobile": lead.mobile_no,
 			"contact_phone": lead.phone,
@@ -526,16 +534,14 @@ def add_lead_to_prospect(lead, prospect):
 		title=_("Lead -> Prospect"),
 		indicator="green",
 	)
-
+	
 @frappe.whitelist()
 def verificar_cedula(cedula):
-	cedulas = 	frappe.db.sql(""" SELECT distinct l.cedula  FROM  `tabLead` l where l.cedula = %(cedula)s
-			union all SELECT distinct c.cedula FROM  `tabCustomer` c where c.cedula = %(cedula)s;""",{"cedula":cedula})
-	try:
-		cedulas = cedulas[0]
-		frappe.msgprint("Esa cédula ya existe")
-		return True
-	except:
-		return False
-	
-	
+	# cedulas = 	frappe.db.sql(""" SELECT distinct l.cedula  FROM  `tabLead` l where l.cedula = %(cedula)s
+	# 		union all SELECT distinct c.cedula FROM  `tabCustomer` c where c.cedula = %(cedula)s;""",{"cedula":cedula})
+	# try:
+	# 	cedulas = cedulas[0]
+	# 	frappe.msgprint("Esa cédula ya existe")
+	# 	return True
+	# except:
+	return False

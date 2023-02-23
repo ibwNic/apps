@@ -3,7 +3,7 @@
 
 frappe.ui.form.on('Gestion', {
 	refresh: function(frm) {
-        if(frm.doc.convertido === 0){
+        if(frm.doc.convertido === 0 && frm.doc.estado === 'Retenido' && !frm.doc.__islocal){
             frappe.call({					
                 method: "erpnext.support.doctype.gestion.gestion.ocultar_actualizacion",
                 args: {"name":frm.doc.name},

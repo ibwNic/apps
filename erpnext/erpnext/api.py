@@ -1044,7 +1044,7 @@ def obtenerCierreCaja(for_owner=False):
 		HayCierreDia = frappe.get_list("Daily Closing Voucher","name", {"owner": frappe.local.user, "docstatus": 0,"posting_date": today()})
 		# # Nama_CierreCierreAbierto = frappe.get_list("Daily Closing Voucher","name", {"owner": frappe.local.user, "docstatus": 0})
 		# # No tiene cierre abiertos
-		# # return HayCierreDia
+		# return HayCierreDia
 		if HayCierreDia:
 			return 0
 		else:
@@ -3589,11 +3589,11 @@ def Aplicar_Nota_Credito(deudas=None,pagos=None,cuentaBanco=None,regnumber=None,
 		ret.update({'account': account, 'account_currency': account_currency})
 		if deuda.link_doctype == "Sales Invoice":
 			# Monto real de su factura
-			ret[field] = frappe.db.get_value(deuda.link_doctype, deuda.link_name, 'outstanding_amount')
+			# ret[field] = frappe.db.get_value(deuda.link_doctype, deuda.link_name, 'outstanding_amount')
 			# Asignarle el monto que digito en el Deposito
-			# for monto in pagos:
-			# 	if monto.Factura == deuda.link_name:
-			# 		ret[field] = monto.monto
+			for monto in pagos:
+				if monto.Factura == deuda.link_name:
+					ret[field] = monto.monto
 
 			if account_currency == 'USD':
 				er = frappe.db.get_value(deuda.link_doctype, deuda.link_name, 'conversion_rate')
@@ -3654,8 +3654,8 @@ def Aplicar_Nota_Credito(deudas=None,pagos=None,cuentaBanco=None,regnumber=None,
 						if entry.Factura == tcc['reference_name']:
 						# if entry.Factura in tcF:
 							er = tcc['tc']
-						tcc.pop('reference_name')
-						tcc.pop('tc')
+							tcc.pop('reference_name')
+							tcc.pop('tc')
 				# row[prefix] = compute_nio(row[field], er)
 				# er = 1.0
 				row[prefix] = compute_nio(row[field], er)
@@ -3679,7 +3679,7 @@ def Aplicar_Nota_Credito(deudas=None,pagos=None,cuentaBanco=None,regnumber=None,
 		if acc['account_currency']=="NIO":
 			hayNIO = acc['account_currency']
 
-	# return accounts,tcF
+	# return accounts
 
 	diff_amount = None
 	tdoc = None
@@ -3763,6 +3763,8 @@ def Aplicar_Nota_Credito(deudas=None,pagos=None,cuentaBanco=None,regnumber=None,
 		'accounts':accounts,
 		'multi_currency': True,
 		'codigo_nota_credito' : codigo_nota_credito,
+		'aplico_nota_credito':1,
+		'regnumber':customer
 		# 'tipo_de_pago' : "DepositoBanco",
 		# 'aplico_deposito_banco':1
 		# 'observacion': 'Se revertio el pag'
@@ -3773,3 +3775,74 @@ def Aplicar_Nota_Credito(deudas=None,pagos=None,cuentaBanco=None,regnumber=None,
 	# # return {'docs': newJe.as_dict()}
 	return {'docs': newJe.as_dict()}
 	# return accounts
+
+
+# Registrar pagos de Batch
+@frappe.whitelist()
+def Pago_batch(deudas=None,pagos=None,Recibo=None,NumCheque=None,ChequeChek=None,Colector=None,NameBatch=None,regnumber=None,factura=None,tc=None,fecha=None,monto=None,moneda=None,dc='c',_ui_=True):
+	from erpnext.accounts.party import get_party_account, get_party_account_currency
+	# local_user = frappe.session.user
+	# name = frappe.session.user
+	
+	# return 'USer'
+	# if isinstance(deudas, six.string_types):
+	# 	deudas = json.loads(deudas, object_pairs_hook=frappe._dict)
+
+	# if isinstance(pagos, six.string_types):
+	# 	pagos = json.loads(pagos, object_pairs_hook=frappe._dict)
+
+	# if isinstance(regnumber, six.string_types):
+	# 	regnumber = json.loads(regnumber, object_pairs_hook=frappe._dict)
+
+	# if isinstance(cuentaBanco, six.string_types):
+	# 	cuentaBanco = json.loads(cuentaBanco, object_pairs_hook=frappe._dict)
+
+	# if isinstance(NameBatch, six.string_types):
+	# 	NameBatch = json.loads(NameBatch, object_pairs_hook=frappe._dict)
+	
+	# if isinstance(fecha, six.string_types):
+	# 	fecha = json.loads(fecha, object_pairs_hook=frappe._dict)
+	# return pagos
+	# if isinstance(tc, six.string_types):
+	# 	tc = json.loads(tc, object_pairs_hook=frappe._dict)
+
+	# return deudas,pagos,regnumber
+	# return NameBatch
+	# default_account = frappe.db.exists("Mode of Payment Account", {'default_account': cuentaBanco})
+	montoUSD= None	
+	montoNIO = None
+
+	if moneda == 'USD':
+		montoUSD = monto
+	
+	if moneda == 'NIO':
+		montoNIO = monto
+	# for pa in pagos:
+	# 	fact = pa.Factura
+
+	# 	if pa.moneda == 'USD':
+	# 		montoUSD = pa.monto
+	# 	else:
+	# 		montoNIO = pa.monto
+
+	# return fact,montoUSD,montoNIO
+	batch =  frappe.get_doc('Pago Batch',NameBatch)
+	
+	detalles = {
+		'fecha':fecha,
+		'regnumber':regnumber,
+		'no_recibo':Recibo,
+		'monto_cordoba':montoNIO,
+		'monto_dolar':montoUSD,
+		'cheque':ChequeChek,
+		'no_cheque':NumCheque,
+		'colector':Colector,
+		'factura':factura
+	}
+	
+	batch.append("pagos_detalle", detalles)
+	batch.flags.ignore_permissions = True
+	batch.save()
+	# batch.submit()
+	frappe.db.commit()
+	return 'Ok'

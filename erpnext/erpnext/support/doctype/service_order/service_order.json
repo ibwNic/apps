@@ -27,7 +27,8 @@
   "solucion",
   "tecnico",
   "equipos__bom_section",
-  "currency"
+  "currency",
+  "amended_from"
  ],
  "fields": [
   {
@@ -171,11 +172,21 @@
    "fieldtype": "Link",
    "label": "Currency",
    "options": "Currency"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Service Order",
+   "print_hide": 1,
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
+ "is_submittable": 1,
  "links": [],
- "modified": "2023-02-14 14:03:23.921642",
+ "modified": "2023-02-23 09:35:22.813382",
  "modified_by": "Administrator",
  "module": "Support",
  "name": "Service Order",
@@ -192,6 +203,7 @@
    "report": 1,
    "role": "System Manager",
    "share": 1,
+   "submit": 1,
    "write": 1
   },
   {
@@ -205,6 +217,20 @@
    "role": "Back Office",
    "select": 1,
    "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Support Team",
+   "share": 1,
+   "submit": 1,
    "write": 1
   }
  ],

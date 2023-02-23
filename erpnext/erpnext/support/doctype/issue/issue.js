@@ -79,7 +79,13 @@ frappe.ui.form.on("Issue", {
 	refresh: function(frm) {
 	    //console.log(frm.doc.customer);
 	  // console.log(frm.doc.cambiar_equipo);
-	  
+	  frm.set_query('tecnico', function(d){
+			return {
+				filters: {
+						activo: 1
+				}
+			}
+		})
 
 		if(frm.doc.tipo_de_orden =='Tramite'){
 			frm.toggle_display("issue_type", false);

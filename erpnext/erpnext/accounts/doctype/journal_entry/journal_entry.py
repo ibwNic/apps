@@ -39,7 +39,7 @@ class JournalEntry(AccountsController):
 
 	def validate(self):
 		# Se agrega registro al cierre
-		if self.docstatus == 0 and self.ui==1 and self.aplicco_reversion == 0 and self.aplico_deposito_banco == 0:
+		if self.docstatus == 0 and self.ui==1 and self.aplicco_reversion == 0 and self.aplico_deposito_banco == 0 and self.aplico_nota_credito == 0:
 			# try:
 			# frappe.msgprint('Entra')
 			res = obtenerCierreCaja(True)
@@ -47,12 +47,16 @@ class JournalEntry(AccountsController):
 				raise Exception("Debe de cerrar caja antes de empezar hacer transacciones")
 
 		# Registrar el pago en el cierre
-		if self.docstatus == 1 and self.ui==1 and self.aplicco_reversion == 0 and self.aplico_deposito_banco == 0:
+		if self.docstatus == 1 and self.ui==1 and self.aplicco_reversion == 0 and self.aplico_deposito_banco == 0 and self.aplico_nota_credito == 0:
 			cierre = registrarPagoEnElCierre(self, 0, True)
 			frappe.msgprint(str(cierre))
 
+		# Registrar deposito
 		if self.aplico_deposito_banco == 1 and self.docstatus != 0:
 			self.Registrar_DepositoBanco()
+		# Registrar Nota de Credito
+		if self.aplico_nota_credito == 1 and self.docstatus != 0:
+			self.Registrar_NotaCredito()
 		# Registrar Anticipos o depositos despues de validar 
 		if self.tipo_de_pago == "Anticipo" and self.docstatus != 0:
 			self.Crear_Anticipo()
@@ -98,7 +102,7 @@ class JournalEntry(AccountsController):
 			self.title = self.get_title()
 
 	def on_submit(self):
-		if self.docstatus == 0 and self.ui==1 and self.aplicco_reversion == 0 and self.aplico_deposito_banco == 0:
+		if self.docstatus == 0 and self.ui==1 and self.aplicco_reversion == 0 and self.aplico_deposito_banco == 0 and self.aplico_nota_credito == 0:
 			# try:
 			# frappe.msgprint('Entra en submit')
 			res = obtenerCierreCaja(True)
@@ -157,12 +161,12 @@ class JournalEntry(AccountsController):
 		
 
 		# Se modifica el cierre para no tomar en cuenta el movimiento cancelado
-		if self.docstatus==2 and self.ui==1 and self.aplicco_reversion == 0 and self.aplico_deposito_banco == 0:
+		if self.docstatus==2 and self.ui==1 and self.aplicco_reversion == 0 and self.aplico_deposito_banco == 0 and self.aplico_nota_credito == 0:
 			res = movimentarPagoEnElCierre(self,0,True)
 			frappe.msgprint(str(res))
 
 	def on_update(self):
-		if self.docstatus == 0 and self.ui==1 and self.aplicco_reversion == 0 and self.aplico_deposito_banco == 0:
+		if self.docstatus == 0 and self.ui==1 and self.aplicco_reversion == 0 and self.aplico_deposito_banco == 0 and self.aplico_nota_credito == 0:
 			# try:
 			# frappe.msgprint('Entra update')
 			res = obtenerCierreCaja(True)
@@ -520,6 +524,84 @@ class JournalEntry(AccountsController):
 			PagoSinIdentificar.flags.ignore_permissions = True
 			PagoSinIdentificar.save()
 			PagoSinIdentificar.submit()
+			frappe.db.commit()
+			
+			# Depositos = frappe.new_doc('Deposito en Garantia')
+			# Depositos.cliente = je.customerdeposito
+			# # print(je.customerdeposito)
+			# Depositos.fecha = je.posting_date
+			# Depositos.tipo_de_documento = 'Journal Entry'
+			# Depositos.nombre_del_documento=je.name
+			# # Depositos.meses_anticipo = je.meses_anticipo
+			# Depositos.tasa_de_cambio = je.tasa_de_cambiodeposito
+			# Depositos.currency='NIO'
+			# Depositos.monto = sumaMonto
+			# # Depositos.modo_de_pagos = current_invoice_end
+
+			# for item in je.accounts:
+			# 	# frappe.msgprint(str(item))
+			# 	if item.account != "2.01.001.002.001-Depósitos de Clientes - NI":
+			# 		accounts = {
+			# 				"tipo_de_pago": item.mode_of_payment,
+			# 				"moneda": item.account_currency,
+			# 				"montousd":item.debit_in_account_currency,
+			# 				"montonio": item.debit,
+			# 			}
+			# 		Depositos.append("pagos", accounts)
+
+			# Depositos.save()
+
+			# suscripcion_actualizar = frappe.get_doc("Subscription",  suscripcion.name)
+			# suscripcion_actualizar.update(
+			# 	{
+			# 		"current_invoice_start":str(nowdate()),
+			# 		"current_invoice_end":formatdate(frappe.utils.get_last_day(str(nowdate())), "yyyy-MM-dd")
+			# 	}
+			# )
+			# suscripcion_actualizar.save()
+			# frappe.db.set_value('Opportunity', name, 'suscripcion', suscripcion.name)
+			# frappe.msgprint(frappe._('Nueva Suscripción con ID {0}').format(suscripcion.name))
+
+			# return suscripcion.name
+
+		except Exception as e:
+			frappe.msgprint(frappe._('Fatality Error Project {0} ').format(e))
+
+	def Registrar_NotaCredito(self):
+		accounts = []
+		# frappe.msgprint("Entra")
+		try:
+			je = frappe.get_doc('Journal Entry',self.name)
+			# sumaMonto = 0
+			# for monto in je.accounts:
+			# 	if monto.debit_in_account_currency and monto.tipo_de_cuenta=="Recibido":
+			# 		sumaMonto += monto.debit_in_account_currency
+
+			NCredito = frappe.get_doc('Nota de Credito', self.codigo_nota_credito)
+			
+
+			# PagoSinIdentificar.saldo = flt(PagoSinIdentificar.monto - sumaMonto,2)
+			for acc in je.accounts:
+				if acc.tipo_de_cuenta == 'Pagado':
+					# facturas.append(acc.reference_name)
+
+					detalles = {
+					"documento": je.name,
+					"fecha": today(),
+					"currency":str(acc.account_currency),
+					"tasa_de_cambio":acc.exchange_rate,
+					"factura": acc.reference_name,
+					"monto": flt(acc.credit_in_account_currency)
+					}
+					NCredito.append("detalle", detalles)
+			
+			# NCredito.workflow_state == 'Aplicado'
+			
+			# PagoSinIdentificar.aplicado = 1
+			NCredito.flags.ignore_permissions = True
+			NCredito.save()
+			NCredito.submit()
+			frappe.db.set_value('Nota de Credito', self.codigo_nota_credito, 'workflow_state', 'Aplicado')
 			frappe.db.commit()
 			
 			# Depositos = frappe.new_doc('Deposito en Garantia')

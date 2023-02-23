@@ -1138,6 +1138,7 @@ def crear_orden_Desinstalacion(name):
 						'descripcion': frappe._('Ejecutar Desinstalcion de {0}').format(plan.plan),
 						'tipo': 'Customer',
 						'tercero': doc.party,
+						'nombre': frappe.db.get_value('Customer', {"name": doc.party}, 'customer_name'),
 						'plan_de_subscripcion': plan.name,
 						'direccion_de_instalacion': plan.direccion,
 						'portafolio': str(portafolio[0][0]),

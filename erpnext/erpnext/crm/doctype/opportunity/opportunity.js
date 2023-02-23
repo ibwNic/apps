@@ -217,7 +217,6 @@ frappe.ui.form.on("Opportunity", {
 									}
 								})
 							}
-
 						});
 					}
 					
@@ -237,7 +236,7 @@ frappe.ui.form.on("Opportunity", {
 
 		} else {
 			frappe.contacts.clear_address_and_contact(frm);
-		}
+		}			
 	},
 	before_save(frm){
 		frm.set_value('flujo_neto',flt(frm.doc.total_de_ingresos)-flt(frm.doc.total_de_egresos))
@@ -249,7 +248,9 @@ frappe.ui.form.on("Opportunity", {
 		frm.trigger("calculate_total");
 
 	},
-
+	after_save(frm){
+		frm.reload_doc();
+	},
 	calculate_Precios_planes: function(frm) {
 		let total = 0, base_total = 0;
 		frm.doc.items.forEach(item => {

@@ -21,6 +21,7 @@
   "tipo_de_orden",
   "gestion",
   "tecnico",
+  "cuadrilla_tecnica",
   "nodo",
   "column_break_14",
   "descripcion",
@@ -43,7 +44,8 @@
   "column_break_30",
   "total_pendiente",
   "section_break_29",
-  "bitacora_de_orden"
+  "bitacora_de_orden",
+  "amended_from"
  ],
  "fields": [
   {
@@ -247,11 +249,27 @@
    "fieldtype": "Table",
    "label": "Materiales Retirados",
    "options": "Materiales detalles"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Orden de Servicio Interno",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "cuadrilla_tecnica",
+   "fieldtype": "Table",
+   "label": "Cuadrilla Tecnica",
+   "options": "Tecnicos Service Order"
   }
  ],
  "index_web_pages_for_search": 1,
+ "is_submittable": 1,
  "links": [],
- "modified": "2023-02-20 09:04:14.348961",
+ "modified": "2023-02-23 13:45:38.815681",
  "modified_by": "Administrator",
  "module": "Support",
  "name": "Orden de Servicio Interno",
@@ -269,9 +287,33 @@
    "role": "System Manager",
    "share": 1,
    "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "read": 1,
+   "role": "Support Team",
+   "select": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "O&M",
+   "share": 1,
+   "submit": 1,
+   "write": 1
   }
  ],
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "track_changes": 1,
+ "track_seen": 1
 }

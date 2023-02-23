@@ -1178,3 +1178,45 @@ def get_enabled_users():
 		return enabled_users
 
 	return frappe.cache().get_value("enabled_users", _get_enabled_users)
+
+@frappe.whitelist()
+def permisos_tecnicos():
+	usuarios = [u[0] for u in frappe.db.get_values("User",{"owner":frappe.session.user},"name")]
+	for u in usuarios:
+		if not frappe.db.exists("Has Role",{"parent":u,"role":"Support Team"}):
+			nuevo_rol = frappe.get_doc({
+				"doctype": "Has Role",
+				"role":"Support Team",
+				"parent": u,
+				"parentfield":"roles",
+				"parenttype": "User",
+				})
+			nuevo_rol.insert(ignore_permissions=True)
+		if not frappe.db.exists("Has Role",{"parent":u,"role":"O&M"}):
+			nuevo_rol_2 = frappe.get_doc({
+				"doctype": "Has Role",
+				"role":"O&M",
+				"parent": u,
+				"parentfield":"roles",
+				"parenttype": "User",
+				})
+			nuevo_rol_2.insert(ignore_permissions=True)
+		modulos = ['Accounts','Assets','Automation','Bulk Transaction','Buying','Communication','Contacts',
+					'Core','CRM','Custom','E-commerce','Email','ERPNext Integrations','Event Streaming','Geo',
+					'Integrations','Loan Management','Maintenance','Manufacturing','Payment Gateways','Payments',
+					'Portal','Printing','Projects','Quality Management','Regional','Selling','Setup','Social',
+					'Stock','Subcontracting','Telephony','Utilities','Website','Workflow']
+		for m in modulos:
+			if not frappe.db.exists("Block Module",{"parent":u,"module":m}):
+				modulo_block = frappe.get_doc({
+					"doctype": "Block Module",
+					"module":m,
+					"parent": u,
+					"parentfield":'block_modules',
+					"parenttype": "User",
+					})
+				modulo_block.insert(ignore_permissions=True)
+
+
+
+

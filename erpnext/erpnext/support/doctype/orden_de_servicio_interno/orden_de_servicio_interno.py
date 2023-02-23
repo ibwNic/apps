@@ -32,7 +32,7 @@ class OrdendeServicioInterno(Document):
 			idx = int(idx[0][0]) + 1
 		except:
 			idx = 1
-		if self.workflow_state == "Finalizado":	
+		if self.workflow_state == "Finalizado":
 			if self.estado_anterior == 'ATENDIDO':
 				date = now()
 				frappe.db.sql(""" update `tabOrden de Servicio Interno` set fecha_finalizado = %(date)s where name = %(name)s""", {"date":date,"name":self.name})
@@ -48,7 +48,7 @@ class OrdendeServicioInterno(Document):
 					"parenttype": "Orden de Servicio Interno",
 					"idx":idx
 					})
-				bitacora_fin.insert()
+				bitacora_fin.insert(ignore_permissions=True)
 			
 			frappe.db.set_value(self.doctype, self.name, 'estado_anterior', 'FINALIZADO')
 			frappe.db.set_value(self.doctype, self.name, 'docstatus', 1)
@@ -88,7 +88,7 @@ class OrdendeServicioInterno(Document):
 					"parenttype": "Orden de Servicio Interno",
 					"idx":idx
 					})
-				bitacora_atend.insert()
+				bitacora_atend.insert(ignore_permissions=True)
 			frappe.db.set_value(self.doctype, self.name, 'estado_anterior', 'ATENDIDO')			
 
 		if self.workflow_state == "Seguimiento":
@@ -123,7 +123,7 @@ class OrdendeServicioInterno(Document):
 					"parenttype": "Orden de Servicio Interno",
 					"idx":idx
 					})
-				bitacora_orden.insert()
+				bitacora_orden.insert(ignore_permissions=True)
 				idx += 1
 				bitacora_seg = frappe.get_doc({
 					"doctype": "Bitacora Orden",
@@ -137,7 +137,7 @@ class OrdendeServicioInterno(Document):
 					"parenttype": "Orden de Servicio Interno",
 					"idx":idx
 					})
-				bitacora_seg.insert()
+				bitacora_seg.insert(ignore_permissions=True)
 
 			if self.estado_anterior == 'PENDIENTE':
 				date = now()
@@ -154,7 +154,7 @@ class OrdendeServicioInterno(Document):
 					"parenttype": "Orden de Servicio Interno",
 					"idx":idx
 					})
-				bitacora_orden.insert()	
+				bitacora_orden.insert(ignore_permissions=True)	
 			frappe.db.set_value(self.doctype, self.name, 'estado_anterior', 'SEGUIMIENTO')	
 
 		if self.workflow_state == "Pending":
@@ -173,7 +173,7 @@ class OrdendeServicioInterno(Document):
 						"parenttype": "Orden de Servicio Interno",
 						"idx":idx
 						})
-				bitacora_orden.insert()		
+				bitacora_orden.insert(ignore_permissions=True)		
 			frappe.db.set_value(self.doctype, self.name, 'estado_anterior', 'PENDIENTE')
 
 		total_abierto = str(frappe.db.sql(""" SELECT  (case when SUM(tiempo_transcurrido) is null then 0 else SUM(tiempo_transcurrido) end) from `tabBitacora Orden`  WHERE detalle = 'Orden cambió de estado ABIERTO a estado SEGUIMIENTO' and parent = %(name)s; """, {"name":self.name})[0][0])
@@ -182,3 +182,4 @@ class OrdendeServicioInterno(Document):
 		total_pendiente = str(frappe.db.sql(""" SELECT  (case when SUM(tiempo_transcurrido) is null then 0 else SUM(tiempo_transcurrido) end) from `tabBitacora Orden`  WHERE detalle = 'Orden cambió de estado PENDIENTE a estado SEGUIMIENTO' and parent = %(name)s; """, {"name":self.name})[0][0])
 		frappe.db.sql(""" update `tabOrden de Servicio Interno` set total_abierto = %(total_abierto)s, total_seguimiento = %(total_seguimiento)s, total_atendido = %(total_atendido)s, total_pendiente = %(total_pendiente)s where name = %(name)s""", {"total_abierto":total_abierto, "total_seguimiento":total_seguimiento, "total_atendido":total_atendido, "total_pendiente":total_pendiente,"name":self.name})	
 		self.reload()
+	#def on_submit(self):

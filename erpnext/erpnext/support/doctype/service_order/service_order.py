@@ -77,7 +77,7 @@ class ServiceOrder(Document):
 					"parenttype": "Service Order",
 					"idx":idx
 					})
-				bitacora_orden.insert()
+				bitacora_orden.insert(ignore_permissions=True)
 			else:
 				bitacora_abierta = frappe.get_doc({
 					"doctype": "Bitacora Orden",
@@ -91,7 +91,7 @@ class ServiceOrder(Document):
 					"parenttype": "Service Order",
 					"idx":idx
 					})
-				bitacora_abierta.insert()
+				bitacora_abierta.insert(ignore_permissions=True)
 				idx += 1
 				bitacora_seg = frappe.get_doc({
 					"doctype": "Bitacora Orden",
@@ -105,7 +105,7 @@ class ServiceOrder(Document):
 					"parenttype": "Service Order",
 					"idx":idx
 					})
-				bitacora_seg.insert()
+				bitacora_seg.insert(ignore_permissions=True)
 				idx += 1
 				bitacora_atend = frappe.get_doc({
 					"doctype": "Bitacora Orden",
@@ -119,7 +119,7 @@ class ServiceOrder(Document):
 					"parenttype": "Service Order",
 					"idx":idx
 					})
-				bitacora_atend.insert()
+				bitacora_atend.insert(ignore_permissions=True)
 				idx += 1
 				bitacora_fin = frappe.get_doc({
 					"doctype": "Bitacora Orden",
@@ -133,7 +133,7 @@ class ServiceOrder(Document):
 					"parenttype": "Service Order",
 					"idx":idx
 					})
-				bitacora_fin.insert()
+				bitacora_fin.insert(ignore_permissions=True)
 			frappe.db.set_value(self.doctype, self.name, 'estado_anterior', 'FINALIZADO')
 			frappe.db.set_value(self.doctype, self.name, 'finalizado_por', frappe.session.user)
 			frappe.db.set_value(self.doctype, self.name, 'docstatus', 1)
@@ -165,10 +165,10 @@ class ServiceOrder(Document):
 					'site_order': self.name,
 					'latitud': self.latitud,
 					'longitud': self.longitud,
-					'tecnico':self.tecnico,
+					#'tecnico':self.tecnico,
 					'nodo':self.nodo
 				})	
-				od.insert()
+				od.insert(ignore_permissions=True)
 				frappe.msgprint(frappe._('Nueva orden de {0} con ID {1}').format(frappe._(od.tipo_de_orden), od.name))
 				frappe.db.set_value("Service Order", self.name,"site_order",od.name)	
 				item_name = frappe.db.get_value("Item",{"name": self.item_opportunity},"item_name")
@@ -203,7 +203,7 @@ class ServiceOrder(Document):
 					'parenttype' : opportunity_prospect.parenttype,
 					'parentfield' : 'items'
 				})	
-				oi.insert()
+				oi.insert(ignore_permissions=True)
 				
 			if self.tipo_de_orden == "PRESUPUESTO" and self.factible == 'El proyecto es factible':
 				equipos = frappe.db.sql(""" select count(*) from `tabEquipos BOM` where parent = %(parent)s """, {"parent": self.name})
@@ -231,7 +231,7 @@ class ServiceOrder(Document):
 					'parentfield' : 'productos_otc',
 					'presupuesto': self.name
 				})	
-				ootc.insert()
+				ootc.insert(ignore_permissions=True)
 
 			if self.tipo_de_orden == "SUSPENSION" and  self.tipo_de_origen=='Suspensiones':	
 				for equipo in self.so_detalle_clientes_suspendidos:
@@ -266,7 +266,7 @@ class ServiceOrder(Document):
 								"tercero": self.name,
 								"idx":idx
 							})
-							add_to_bitacora.insert()
+							add_to_bitacora.insert(ignore_permissions=True)
 
 			if self.tipo_de_orden == "DESINSTALACION" and  self.tipo_de_origen=='Subscription':	
 				if len(self.equipo_orden_servicio) > 0:
@@ -302,7 +302,7 @@ class ServiceOrder(Document):
 								"tercero": self.name,
 								"idx":idx
 							})
-							add_to_bitacora.insert()
+							add_to_bitacora.insert(ignore_permissions=True)
 
 				if not frappe.db.exists("Bitacora de Planes", {"subscription_plan_detail": self.plan_de_subscripcion}):
 					bitacora_plan = frappe.get_doc({
@@ -317,7 +317,7 @@ class ServiceOrder(Document):
 						'subscription_plan_detail': self.plan_de_subscripcion
 
 					})
-					bitacora_plan.insert()					
+					bitacora_plan.insert(ignore_permissions=True)					
 				bitacora_plan = frappe.get_doc("Bitacora de Planes", {"subscription_plan_detail": self.plan_de_subscripcion})								
 				bitacora_detalle = frappe.get_doc({
 					"doctype": "Detalle Bitacora Planes",
@@ -330,7 +330,7 @@ class ServiceOrder(Document):
 					"tipo_transaccion":"Service Order",
 					"tercero":self.name
 					})
-				bitacora_detalle.insert()
+				bitacora_detalle.insert(ignore_permissions=True)
 
 		
 			if self.tipo_de_orden == "INSTALACION" and  self.tipo_de_origen=='Subscription':		
@@ -408,7 +408,7 @@ class ServiceOrder(Document):
 									'subscription_plan_detail': spd.name,
 									'nodo': spd.nodo
 								})
-								bitacora_plan.insert()					
+								bitacora_plan.insert(ignore_permissions=True)					
 							bitacora_plan = frappe.get_doc("Bitacora de Planes", {"subscription_plan_detail": spd.name})								
 							bitacora_detalle = frappe.get_doc({
 								"doctype": "Detalle Bitacora Planes",
@@ -421,7 +421,7 @@ class ServiceOrder(Document):
 								"tipo_transaccion":"Service Order",
 								"tercero":self.name
 								})
-							bitacora_detalle.insert()
+							bitacora_detalle.insert(ignore_permissions=True)
 						elif "TV" in plan.plan:
 							spd.update(
 								{
@@ -459,7 +459,7 @@ class ServiceOrder(Document):
 							'subscription_plan_detail': spd.name
 
 						})
-						bitacora_plan.insert()
+						bitacora_plan.insert(ignore_permissions=True)
 				
 					bitacora_plan = frappe.get_doc("Bitacora de Planes", {"subscription_plan_detail": spd.name})
 						
@@ -474,7 +474,7 @@ class ServiceOrder(Document):
 						"tipo_transaccion":"Service Order",
 						"tercero":self.name
 						})
-					bitacora_detalle.insert()
+					bitacora_detalle.insert(ignore_permissions=True)
 
 				insert_portafolio = frappe.db.sql("""
 					select i.item_group from `tabItem` i
@@ -535,7 +535,7 @@ class ServiceOrder(Document):
 							'subscription_plan_detail': upd_spd.name
 
 						})
-						bitacora_plan.insert()
+						bitacora_plan.insert(ignore_permissions=True)
 					
 					bitacora_plan = frappe.get_doc("Bitacora de Planes", {"subscription_plan_detail": self.plan_de_subscripcion})
 							
@@ -550,7 +550,7 @@ class ServiceOrder(Document):
 						"tipo_transaccion":"Service Order",
 						"tercero":self.name
 						})
-					bitacora_detalle.insert()
+					bitacora_detalle.insert(ignore_permissions=True)
 				
 				for equipo in self.equipo_orden_servicio:
 					
@@ -585,7 +585,7 @@ class ServiceOrder(Document):
 								"tercero": self.name,
 								"idx":idx
 							})
-							add_to_bitacora.insert()
+							add_to_bitacora.insert(ignore_permissions=True)
 				# except Exception as e:
 				# 	frappe.msgprint(frappe._('Fatality Error Project {0} ').format(e))
 			
@@ -609,7 +609,7 @@ class ServiceOrder(Document):
 						"parenttype": "Service Order",
 						"idx":idx
 						})
-					bitacora_orden.insert()
+					bitacora_orden.insert(ignore_permissions=True)
 
 			frappe.db.set_value(self.doctype, self.name, 'estado_anterior', 'ABIERTO')	
 		if self.workflow_state == "Atendido":
@@ -641,6 +641,13 @@ class ServiceOrder(Document):
 						frappe.db.set_value(self.doctype, self.name, 'workflow_state', 'Seguimiento')
 						self.reload()
 						return
+				if len(self.equipo_orden_servicio) > 0:
+					for equipo in self.equipo_orden_servicio:
+						if frappe.db.get_value("Serial No",equipo.serial_no,"warehouse") != frappe.db.get_value("Tecnico",self.tecnico,"almacen"):
+							frappe.msgprint("El equipo " + equipo.serial_no + " no pertenece a la bodega del técnico")
+							frappe.db.set_value(self.doctype, self.name, 'workflow_state', 'Seguimiento')
+							self.reload()
+							return
 			if not solucion:
 				frappe.msgprint("Inserte una solución")
 				frappe.db.set_value(self.doctype, self.name, 'workflow_state', 'Seguimiento')
@@ -682,13 +689,16 @@ class ServiceOrder(Document):
 					frappe.db.set_value(self.doctype, self.name, 'workflow_state', 'Seguimiento')
 					self.reload()
 					return
-			if len(self.equipo_orden_servicio) > 0:
-				for equipo in self.equipo_orden_servicio:
-					if frappe.db.get_value("Serial No",equipo.serial_no,"warehouse") != frappe.db.get_value("Tecnico",self.tecnico,"almacen"):
-						frappe.msgprint("El equipo " + equipo.serial_no + " no pertenece a la bodega del técnico")
-						frappe.db.set_value(self.doctype, self.name, 'workflow_state', 'Seguimiento')
-						self.reload()
-						return
+				spd = frappe.get_doc("Subscription Plan Detail",self.plan_de_subscripcion)
+				spd.update({
+							'direccion':self.dirección_de_traslado,
+							'address_line':self.nueva_dirección,
+							'latitud':self.latitud_traslado,
+							'longitud':self.longitud_traslado,
+							'nodo':nuevo_nodo
+						})
+				spd.save(ignore_permissions=True)
+				#nueva direccion al plan
 			idx = frappe.db.sql(""" select idx from `tabBitacora Orden` where parent=%(parent)s ORDER BY fecha_transaccion DESC LIMIT 1 """,{"parent":self.name})	
 			try:
 				idx = int(idx[0][0]) + 1
@@ -724,7 +734,7 @@ class ServiceOrder(Document):
 						"parenttype": "Service Order",
 						"idx":idx
 						})
-					bitacora_orden.insert()
+					bitacora_orden.insert(ignore_permissions=True)
 			frappe.db.set_value(self.doctype, self.name, 'estado_anterior', 'ATENDIDO')			
 
 		if self.workflow_state == "Seguimiento":
@@ -763,7 +773,7 @@ class ServiceOrder(Document):
 					"parenttype": "Service Order",
 					"idx":idx
 					})
-					bitacora_orden.insert()
+					bitacora_orden.insert(ignore_permissions=True)
 				
 			if self.estado_anterior == 'PENDIENTE':
 				if self.venta_en_caliente == 0:
@@ -795,7 +805,7 @@ class ServiceOrder(Document):
 						"parenttype": "Service Order",
 						"idx":idx
 						})
-					bitacora_orden.insert()	
+					bitacora_orden.insert(ignore_permissions=True)	
 
 			frappe.db.set_value(self.doctype, self.name, 'estado_anterior', 'SEGUIMIENTO')	
 
@@ -835,7 +845,7 @@ class ServiceOrder(Document):
 						"parenttype": "Service Order",
 						"idx":idx
 						})
-					bitacora_orden.insert()	
+					bitacora_orden.insert(ignore_permissions=True)	
 			frappe.db.set_value(self.doctype, self.name, 'estado_anterior', 'PENDIENTE')
 
 		total_abierto = str(frappe.db.sql(""" SELECT  (case when SUM(tiempo_transcurrido) is null then 0 else SUM(tiempo_transcurrido) end) from `tabBitacora Orden`  WHERE detalle = 'Orden cambió de estado ABIERTO a estado SEGUIMIENTO' and parent = %(name)s; """, {"name":self.name})[0][0])
@@ -949,3 +959,12 @@ def guardar_encuesta(**args):
 	
 def randStr(chars = string.ascii_uppercase + string.digits, N=4):
 	return ''.join(random.choice(chars) for _ in range(N))
+
+
+@frappe.whitelist()
+def filtrar_ordenes_OyM():
+	try:
+		tecnico = frappe.db.get_value("Tecnico",{"usuario":frappe.session.user},"name")
+		return tecnico
+	except Exception as e:
+		frappe.msgprint(frappe._('Fatality Error Project {0} ').format(e))

@@ -164,7 +164,7 @@
    "hidden": 0,
    "is_query_report": 0,
    "label": "Incidencias",
-   "link_count": 5,
+   "link_count": 6,
    "onboard": 0,
    "type": "Card Break"
   },
@@ -220,9 +220,19 @@
    "link_type": "DocType",
    "onboard": 0,
    "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Ordenes Internas",
+   "link_count": 0,
+   "link_to": "Orden de Servicio Interno",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
   }
  ],
- "modified": "2022-10-10 08:44:36.804367",
+ "modified": "2023-02-23 10:33:14.169889",
  "modified_by": "Administrator",
  "module": "Support",
  "name": "Support",

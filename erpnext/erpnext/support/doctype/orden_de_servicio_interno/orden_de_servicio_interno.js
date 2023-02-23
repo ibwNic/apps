@@ -3,6 +3,20 @@
 
 frappe.ui.form.on('Orden de Servicio Interno', {
 	refresh: function(frm) {
+		frm.set_query('tecnico', function(d){
+			return {
+				filters: {
+						activo: 1
+				}
+			}
+		})
+		frm.fields_dict.cuadrilla_tecnica.grid.get_field("tecnico").get_query = function(doc, cdt, cdn){
+			return {
+				filters: {		
+					activo: 1
+				}
+			}
+		}
 		if(frm.doc.workflow_state !== 'Abierto'){
 			frm.set_df_property('fecha_inicio', 'read_only', true);
 		}

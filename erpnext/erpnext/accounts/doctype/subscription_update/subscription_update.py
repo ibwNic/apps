@@ -99,6 +99,9 @@ def randStr(chars = string.ascii_uppercase + string.digits, N=4):
 @frappe.whitelist()
 def crear_nuevo_contrato(name):
 	subscription_up = frappe.get_doc("Subscription Update",name)
+	if not subscription_up.gestion:
+		frappe.msgprint("Para crear el nuevo contrato debe seleccionar una gestión")
+		return
 	if subscription_up.docstatus == 1:
 		frappe.msgprint("El contrato está hecho")
 		return

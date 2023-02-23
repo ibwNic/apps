@@ -55,7 +55,8 @@
   "content_type",
   "data_46",
   "data_47",
-  "data_48"
+  "data_48",
+  "amended_from"
  ],
  "fields": [
   {
@@ -390,12 +391,22 @@
   {
    "fieldname": "data_48",
    "fieldtype": "Data"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Issue",
+   "print_hide": 1,
+   "read_only": 1
   }
  ],
  "icon": "fa fa-ticket",
  "idx": 7,
+ "is_submittable": 1,
  "links": [],
- "modified": "2023-02-03 10:29:14.655790",
+ "modified": "2023-02-23 09:32:37.338125",
  "modified_by": "Administrator",
  "module": "Support",
  "name": "Issue",
@@ -411,6 +422,7 @@
    "report": 1,
    "role": "Support Team",
    "share": 1,
+   "submit": 1,
    "write": 1
   },
   {
@@ -423,6 +435,7 @@
    "report": 1,
    "role": "Back Office",
    "share": 1,
+   "submit": 1,
    "write": 1
   }
  ],
