@@ -5,7 +5,7 @@
 import json
 import time
 from datetime import timedelta
-
+from frappe.utils import random_string
 import frappe
 from frappe import _
 from frappe.core.utils import get_parent_doc
@@ -21,7 +21,6 @@ from frappe.utils.data import today
 
 from frappe.utils.user import is_website_user
 from pymysql import NULL
-
 
 class Gestion(Document):
 	
@@ -101,17 +100,99 @@ def estado_gestion(name):
 
 @frappe.whitelist()
 def ocultar_actualizacion(name):
-	# try:
 	g = frappe.get_doc("Gestion",name)
+	if g.tipo_gestion != 'Cancelaciones':
+		return
 	nc = 0
 	for plan in g.cambiar_planes:
 		if plan.nuevo_contrato:
 			nc += 1
 	if nc ==len(g.cambiar_planes):
 		frappe.db.set_value("Gestion",name,"convertido",1)
-	# except Exception as e:
-	# 	frappe.msgprint("error: " + e)
 
+@frappe.whitelist()
+def ocultar_orden_servicio(name):
+	g = frappe.get_doc("Gestion",name)
+	if g.tipo_gestion != 'Tramites':
+		return
+	con_orden = 0
+	os = 0
+	for iss in g.issue:
+		if iss.tipo == 'Tramite' and iss.estado == 'Finalizado':
+			con_orden += 1
+		if iss.tipo != 'Tramite':
+			os +=1
+	if con_orden == len(g.issue) - os:
+		frappe.db.set_value("Gestion",name,"convertido",1)
+
+@frappe.whitelist()
+def generar_orden_de_servicio(name):
+	gestion = frappe.get_doc("Gestion",name)
+	if gestion.tipo_gestion != "Tramites":
+		return
+	if gestion.convertido == 1:
+		frappe.msgprint("orden de servicio generada")
+		return
+	if gestion.subgestion == 'Traslado de Servicio':
+		for iss in gestion.issue:
+			if frappe.db.exists("Issue",iss.issue):
+				incidencia = frappe.get_doc("Issue",iss.issue)
+				if incidencia.workflow_state != 'Finalizado':
+					frappe.msgprint("Debe finalizar la incidencia " + iss.issue)
+					continue
+				#creacion de orden
+				spd = frappe.get_doc("Subscription Plan Detail",incidencia.planes)
+				od = frappe.get_doc({
+					'doctype': "Service Order",
+					'tipo_de_orden': "TRASLADO",
+					'workflow_state': "Abierto",
+					'tipo_de_origen': "Gestion",
+					'nombre_de_origen': name,
+					'descripcion': frappe._('Ejecutar traslado de {0}').format(spd.plan),
+					'tipo': 'Customer',
+					'nombre':frappe.db.get_value("Customer",gestion.customer,'customer_name'),
+					'tercero': gestion.customer,
+					'plan_de_subscripcion': spd.name,
+					'direccion_de_instalacion': spd.direccion,
+					'portafolio': incidencia.servicio,
+					'departamento': incidencia.departamento,
+					'municipio': incidencia.municipio,
+					'barrio': incidencia.barrio,
+					'direccion': incidencia.address_line1,
+					'latitud':spd.latitud,
+					'longitud':spd.longitud,
+					'nodo':spd.nodo
+				})
+				od.insert(ignore_permissions=True)
+				frappe.msgprint(frappe._('Nueva orden de {0} con ID {1}').format(frappe._(od.tipo_de_orden), od.name))
+				doc = frappe.get_doc("Subscription",spd.parent)
+				for equipos in doc.equipos:
+					ran = random_string(6)
+					ran = ran + equipos.name
+					if name==equipos.plan:
+						code = frappe.db.get_value('Serial No', {"name": equipos.equipo}, 'item_code')
+						frappe.db.sql(""" insert into `tabEquipo_Orden_Servicio` (name,serial_no,parent,parenttype,parentfield,item_code) 
+							values (%(name)s,%(serial_no)s,%(parent)s,'Service Order','equipo_orden_servicio',%(item_code)s) """, {"name":ran,"serial_no":equipos.equipo,"parent":od.name,"item_code":code})
+				tab_issue = frappe.get_doc({
+					"doctype": "Issue Detalle",
+					"issue":od.name,
+					"estado":od.workflow_state,
+					"tipo":od.tipo_de_orden,
+					"parent": name,
+					"parentfield":"issue",
+					"parenttype": "Gestion",
+				})
+				tab_issue.insert(
+					ignore_permissions=True,
+ 					ignore_links=True
+				)
+
+	elif gestion.subgestion == 'Solicitud TV Adicional':
+		pass
+	elif gestion.subgestion == 'Solicitud Cableado':
+		pass
+	elif gestion.subgestion == 'Reconexión':
+		pass
 
 def programar_suspensiones_temporales():
 	""" suspender planes, contratos y clientes desde gestiones finalizadas """

@@ -3776,56 +3776,11 @@ def Aplicar_Nota_Credito(deudas=None,pagos=None,cuentaBanco=None,regnumber=None,
 	return {'docs': newJe.as_dict()}
 	# return accounts
 
-
 # Registrar pagos de Batch
 @frappe.whitelist()
-def Pago_batch(deudas=None,pagos=None,Recibo=None,NumCheque=None,ChequeChek=None,Colector=None,NameBatch=None,regnumber=None,factura=None,tc=None,fecha=None,monto=None,moneda=None,dc='c',_ui_=True):
+def agregar_pago_batch(deudas=None,pagos=None,Recibo=None,NumCheque=None,ChequeChek=None,Colector=None,NameBatch=None,regnumber=None,factura=None,tc=None,fecha=None,montoNIO=None,montoUSD = None,dc='c',_ui_=True):
 	from erpnext.accounts.party import get_party_account, get_party_account_currency
-	# local_user = frappe.session.user
-	# name = frappe.session.user
 	
-	# return 'USer'
-	# if isinstance(deudas, six.string_types):
-	# 	deudas = json.loads(deudas, object_pairs_hook=frappe._dict)
-
-	# if isinstance(pagos, six.string_types):
-	# 	pagos = json.loads(pagos, object_pairs_hook=frappe._dict)
-
-	# if isinstance(regnumber, six.string_types):
-	# 	regnumber = json.loads(regnumber, object_pairs_hook=frappe._dict)
-
-	# if isinstance(cuentaBanco, six.string_types):
-	# 	cuentaBanco = json.loads(cuentaBanco, object_pairs_hook=frappe._dict)
-
-	# if isinstance(NameBatch, six.string_types):
-	# 	NameBatch = json.loads(NameBatch, object_pairs_hook=frappe._dict)
-	
-	# if isinstance(fecha, six.string_types):
-	# 	fecha = json.loads(fecha, object_pairs_hook=frappe._dict)
-	# return pagos
-	# if isinstance(tc, six.string_types):
-	# 	tc = json.loads(tc, object_pairs_hook=frappe._dict)
-
-	# return deudas,pagos,regnumber
-	# return NameBatch
-	# default_account = frappe.db.exists("Mode of Payment Account", {'default_account': cuentaBanco})
-	montoUSD= None	
-	montoNIO = None
-
-	if moneda == 'USD':
-		montoUSD = monto
-	
-	if moneda == 'NIO':
-		montoNIO = monto
-	# for pa in pagos:
-	# 	fact = pa.Factura
-
-	# 	if pa.moneda == 'USD':
-	# 		montoUSD = pa.monto
-	# 	else:
-	# 		montoNIO = pa.monto
-
-	# return fact,montoUSD,montoNIO
 	batch =  frappe.get_doc('Pago Batch',NameBatch)
 	
 	detalles = {
@@ -3843,6 +3798,428 @@ def Pago_batch(deudas=None,pagos=None,Recibo=None,NumCheque=None,ChequeChek=None
 	batch.append("pagos_detalle", detalles)
 	batch.flags.ignore_permissions = True
 	batch.save()
-	# batch.submit()
 	frappe.db.commit()
 	return 'Ok'
+
+@frappe.whitelist()
+def aplicar_pago_batch(regnumber=None, fecha=None, tc=None,deudas=None, creditos=None, pagos=None, cambios=None, aplicable=None, metadata=None, _ui_=False):
+	local_user = frappe.session.user
+
+	if isinstance(metadata, six.string_types):
+		# lo convierte en un diccionario
+		metadata = json.loads(metadata)
+
+	# Asiganar a la metadata de Interfaz
+	if regnumber:
+		customer = frappe.db.exists("Customer", {"name": ["like", "%{}".format(regnumber)]})
+
+	# tc = tc.replace('\"','')
+
+	# return customer
+	# Dealer
+	if metadata and 'colector' and 'IDdealer' in metadata:
+		Tercero = frappe.db.get_value('Colectores',{'colectorid': metadata['colector'],'iddealer':metadata['IDdealer']})
+		# return Tercero
+		# if not frappe.db.exists('Daily Closing Voucher', {'tercero': Tercero, 'docstatus': 0}):
+		# 	# return 'No existe cierre'
+		# 	frappe.new_doc('Daily Closing Voucher').update({
+		# 		'posting_date': today(),
+		# 		'company': 'IBW-NI',
+		# 		'remarks': 'Cierre de Caja {}'.format(Tercero),
+		# 		'tipo': 'Colectores',
+		# 		'tercero': Tercero
+		# 	}).insert()
+	# Colector
+		# return 'Hay uno abierto'
+	elif metadata and 'colector' in metadata:
+		# Tercero = frappe.db.get_value('Colectores',{'colectorid': metadata['colector']})
+		# Por el momento dejo pasar pagos, pero esta en la condicion Tercero
+		Tercero = frappe.db.get_value('Colectores',{'colectorid': metadata['colector']})
+
+		# if not frappe.db.exists('Daily Closing Voucher', {'tercero': Tercero, 'docstatus': 0}):
+		# 	frappe.new_doc('Daily Closing Voucher').update({
+		# 		'posting_date': today(),
+		# 		'company': 'IBW-NI',
+		# 		'remarks': 'Cierre de Caja {}'.format(Tercero),
+		# 		'tipo': 'Colectores',
+		# 		'tercero': Tercero
+		# 	}).insert()
+	# Caja
+	# else:
+	# 	Tercero = frappe.db.get_value('User',{'email':local_user})
+	# 	# return Tercero
+	# 	if not frappe.db.exists('Daily Closing Voucher', {'tercero': Tercero, 'docstatus': 0}):
+	# 		# return "OK"
+	# 		frappe.new_doc('Daily Closing Voucher').update({
+	# 			'posting_date': today(),
+	# 			'company': 'IBW-NI',
+	# 			'remarks': 'Cierre de Caja {}'.format(Tercero),
+	# 			'tipo': 'User',
+	# 			'tercero': Tercero
+	# 		}).insert()
+
+	if not fecha:
+		fecha = today()
+	else:
+		fecha = fecha.replace('\"','')
+
+	# Tasa de cambio paralela
+	if not tc:
+		tc = get_exchange_rate('USD', 'NIO', fecha, throw=True)
+
+	messages = []
+	accounts = []
+	if isinstance(deudas, six.string_types):
+		deudas = json.loads(deudas, object_pairs_hook=frappe._dict)
+	if isinstance(creditos, six.string_types):
+		creditos = json.loads(creditos, object_pairs_hook=frappe._dict)
+	if isinstance(pagos, six.string_types):
+		pagos = json.loads(pagos, object_pairs_hook=frappe._dict)
+	if isinstance(cambios, six.string_types):
+		cambios = json.loads(cambios, object_pairs_hook=frappe._dict)
+	if isinstance(aplicable, six.string_types):
+		aplicable = json.loads(aplicable, object_pairs_hook=frappe._dict)
+
+	if deudas:
+		messages += validate_list_of_dicts(deudas, 'deudas', ('link_doctype', 'link_name'))
+	if creditos:
+		messages += validate_list_of_dicts(creditos, 'creditos', ('link_doctype', 'link_name'))
+	if pagos:
+		messages += validate_list_of_dicts(pagos, 'pagos', ('tipo_de_pago', 'moneda', 'monto'), ('referencia',))
+	if cambios:
+		messages += validate_list_of_dicts(cambios, 'cambios', ('moneda', 'monto'))
+
+	if not regnumber and not deudas and not (creditos or pagos):
+		return {
+			'status': 'error',
+			'message': 'You should provide at least the regnumber or deudas and/or creditos or pagos'
+		}
+	elif not regnumber:
+		if not creditos and not pagos:
+			return {
+				'status': 'error',
+				'message': 'You should provide at least the creditos or pagos values'
+			}
+
+	if not regnumber:
+		return {
+				'status': 'error',
+				'message': 'You should provide at least the creditos or pagos values'
+			}
+	else:
+		customer = frappe.db.exists("Customer", {"name": ["like", "%{}".format(regnumber)]})
+
+	# Falta depurar
+	if deudas:
+		validate_party_entries(deudas, accounts, messages, tc, 'c', customer=customer)
+	if creditos:
+		validate_party_entries(creditos, accounts, messages, tc, 'd', customer=customer)
+	if pagos:
+		validate_payment_entries(pagos, accounts, messages, tc, 'd')
+	if cambios:
+		validate_payment_entries( list(map(lambda d: d.update({'tipo_de_pago': 'Efectivo'}), cambios)), accounts, messages, tc, 'c')
+
+	# return accounts
+	# return tc
+	# Importante
+	#sum_debits es el pago que hara el cliente.
+	sum_debits = sum([d.get('debit', 0.0) for d in accounts])
+	#sum_credits es el monto total de las facturas pendientes.
+	sum_credits = sum([d.get('credit', 0.0) for d in accounts])
+
+	# Variable para verificar si viene un pago en Cordobas
+	hayNIO = "USD"
+
+	#Pase para poner el tipo de cuenta e identificar lo que aumenta o disminuye en los cierres
+	facs = list(filter(lambda acc: acc.get("reference_type") == "Sales Invoice", accounts))
+
+	for acc in facs:
+		acc['tipo_de_cuenta']="Pagado"
+
+	facs = list(filter(lambda acc: acc.get("reference_type") != "Sales Invoice", accounts))
+
+	for acc in facs:
+		acc['tipo_de_cuenta']="Recibido"
+
+		if acc['account_currency']=="NIO":
+			hayNIO = acc['account_currency']
+
+
+	# return hayNIO
+	# for a in range(1,len(accounts)):
+	# 	if accounts[a]['account_currency'] == "NIO":
+	# 		hayNIO = accounts[a]['account_currency']
+	# 		break
+
+	# return sum_debits, sum_credits
+	# return tc
+
+	# condicion de pagos parciales
+	if sum_debits < sum_credits:
+		# si hay Pago en cordobas
+		if hayNIO == "NIO":
+			# Pago parcial para Cordobas
+			facs = list(reversed(list(filter(lambda acc: acc.get("reference_type") == "Sales Invoice", accounts))))
+
+			for acc in facs:
+				acc['credit'] = abs(flt(sum_debits, 2))
+				acc['credit_in_account_currency'] = flt(flt(acc.get('credit', 0.0),2) / flt(acc.get('exchange_rate'), 4), 4)
+				acc['exchange_rate'] = flt(frappe.get_value("Sales Invoice",acc.get('reference_name'),"conversion_rate"), 4)
+				acc['account_currency_pago'] = None
+				# break
+			sum_credits = sum_debits
+		else:
+			# Pago parcial para dolares
+			facs = list(reversed(list(filter(lambda acc: acc.get("reference_type") == "Sales Invoice", accounts))))
+
+			for acc in facs:
+				acc['credit'] = abs(flt(sum_debits, 2))
+				if acc['account_currency'] == "NIO":
+					acc['credit_in_account_currency'] = flt(acc.get('credit', 0.0), 2) / flt(acc.get('exchange_rate', 1.0), 4)
+				else:
+					# return accounts
+					acc['credit_in_account_currency'] = flt(acc.get('credit', 0.0), 2) / flt(tc, 4)
+					# acc['credit_in_account_currency'] = flt(acc.get('credit', 0.0), 2)
+					acc['exchange_rate'] = flt(tc,4)
+					if accounts[1]['account_currency'] == "USD":
+						acc['account_currency_pago'] = accounts[1]['account_currency']
+					else:
+						acc['account_currency_pago'] = None
+				# break
+			sum_credits = sum_debits
+	else:
+	# # No se efectua la conversacion del monto con la tasa de cambio
+	# # Pagos con forme de la factura
+
+		# return accounts
+
+		if hayNIO == "NIO" and sum_credits == sum_debits:
+			facs = list(reversed(list(filter(lambda acc: acc.get("reference_type") == "Sales Invoice", accounts))))
+			# return facs
+			for acc in facs:
+				ac = accounts[0]["credit_in_account_currency"]
+				t= flt(ac,2)*flt(tc,4)
+				acc['credit'] = abs(t)
+				acc['account_currency_pago'] = accounts[1]['account_currency']
+				if  accounts[1]['account_currency'] == "USD":
+					# Tasa de cambio una decima menor
+					acc['exchange_rate'] = flt(tc,4)
+				else:
+					acc['account_currency_pago'] = "USD"
+					acc['exchange_rate'] = tc
+				# break
+		else:
+			facs = list(reversed(list(filter(lambda acc: acc.get("reference_type") == "Sales Invoice", accounts))))
+			for acc in facs:
+				# Validacion de que punto tomar
+				# acc['credit_in_account_currency'] = truncate(acc['credit_in_account_currency'],2)
+				# El monto en dolares en cuenta de Factura
+				acc['credit_in_account_currency'] = acc['credit_in_account_currency']
+				acc['credit'] = abs(flt(sum_debits, 2))
+				acc['account_currency_pago'] = accounts[1]['account_currency']
+				# if  accounts[1]['account_currency'] == "USD":
+				# 	if hayNIO=="USD":
+				# 		acc['exchange_rate'] = flt(tc,4)
+				# else:
+				# 	acc['account_currency_pago'] = None
+				# break
+
+	# return accounts
+
+	diff = None
+	diff_amount = None
+	# hayNIOExc="USD"
+	# #import pdb; pdb.set_trace()
+	# # Guarda  un nuevo documento
+	# return accounts
+	try:
+		tdoc = frappe.new_doc('Journal Entry').update({
+			'voucher_type': 'Journal Entry',
+			'posting_date': fecha,
+			'multi_currency': 1,
+			'accounts': accounts,
+			'ui': _ui_
+		})
+
+		tdoc.run_method('validate')
+	except Exception:
+		frappe.local.message_log = []
+		if tdoc.difference:
+			diff_amount = tdoc.difference
+
+		# hayNIOExc="USD"
+
+		# for a in tdoc.get("accounts"):
+		# 	if a.account_currency == "NIO":
+		# 		hayNIOExc = a.account_currency
+		# 		break
+
+	# return tdoc.get("accounts")
+	# return diff_amount
+
+	if diff_amount:
+		p = 'debit' if diff_amount < 0 else 'credit'
+		# reemplaza el 5 > abs(flt(frappe.db.get_value('Accounts Settings', 'Accounts Settings', 'miniminal_credit_amount')))
+	# 	if diff_amount > 0 and flt(diff_amount, 2) / flt(tc) > 5:
+	# # 		#  Facturación Cobrada por Anticipado - IBWNI
+	# 		diff = list(filter(lambda e: e['account'] == u'2.02.003.001.002-POSTPAGO, FACTURACION COBRADA POR ANTICIPADO - NI', accounts))
+	# 		if not diff:
+	# # 			#  Facturación Cobrada por Anticipado - IBWNI
+	# 			account = frappe.db.get_value('Account', filters={'name': ['like', '2.02.003.001.002-POSTPAGO, FACTURACION COBRADA POR ANTICIPADO - NI']})
+	# 			if not regnumber:
+	# 				account = account.replace(' - ', ' ZZ - ')
+	# 			diff = {
+	# 				'account': account,
+	# 				'account_currency': 'USD',
+	# 				'account_type': 'Payable',
+	# 				'credit_in_account_currency': 0.0,
+	# 				'credit': 0.0,
+	# 				'debit_in_account_currency': 0.0,
+	# 				'debit': 0.0,
+	# 				'exchange_rate': 0.0,
+	# 				'party_type': 'Customer',
+	# 				'party': get_cliente_id(regnumber),
+	# 				'is_advance': 'Yes'
+	# 			}
+	# 			accounts.append(diff)
+	# 		else:
+	# 			diff = diff[0]
+
+	# 		diff['credit'] = flt(abs(diff_amount), 2)
+	# 		diff['credit_in_account_currency'] = compute_usd(abs(diff_amount), tc)
+	# 		diff['exchange_rate'] = compute_tc(diff['credit_in_account_currency'], diff['credit'])
+	# 	else:
+		# Generar utilidades
+		if diff_amount > 0:
+			# if hayNIOExc == "NIO":
+			# Utilidades Cambiarias - IBWNI
+			diff = list(filter(lambda e: e['account'] == '6.22.010-Utilidades Cambiarias - NI', accounts))
+
+			if not diff:
+			#  Utilidades Cambiarias - IBWNI
+				diff = {'account': '6.22.010-Utilidades Cambiarias - NI', 'account_currency': 'NIO', 'conversion_rate': 1, 'debit': 0.0, 'credit': 0.0, 'debit_in_account_currency': 0.0, 'credit_in_account_currency': 0.0, "tipo_de_cuenta":"Diferencial Cambiario"}
+				accounts.append(diff)
+			else:
+				diff = diff[0]
+
+			diff[p] += abs(diff_amount)
+			diff['{0}_in_account_currency'.format(p)] += abs(diff_amount)
+
+			# return accounts
+			if diff and diff['debit'] and diff['credit']:
+				if diff['debit'] > diff['credit']:
+					diff['debit_in_account_currency'] -= diff['credit_in_account_currency']
+					diff['debit'] -= diff['credit']
+					diff['credit_in_account_currency'] = diff['credit'] = 0.0
+				else:
+					diff['credit_in_account_currency'] -= diff['debit_in_account_currency']
+					diff['credit'] -= diff['debit']
+					diff['debit_in_account_currency'] = diff['debit'] = 0.0
+		# Generar Perdidas
+		else:
+			# Generar Perdida Cambiaria
+			# if hayNIOExc == "NIO":
+			# Utilidades Cambiarias - IBWNI
+			diff = list(filter(lambda e: e['account'] == '6.22.002-Pérdida Cambiaria - NI', accounts))
+
+			if not diff:
+			##  Utilidades Cambiarias - IBWNI
+				diff = {'account': '6.22.002-Pérdida Cambiaria - NI', 'account_currency': 'NIO', 'conversion_rate': 1, 'debit': 0.0, 'credit': 0.0, 'debit_in_account_currency': 0.0, 'credit_in_account_currency': 0.0, "tipo_de_cuenta":"Diferencial Cambiario"}
+				accounts.append(diff)
+			else:
+				diff = diff[0]
+
+			diff[p] += abs(diff_amount)
+			diff['{0}_in_account_currency'.format(p)] += abs(diff_amount)
+
+			# return accounts
+			if diff and diff['debit'] and diff['credit']:
+				if diff['debit'] > diff['credit']:
+					diff['debit_in_account_currency'] -= diff['credit_in_account_currency']
+					diff['debit'] -= diff['credit']
+					diff['credit_in_account_currency'] = diff['credit'] = 0.0
+				else:
+					diff['credit_in_account_currency'] -= diff['debit_in_account_currency']
+					diff['credit'] -= diff['debit']
+					diff['debit_in_account_currency'] = diff['debit'] = 0.0
+
+	# return accounts
+	# if _ui_:
+	# 	return {
+	# 		'accounts': accounts,
+	# 		'messages': messages
+	# 	}
+	if messages:
+		return {
+			'status': 'error',
+			'error': u'\n'.join(messages)
+		}
+	else:
+		doc = frappe.new_doc('Journal Entry').update({
+			'voucher_type': 'Journal Entry',
+			'posting_date': fecha,
+			'multi_currency': 1,
+			'accounts': accounts,
+			'mode_of_payment': pagos[0]['tipo_de_pago'],
+			# 'user_remark': 'Recibo de pago' + fecha,
+			'ui': _ui_
+		})
+
+		if not regnumber:
+			doc.user_remark = 'Pago ZZ'
+
+		if metadata:
+			if 'colector' in metadata:
+				#  Collector toma una cuenta
+				metadata['collector'] = frappe.db.get_value('Colectores', filters={'colectorid': metadata.pop('colector')})
+				# return metadata
+			if 'IDdealer' in metadata:
+				metadata['dealer'] = frappe.db.get_value('Colectores', filters={'iddealer':metadata.pop('IDdealer')})
+			if 'recibo' in metadata:
+				metadata['user_remark'] = metadata.pop('recibo')
+				# return metadata
+				doc.update(metadata)
+		# return metadata
+		try:
+			doc.save()
+			if 'dealer' in metadata and 'collector' in metadata:
+				id_Name_Dealer = metadata['dealer']
+				estado = False
+			elif 'collector' in metadata:
+				id_Name_Dealer = metadata['collector']
+				estado = False
+			else:
+				id_Name_Dealer = None
+				estado = True
+
+			# res = registrarPagoEnElCierre(doc,id_Name_Dealer, estado)
+
+			if isinstance(res, str):
+				frappe.db.rollback()
+				return res
+
+			doc.flags.ignore_submit_comment = True
+
+			if _ui_:
+				doc.submit()
+
+			frappe.db.commit()
+			if not regnumber:
+				DocTags(doc.doctype).add(doc.name, 'ZZ')
+				frappe.db.commit()
+		except Exception as e:
+			if doc.name and doc.docstatus:
+				if not regnumber:
+					DocTags(doc.doctype).add(doc.name, 'ZZ')
+					frappe.db.commit()
+				return doc.name.split("-")[1]
+			return {
+				'status': 'error',
+				'error': e,
+				'doc': doc.as_json()
+			}
+
+		frappe.db.commit()
+		frappe.set_user(local_user)
+
+		return doc.name.split("-")[1]

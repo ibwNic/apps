@@ -129,7 +129,7 @@ class Issue(Document):
 					frappe.db.set_value(self.doctype, self.name, 'workflow_state', 'Seguimiento')
 					self.reload()
 					return
-			if not solucion or not resolution_details:
+			if not resolution_details:
 				frappe.msgprint("Inserte una solución y/o resolución")
 				frappe.db.set_value(self.doctype, self.name, 'workflow_state', 'Seguimiento')
 				self.reload()

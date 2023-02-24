@@ -40,7 +40,7 @@
    "in_preview": 1,
    "in_standard_filter": 1,
    "label": "Tipo de Orden",
-   "options": "CORTE\nSUSPENSION\nREACTIVACION\nDESINSTALACION\nDESINSTALACION RCPE\nINSTALACION\nINSTALACION OTC\nRECONECCION\nSITE SURVEY\nSUPERVISION\nTRASLADO\nAPROVISIONAMIENTO\nTV ADICIONAL\nPRESUPUESTO",
+   "options": "CORTE\nSUSPENSION\nREACTIVACION\nDESINSTALACION\nDESINSTALACION RCPE\nINSTALACION\nINSTALACION OTC\nRECONEXION\nSITE SURVEY\nSUPERVISION\nTRASLADO\nAPROVISIONAMIENTO\nTV ADICIONAL\nCABLEADO\nPRESUPUESTO",
    "reqd": 1
   },
   {
@@ -186,7 +186,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-02-23 09:35:22.813382",
+ "modified": "2023-02-24 14:25:59.519618",
  "modified_by": "Administrator",
  "module": "Support",
  "name": "Service Order",

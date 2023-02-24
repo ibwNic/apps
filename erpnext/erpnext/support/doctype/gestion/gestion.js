@@ -11,6 +11,14 @@ frappe.ui.form.on('Gestion', {
                 }
             });
         }
+        if(frm.doc.convertido === 0 && frm.doc.estado === 'Finalizado' && !frm.doc.__islocal){
+            frappe.call({					
+                method: "erpnext.support.doctype.gestion.gestion.ocultar_orden_servicio",
+                args: {"name":frm.doc.name},
+                callback: function(r) {                   
+                }
+            });
+        }
 	if(frm.doc.tipo_gestion === 'Cancelaciones' || frm.doc.tipo_gestion === 'Suspension Temporal' ){
         frm.toggle_display("issue", false);
 

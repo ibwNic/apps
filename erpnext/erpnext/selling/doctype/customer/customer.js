@@ -328,15 +328,19 @@ frappe.ui.form.on("Customer", {
 				erpnext.utils.make_pricing_rule(frm.doc.doctype, frm.doc.name);
 			}, __('Create'));
 
-			frm.add_custom_button(__('Get Customer Group Details'), function () {
+			frm.add_custom_button(__('Factura de debito'), function () {
 				frm.trigger("get_customer_group_details");
 			}, __('Actions'));
 
-			if (cint(frappe.defaults.get_default("enable_common_party_accounting"))) {
-				frm.add_custom_button(__('Link with Supplier'), function () {
-					frm.trigger('show_party_link_dialog');
-				}, __('Actions'));
-			}
+			// frm.add_custom_button(__('Get Customer Group Details'), function () {
+			// 	frm.trigger("get_customer_group_details");
+			// }, __('Actions'));
+
+			// if (cint(frappe.defaults.get_default("enable_common_party_accounting"))) {
+			// 	frm.add_custom_button(__('Link with Supplier'), function () {
+			// 		frm.trigger('show_party_link_dialog');
+			// 	}, __('Actions'));
+			// }
 
 			// indicator
 			erpnext.utils.set_party_dashboard_indicators(frm);

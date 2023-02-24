@@ -54,7 +54,6 @@ frappe.ui.form.on('Subscription Update', {
 			frm.fields_dict.actualizar_planes_de_contrato.grid.get_field("nuevo_plan").get_query = function(doc, cdt, cdn){
 				let row = frappe.get_doc(cdt, cdn);
 				let plan = row.name_old_plan;
-				
 				frappe.call({
 					"method": "erpnext.accounts.doctype.subscription_update.subscription_update.filtrar_planes_nuevos",
 					"args":{

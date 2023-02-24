@@ -93,6 +93,12 @@ frappe.ui.form.on("Issue", {
 			frm.toggle_display("detalla_avaria", false);
 			frm.toggle_display("cambiar_equipo", false);
 			frm.toggle_display("productos", false);
+			frm.toggle_display("tecnico", false);
+			frm.toggle_display("detalle_solucion", false);
+			frm.toggle_display("averia_masivo",false);
+		}else{
+			frm.toggle_display("cortesia", false);
+			frm.toggle_display("genera_débito",false);
 		}	   
 	   
 	   	    if (frm.doc.tecnico !== undefined && frm.doc.cambiar_equipo ===1) {
@@ -329,4 +335,21 @@ frappe.ui.form.on("Issue", {
 		// 	frm.timeline.wrapper.data("help-article-event-attached", true);
 		// }
 	},
+});
+
+
+frappe.ui.form.on("Issue", "tipo_de_orden", function(frm) {
+	if(frm.doc.tipo_de_orden === 'Tramite'){
+		frm.toggle_display("issue_type", false);
+		frm.toggle_display("sub_averia", false);
+		frm.toggle_display("detalla_avaria", false);
+		frm.toggle_display("cambiar_equipo", false);
+		frm.toggle_display("productos", false);
+		frm.toggle_display("tecnico", false);
+		frm.toggle_display("detalle_solucion", false);
+		frm.toggle_display("averia_masivo",false);
+	}else{
+		frm.toggle_display("cortesia", false);
+		frm.toggle_display("genera_débito",false);
+	}
 });

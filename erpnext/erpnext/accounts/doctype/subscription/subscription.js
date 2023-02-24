@@ -35,7 +35,12 @@ frappe.ui.form.on('Subscription', {
 			});
 		}
 		 
-
+		// frm.fields_dict.plans.grid.get_field("estado_plan").get_query = function(doc, cdt, cdn){
+		// 	let row = frappe.get_doc(cdt, cdn);
+		// 	let estado = row.estado_plan;
+		// 	console.log(estado)
+		// }
+		
 		//let f=frappe.db.get_value("Customer", {"name": frm.doc.party},"sales_tax_template")
 
 		// if (f.message!==frm.doc.sales_tax_template){
@@ -229,3 +234,26 @@ frappe.ui.form.on("Subscription", "campana", function(frm) {
 	}
 });
 	
+frappe.ui.form.on('Subscription Plan Detail', {
+	form_render: function(frm,cdt,cdn) {
+	   let item = locals[cdt][cdn]; 
+	   frm.fields_dict.plans.grid.toggle_display("activar", false);
+	   frm.fields_dict.plans.grid.toggle_display("tv_adicional", false);
+	   frm.fields_dict.plans.grid.toggle_display("factura_tv_adicional", false);
+	   frm.fields_dict.plans.grid.toggle_display("crear_traslado", false);
+		// if(item.estado_plan != "SUSPENDIDO: Manual" && item.estado_plan != "SUSPENDIDO: Temporal"){
+		// 	frm.fields_dict.plans.grid.toggle_display("activar", false);
+		// }
+		// else{
+		// 	frm.fields_dict.plans.grid.toggle_display("activar", true);
+		// }
+		// if(item.plan != "Servicio TV HFC" && item.plan != "TV Combo GPON" && item.plan != "TV Combo HFC"){
+		// 	frm.fields_dict.plans.grid.toggle_display("tv_adicional", false);
+		// 	frm.fields_dict.plans.grid.toggle_display("factura_tv_adicional", false);
+		// }
+		// else{
+		// 	frm.fields_dict.plans.grid.toggle_display("tv_adicional", true);
+		// 	frm.fields_dict.plans.grid.toggle_display("factura_tv_adicional", true);
+		// }
+	},
+});

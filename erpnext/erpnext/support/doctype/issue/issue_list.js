@@ -20,11 +20,15 @@ frappe.listview_settings['Issue'] = {
                         frappe.call({
                             "method": "erpnext.support.doctype.service_order.service_order.filtrar_ordenes_OyM",
                                 callback: function(r){	
-                                    if(r.message){
+                                    if(r.message !== undefined){
+                                        console.log(r.message)
                                         localStorage.removeItem("tecnico")
                                         localStorage.setItem("tecnico",r.message)
                                         msgprint("Filtros aplicados para " + localStorage.getItem("tecnico"))
-                                    }                           
+                                    } 
+                                    else{
+                                        localStorage.removeItem("tecnico")
+                                    }                          
                             }
                         });
 					}
@@ -34,11 +38,17 @@ frappe.listview_settings['Issue'] = {
 				
 			}
 		});
+        
         if(localStorage.getItem("tecnico")){
             frappe.route_options = {
                 'tecnico': ['=', localStorage.getItem("tecnico")]
             };
+        }else{         
+            frappe.route_options = {
+                'tecnico': ['=', ""]
+            }
         }
+	
 	},
 	get_indicator: function(doc) {
 		if (doc.status === 'Open') {
