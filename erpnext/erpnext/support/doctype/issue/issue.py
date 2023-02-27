@@ -254,6 +254,7 @@ class Issue(Document):
 				add_gestion = frappe.get_doc({
 					"doctype": "Issue Detalle",
 					"issue": self.name,
+					"tipo_documento":self.doctype,
 					"parent": self.gestion,
 					"parentfield": "issue",
 					"parenttype": "Gestion",

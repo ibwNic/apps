@@ -130,9 +130,6 @@ def generar_orden_de_servicio(name):
 	gestion = frappe.get_doc("Gestion",name)
 	if gestion.tipo_gestion != "Tramites":
 		return
-	if gestion.convertido == 1:
-		frappe.msgprint("orden de servicio generada")
-		return
 	if gestion.subgestion == 'Traslado de Servicio':
 		for iss in gestion.issue:
 			if frappe.db.exists("Issue",iss.issue):
@@ -148,7 +145,7 @@ def generar_orden_de_servicio(name):
 					'workflow_state': "Abierto",
 					'tipo_de_origen': "Gestion",
 					'nombre_de_origen': name,
-					'descripcion': frappe._('Ejecutar traslado de {0}').format(spd.plan),
+					'descripcion': frappe._('Ejecutar TRASLADO de {0}').format(spd.plan),
 					'tipo': 'Customer',
 					'nombre':frappe.db.get_value("Customer",gestion.customer,'customer_name'),
 					'tercero': gestion.customer,
@@ -176,6 +173,7 @@ def generar_orden_de_servicio(name):
 				tab_issue = frappe.get_doc({
 					"doctype": "Issue Detalle",
 					"issue":od.name,
+					"tipo_documento":od.doctype,
 					"estado":od.workflow_state,
 					"tipo":od.tipo_de_orden,
 					"parent": name,
@@ -188,11 +186,143 @@ def generar_orden_de_servicio(name):
 				)
 
 	elif gestion.subgestion == 'Solicitud TV Adicional':
-		pass
+		for iss in gestion.issue:
+			if frappe.db.exists("Issue",iss.issue):
+				incidencia = frappe.get_doc("Issue",iss.issue)
+				if incidencia.workflow_state != 'Finalizado':
+					frappe.msgprint("Debe finalizar la incidencia " + iss.issue)
+					continue
+				#creacion de orden
+				spd = frappe.get_doc("Subscription Plan Detail",incidencia.planes)
+				od = frappe.get_doc({
+					'doctype': "Service Order",
+					'tipo_de_orden': "TV ADICIONAL",
+					'workflow_state': "Abierto",
+					'tipo_de_origen': "Gestion",
+					'nombre_de_origen': name,
+					'descripcion': frappe._('Ejecutar instalación TV ADICIONAL de {0}').format(spd.plan),
+					'tipo': 'Customer',
+					'nombre':frappe.db.get_value("Customer",gestion.customer,'customer_name'),
+					'tercero': gestion.customer,
+					'plan_de_subscripcion': spd.name,
+					'direccion_de_instalacion': spd.direccion,
+					'portafolio': incidencia.servicio,
+					'departamento': incidencia.departamento,
+					'municipio': incidencia.municipio,
+					'barrio': incidencia.barrio,
+					'direccion': incidencia.address_line1,
+					'latitud':spd.latitud,
+					'longitud':spd.longitud,
+					'nodo':spd.nodo
+				})
+				od.insert(ignore_permissions=True)
+				frappe.msgprint(frappe._('Nueva orden de {0} con ID {1}').format(frappe._(od.tipo_de_orden), od.name))
+				tab_issue = frappe.get_doc({
+					"doctype": "Issue Detalle",
+					"issue":od.name,
+					"tipo_documento":od.doctype,
+					"estado":od.workflow_state,
+					"tipo":od.tipo_de_orden,
+					"parent": name,
+					"parentfield":"issue",
+					"parenttype": "Gestion",
+				})
+				tab_issue.insert(
+					ignore_permissions=True,
+ 					ignore_links=True
+				)
 	elif gestion.subgestion == 'Solicitud Cableado':
-		pass
+		for iss in gestion.issue:
+			if frappe.db.exists("Issue",iss.issue):
+				incidencia = frappe.get_doc("Issue",iss.issue)
+				if incidencia.workflow_state != 'Finalizado':
+					frappe.msgprint("Debe finalizar la incidencia " + iss.issue)
+					continue
+				#creacion de orden
+				spd = frappe.get_doc("Subscription Plan Detail",incidencia.planes)
+				od = frappe.get_doc({
+					'doctype': "Service Order",
+					'tipo_de_orden': "CABLEADO",
+					'workflow_state': "Abierto",
+					'tipo_de_origen': "Gestion",
+					'nombre_de_origen': name,
+					'descripcion': frappe._('Ejecutar CABLEADO de {0}').format(spd.plan),
+					'tipo': 'Customer',
+					'nombre':frappe.db.get_value("Customer",gestion.customer,'customer_name'),
+					'tercero': gestion.customer,
+					'plan_de_subscripcion': spd.name,
+					'direccion_de_instalacion': spd.direccion,
+					'portafolio': incidencia.servicio,
+					'departamento': incidencia.departamento,
+					'municipio': incidencia.municipio,
+					'barrio': incidencia.barrio,
+					'direccion': incidencia.address_line1,
+					'latitud':spd.latitud,
+					'longitud':spd.longitud,
+					'nodo':spd.nodo
+				})
+				od.insert(ignore_permissions=True)
+				frappe.msgprint(frappe._('Nueva orden de {0} con ID {1}').format(frappe._(od.tipo_de_orden), od.name))
+				tab_issue = frappe.get_doc({
+					"doctype": "Issue Detalle",
+					"issue":od.name,
+					"tipo_documento":od.doctype,
+					"estado":od.workflow_state,
+					"tipo":od.tipo_de_orden,
+					"parent": name,
+					"parentfield":"issue",
+					"parenttype": "Gestion",
+				})
+				tab_issue.insert(
+					ignore_permissions=True,
+ 					ignore_links=True
+				)
 	elif gestion.subgestion == 'Reconexión':
-		pass
+		for iss in gestion.issue:
+			if frappe.db.exists("Issue",iss.issue):
+				incidencia = frappe.get_doc("Issue",iss.issue)
+				if incidencia.workflow_state != 'Finalizado':
+					frappe.msgprint("Debe finalizar la incidencia " + iss.issue)
+					continue
+				#creacion de orden
+				spd = frappe.get_doc("Subscription Plan Detail",incidencia.planes)
+				od = frappe.get_doc({
+					'doctype': "Service Order",
+					'tipo_de_orden': "RECONEXION",
+					'workflow_state': "Abierto",
+					'tipo_de_origen': "Gestion",
+					'nombre_de_origen': name,
+					'descripcion': frappe._('Ejecutar RECONEXION de {0}').format(spd.plan),
+					'tipo': 'Customer',
+					'nombre':frappe.db.get_value("Customer",gestion.customer,'customer_name'),
+					'tercero': gestion.customer,
+					'plan_de_subscripcion': spd.name,
+					'direccion_de_instalacion': spd.direccion,
+					'portafolio': incidencia.servicio,
+					'departamento': incidencia.departamento,
+					'municipio': incidencia.municipio,
+					'barrio': incidencia.barrio,
+					'direccion': incidencia.address_line1,
+					'latitud':spd.latitud,
+					'longitud':spd.longitud,
+					'nodo':spd.nodo
+				})
+				od.insert(ignore_permissions=True)
+				frappe.msgprint(frappe._('Nueva orden de {0} con ID {1}').format(frappe._(od.tipo_de_orden), od.name))
+				tab_issue = frappe.get_doc({
+					"doctype": "Issue Detalle",
+					"issue":od.name,
+					"tipo_documento":od.doctype,
+					"estado":od.workflow_state,
+					"tipo":od.tipo_de_orden,
+					"parent": name,
+					"parentfield":"issue",
+					"parenttype": "Gestion",
+				})
+				tab_issue.insert(
+					ignore_permissions=True,
+ 					ignore_links=True
+				)
 
 def programar_suspensiones_temporales():
 	""" suspender planes, contratos y clientes desde gestiones finalizadas """

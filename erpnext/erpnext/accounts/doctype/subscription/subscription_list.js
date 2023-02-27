@@ -16,11 +16,11 @@
 // 	}
 // };
 frappe.listview_settings['Subscription'] = {
-	onload: function(listview) {	
-			frappe.route_options = {
-				"owner": ["like", "%jey%"]
-			};
-	},
+	// onload: function(listview) {	
+	// 		frappe.route_options = {
+	// 			"owner": ["like", "%jey%"]
+	// 		};
+	// },
 	
 	get_indicator: function(doc) {
 		if(doc.workflow_state === 'Grabado') {

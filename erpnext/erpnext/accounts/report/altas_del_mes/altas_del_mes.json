@@ -1,0 +1,140 @@
+{
+ "add_total_row": 0,
+ "columns": [
+  {
+   "fieldname": "cliente",
+   "fieldtype": "Link",
+   "label": "cliente",
+   "options": "Customer",
+   "width": 0
+  },
+  {
+   "fieldname": "nombre",
+   "fieldtype": "Data",
+   "label": "nombre",
+   "width": 0
+  },
+  {
+   "fieldname": "contrato",
+   "fieldtype": "Link",
+   "label": "contrato",
+   "options": "Subscription",
+   "width": 0
+  },
+  {
+   "fieldname": "No de Contrato",
+   "fieldtype": "Data",
+   "label": "no_contrato",
+   "width": 0
+  },
+  {
+   "fieldname": "Plan",
+   "fieldtype": "Data",
+   "label": "plan",
+   "width": 0
+  },
+  {
+   "fieldname": "Precio",
+   "fieldtype": "Data",
+   "label": "precio",
+   "width": 0
+  },
+  {
+   "fieldname": "Estado Plan",
+   "fieldtype": "Data",
+   "label": "estado_plan",
+   "width": 0
+  },
+  {
+   "fieldname": "Portafolio",
+   "fieldtype": "Link",
+   "label": "portafolio",
+   "options": "Item Group",
+   "width": 0
+  },
+  {
+   "fieldname": "Vendedor",
+   "fieldtype": "Data",
+   "label": "vendedor",
+   "options": "",
+   "width": 0
+  },
+  {
+   "fieldname": "Departamento",
+   "fieldtype": "Data",
+   "label": "departamento",
+   "width": 0
+  },
+  {
+   "fieldname": "Municipio",
+   "fieldtype": "Data",
+   "label": "municipio",
+   "width": 0
+  },
+  {
+   "fieldname": "Barrio",
+   "fieldtype": "Data",
+   "label": "barrio",
+   "width": 0
+  },
+  {
+   "fieldname": "Service Start",
+   "fieldtype": "Data",
+   "label": "service_start",
+   "width": 0
+  },
+  {
+   "fieldname": "Dia",
+   "fieldtype": "Int",
+   "label": "dia",
+   "width": 0
+  },
+  {
+   "fieldname": "Mes",
+   "fieldtype": "Int",
+   "label": "mes",
+   "width": 0
+  },
+  {
+   "fieldname": "A\u00f1o",
+   "fieldtype": "Int",
+   "label": "a\u00f1o",
+   "width": 0
+  }
+ ],
+ "creation": "2023-02-27 15:05:44.543243",
+ "disable_prepared_report": 0,
+ "disabled": 0,
+ "docstatus": 0,
+ "doctype": "Report",
+ "filters": [],
+ "idx": 0,
+ "is_standard": "Yes",
+ "modified": "2023-02-27 17:11:06.476650",
+ "modified_by": "Administrator",
+ "module": "Accounts",
+ "name": "Altas del mes",
+ "owner": "Administrator",
+ "prepared_report": 0,
+ "query": "select\ns.party as cliente,\ns.nombre_del_cliente as nombre,\ns.name as contrato,\ns.no_contrato as no_contrato,\nspd.plan,\nspd.cost as precio,\nspd.estado_plan as estado,\nsp.item_group as portafolio,\ns.vendedor,\nad.departamento,\nad.municipio,\nad.barrio,\nspd.service_start,\nday(spd.service_start) as dia,\nmonth(spd.service_start) as mes,\nyear(spd.service_start) as a\u00f1o\nfrom `tabSubscription Plan Detail` spd\ninner join   `tabSubscription` s on spd.parent = s.name\ninner join  `tabSubscription Plan` sp on sp.name = spd.plan\ninner join `tabAddress` ad on ad.name = spd.direccion\nwhere s.tipo_contrato = 'NUEVO' and s.workflow_state = 'Activo'",
+ "ref_doctype": "Subscription",
+ "report_name": "Altas del mes",
+ "report_type": "Query Report",
+ "roles": [
+  {
+   "role": "System Manager"
+  },
+  {
+   "role": "Accounts User"
+  },
+  {
+   "role": "Accounts Manager"
+  },
+  {
+   "role": "Sales User"
+  },
+  {
+   "role": "Back Office"
+  }
+ ]
+}

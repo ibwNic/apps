@@ -1,0 +1,81 @@
+{
+ "add_total_row": 1,
+ "columns": [
+  {
+   "fieldname": "Cliente",
+   "fieldtype": "Link",
+   "label": "cliente",
+   "options": "Customer",
+   "width": 0
+  },
+  {
+   "fieldname": "Nombre Cliente",
+   "fieldtype": "Data",
+   "label": "nombre",
+   "width": 0
+  },
+  {
+   "fieldname": "Contrato",
+   "fieldtype": "Link",
+   "label": "contrato",
+   "options": "Subscription",
+   "width": 0
+  },
+  {
+   "fieldname": "Equipo",
+   "fieldtype": "Data",
+   "label": "equipo",
+   "width": 0
+  },
+  {
+   "fieldname": "Plan",
+   "fieldtype": "Data",
+   "label": "plan",
+   "width": 0
+  },
+  {
+   "fieldname": "Portafolio",
+   "fieldtype": "Data",
+   "label": "portafolio",
+   "width": 0
+  }
+ ],
+ "creation": "2023-02-27 11:36:57.304659",
+ "disable_prepared_report": 0,
+ "disabled": 0,
+ "docstatus": 0,
+ "doctype": "Report",
+ "filters": [],
+ "idx": 0,
+ "is_standard": "Yes",
+ "json": "{}",
+ "modified": "2023-02-27 14:15:52.588698",
+ "modified_by": "Administrator",
+ "module": "Accounts",
+ "name": "Clientes Pendientes de Facturar",
+ "owner": "Administrator",
+ "prepared_report": 0,
+ "query": "select \nc.name as 'cliente',\nc.customer_name as  'nombre',\ns.name as 'contrato',\ncase when (select count(*) from `tabSubscription Plan Equipos` where parent = s.name and plan = spd.name) > 0 then 'Tiene Equipo' else 'No tiene equipo' end as 'equipo',\nspd.plan as 'plan',\nsp.item_group as 'portafolio'\n from `tabSubscription` s \ninner join `tabCustomer` c on s.party = c.name\ninner join `tabSubscription Plan Detail` spd on spd.parent = s.name\ninner join `tabSubscription Plan` sp on sp.name = spd.plan\nwhere s.workflow_state = 'Instalado' and c.estado_cliente = 'ACTIVO'\nand (select count(*) from `tabSubscription Invoice` where parent = s.name ) = 0 \n",
+ "ref_doctype": "Subscription",
+ "reference_report": "Subscription",
+ "report_name": "Clientes Pendientes de Facturar",
+ "report_script": "",
+ "report_type": "Query Report",
+ "roles": [
+  {
+   "role": "System Manager"
+  },
+  {
+   "role": "Accounts User"
+  },
+  {
+   "role": "Accounts Manager"
+  },
+  {
+   "role": "Sales User"
+  },
+  {
+   "role": "Back Office"
+  }
+ ]
+}
