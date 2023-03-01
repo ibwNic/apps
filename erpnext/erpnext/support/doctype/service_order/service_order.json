@@ -186,7 +186,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-02-24 14:25:59.519618",
+ "modified": "2023-02-28 15:52:29.080923",
  "modified_by": "Administrator",
  "module": "Support",
  "name": "Service Order",
@@ -232,6 +232,15 @@
    "share": 1,
    "submit": 1,
    "write": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Vendedor Corporativo",
+   "share": 1
   }
  ],
  "search_fields": "tipo_de_orden,tercero",

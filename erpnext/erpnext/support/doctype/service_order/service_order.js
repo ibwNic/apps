@@ -2,6 +2,12 @@
 // For license information, please see license.txt
 frappe.ui.form.on('Service Order', {
 	refresh: function(frm) {
+		if(frm.doc.workflow_state === 'Atendido'){
+			frm.set_df_property('razon_pendiente', 'read_only',false);
+		}
+		else{
+			frm.set_df_property('razon_pendiente', 'read_only', true);
+		}
 		frm.set_query('tecnico', function(d){
 			return {
 				filters: {

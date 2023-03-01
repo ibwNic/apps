@@ -689,9 +689,8 @@ def get_plan_Portafolio(plan):
 @frappe.whitelist()
 def get_phone(customer):
 	phones= frappe.db.sql(
-	"""select t2.phone from `tabDynamic Link` t1 inner join 
-		`tabContact Phone` t2 on t1.name = t2.parent
-		where t1.link_name =%(customer)s""",
+	"""select phone from `tabContact Phone` where parent in 
+					(select parent from `tabDynamic Link` t1 where t1.link_name like %(customer)s and t1.parenttype = 'Contact');""",
 	{"customer": customer},
 	)
 		

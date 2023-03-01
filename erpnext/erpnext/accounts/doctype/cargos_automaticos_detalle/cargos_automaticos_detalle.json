@@ -1,0 +1,81 @@
+{
+ "actions": [],
+ "autoname": "autoincrement",
+ "creation": "2023-03-01 15:11:26.017168",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "number",
+  "regnumber",
+  "contador",
+  "numero_tarjeta",
+  "fecha_expiracion",
+  "monto_cordoba",
+  "fecha_aplicacion",
+  "email",
+  "nombre"
+ ],
+ "fields": [
+  {
+   "default": "1",
+   "fieldname": "number",
+   "fieldtype": "Data",
+   "label": "Number"
+  },
+  {
+   "fieldname": "regnumber",
+   "fieldtype": "Link",
+   "label": "Regnumber",
+   "options": "Customer"
+  },
+  {
+   "fieldname": "contador",
+   "fieldtype": "Data",
+   "label": "Contador"
+  },
+  {
+   "fieldname": "numero_tarjeta",
+   "fieldtype": "Data",
+   "label": "Numero Tarjeta"
+  },
+  {
+   "fieldname": "fecha_expiracion",
+   "fieldtype": "Data",
+   "label": "Fecha Expiracion"
+  },
+  {
+   "fieldname": "monto_cordoba",
+   "fieldtype": "Float",
+   "label": "Monto Cordoba"
+  },
+  {
+   "fieldname": "fecha_aplicacion",
+   "fieldtype": "Data",
+   "label": "Fecha Aplicacion"
+  },
+  {
+   "fieldname": "email",
+   "fieldtype": "Data",
+   "label": "Email"
+  },
+  {
+   "fieldname": "nombre",
+   "fieldtype": "Data",
+   "label": "Nombre"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2023-03-01 15:11:26.017168",
+ "modified_by": "Administrator",
+ "module": "Accounts",
+ "name": "Cargos Automaticos Detalle",
+ "naming_rule": "Autoincrement",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

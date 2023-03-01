@@ -3,8 +3,8 @@
 
 frappe.ui.form.on('Pago Batch', {
 	refresh: function(frm) {
-
-		cur_frm.cscript.AplicarNotaCredito = function(frm){
+		// frm.toggle_display(['priority', 'due_date'], frm.doc.status === 'Open');
+		cur_frm.cscript.AgragarPago = function(frm){
 			// console.log(frm.doc.cliente);
 			function Crear_PagoBatch(pm_args,values){
 				[
@@ -27,6 +27,10 @@ frappe.ui.form.on('Pago Batch', {
 							if (r.message) {
 								// console.log(r.message)
 								if(r.message === 'Ok'){
+									frappe.show_alert({
+										message:__('Se agrego pago.'),
+										indicator:'green'
+									}, 5);
 									frm.reload_doc();
 								}else{
 									frappe.msgprint({
@@ -207,6 +211,7 @@ frappe.ui.form.on('Pago Batch', {
 							label: "N° Recibo",
 							// options: 'Account',
 							fieldname: "Recibo",
+							reqd: 1,
 							// read_only: 1
 						},
 						{
@@ -217,6 +222,7 @@ frappe.ui.form.on('Pago Batch', {
 							label: "Colector",
 							options: "Colectores",
 							fieldname: "Colector",
+							reqd: 1
 						},
 						{
 							fieldtype: "Section Break",
@@ -273,7 +279,7 @@ frappe.ui.form.on('Pago Batch', {
 							// change: get_outstanding_details
 						},
 					],
-					primary_action_label: 'Aplicar Nota de Credito',
+					primary_action_label: 'Agregar Pago',
 					primary_action(values) {
 						// console.log(values);
 						d.hide();
@@ -298,10 +304,10 @@ frappe.ui.form.on('Pago Batch', {
 			d.show();
 
 			//VALIDACION  DE DEPOSITOS DE BANCOS  DEL BOTON
-			d.get_primary_btn().text('Aplicar Deposito').off('click').on('click', function(){
+			d.get_primary_btn().text('Agregar Pago').off('click').on('click', function(){
 		
 				
-				if(d.get_value('customer') == '' && d.get_value('sales_invoice') == '' && d.get_value('Recibo') == '' && d.get_value('montoNIO') == '' && d.get_value('montoUSD') == ''){
+				if(d.get_value('customer') == '' && d.get_value('sales_invoice') == '' && d.get_value('Recibo') == '' && d.get_value('montoNIO') == '' && d.get_value('montoUSD') == '' && d.get_value('Colector') == ''){
 					frappe.msgprint({
 						title: __('Advertencia'),
 						indicator: 'red',
@@ -330,6 +336,13 @@ frappe.ui.form.on('Pago Batch', {
 						title: __('Advertencia'),
 						indicator: 'red',
 						message: __('Debe de digitar un monto!')
+					});
+					
+				}else if(d.get_value('Colector') == ''){
+					frappe.msgprint({
+						title: __('Advertencia'),
+						indicator: 'red',
+						message: __('Debe de digitar el colector!')
 					});
 				}else{
 
@@ -367,7 +380,45 @@ frappe.ui.form.on('Pago Batch', {
 
 		if (frm.doc.docstatus === 0){
 			frm.add_custom_button('Agregar Pago', function(){
-                cur_frm.cscript.AplicarNotaCredito(frm);
+                cur_frm.cscript.AgragarPago(frm);
+            });
+		}
+
+		cur_frm.cscript.AplicarPagos = function (){
+			console.log(frm.doc.name)
+			frappe.call({
+				'method': "erpnext.api.aplicar_batch",
+				'args': {
+					'id_batch':frm.doc.name
+				},
+				// 'args': frm.doc.name,
+				'callback': function (r) {
+					// console.log(r.message)
+						if (r.message) {
+							console.log(r.message)
+							if(r.message === 'Ok')
+							{	
+								
+								// // frm.set_value('aplicado',1);
+								// // frm.set_value('docstatus',1);
+								// // doc.db_set('docstatus',1)
+								// // frm.set_value('docstatus',1);
+								// frm.save('Submit');
+								// frappe.msgprint({
+								// 	title: __('Sastifactorio'),
+								// 	indicator: 'green',
+								// 	message: __('Se aplicaron pagos')
+								// });
+								// frm.reload_doc();
+							}
+					}
+				}
+			});
+		}
+
+		if (frm.doc.docstatus === 0){
+			frm.add_custom_button('Aplicar Pagos', function(){
+                cur_frm.cscript.AplicarPagos(frm);
             });
 		}
 

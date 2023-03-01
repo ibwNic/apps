@@ -14,7 +14,8 @@
   "cheque",
   "no_cheque",
   "colector",
-  "factura"
+  "factura",
+  "journal_entry"
  ],
  "fields": [
   {
@@ -65,12 +66,18 @@
    "fieldtype": "Link",
    "label": "Factura",
    "options": "Sales Invoice"
+  },
+  {
+   "fieldname": "journal_entry",
+   "fieldtype": "Link",
+   "label": "Journal Entry",
+   "options": "Journal Entry"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-02-17 10:43:30.101149",
+ "modified": "2023-02-28 11:17:27.015914",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Pago Batch Detalle",

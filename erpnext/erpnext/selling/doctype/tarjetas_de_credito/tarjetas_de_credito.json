@@ -1,0 +1,77 @@
+{
+ "actions": [],
+ "autoname": "TC-.######",
+ "creation": "2023-03-01 14:51:30.748901",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "cliente",
+  "nombre",
+  "tipo_de_cliente",
+  "numero_de_tarjeta",
+  "mes_de_expiracion",
+  "anno_de_expiracion"
+ ],
+ "fields": [
+  {
+   "fieldname": "cliente",
+   "fieldtype": "Link",
+   "label": "Cliente",
+   "options": "Customer"
+  },
+  {
+   "fieldname": "nombre",
+   "fieldtype": "Data",
+   "label": "Nombre"
+  },
+  {
+   "fieldname": "tipo_de_cliente",
+   "fieldtype": "Data",
+   "label": "Tipo de cliente"
+  },
+  {
+   "fieldname": "numero_de_tarjeta",
+   "fieldtype": "Data",
+   "label": "Numero de Tarjeta"
+  },
+  {
+   "fieldname": "mes_de_expiracion",
+   "fieldtype": "Data",
+   "label": "Mes de Expiracion"
+  },
+  {
+   "fieldname": "anno_de_expiracion",
+   "fieldtype": "Data",
+   "label": "A\u00f1o de Expiracion"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-03-01 14:51:30.748901",
+ "modified_by": "Administrator",
+ "module": "Selling",
+ "name": "Tarjetas de Credito",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1,
+ "track_seen": 1,
+ "track_views": 1
+}

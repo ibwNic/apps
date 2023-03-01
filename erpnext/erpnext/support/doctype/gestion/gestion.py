@@ -176,6 +176,7 @@ def generar_orden_de_servicio(name):
 					"tipo_documento":od.doctype,
 					"estado":od.workflow_state,
 					"tipo":od.tipo_de_orden,
+					"problema":od.descripcion,
 					"parent": name,
 					"parentfield":"issue",
 					"parenttype": "Gestion",
@@ -223,6 +224,7 @@ def generar_orden_de_servicio(name):
 					"tipo_documento":od.doctype,
 					"estado":od.workflow_state,
 					"tipo":od.tipo_de_orden,
+					"problema":od.descripcion,
 					"parent": name,
 					"parentfield":"issue",
 					"parenttype": "Gestion",
@@ -269,6 +271,7 @@ def generar_orden_de_servicio(name):
 					"tipo_documento":od.doctype,
 					"estado":od.workflow_state,
 					"tipo":od.tipo_de_orden,
+					"problema":od.descripcion,
 					"parent": name,
 					"parentfield":"issue",
 					"parenttype": "Gestion",
@@ -315,6 +318,7 @@ def generar_orden_de_servicio(name):
 					"tipo_documento":od.doctype,
 					"estado":od.workflow_state,
 					"tipo":od.tipo_de_orden,
+					"problema":od.descripcion,
 					"parent": name,
 					"parentfield":"issue",
 					"parenttype": "Gestion",
@@ -323,7 +327,6 @@ def generar_orden_de_servicio(name):
 					ignore_permissions=True,
  					ignore_links=True
 				)
-
 def programar_suspensiones_temporales():
 	""" suspender planes, contratos y clientes desde gestiones finalizadas """
 	gestiones = frappe.db.sql(""" select name, customer from `tabGestion` where tipo_gestion = 'Suspension Temporal' and workflow_state = 'Finalizado' and fecha_inicio_suspension_temporal = CURDATE() and convertido = 0;""")

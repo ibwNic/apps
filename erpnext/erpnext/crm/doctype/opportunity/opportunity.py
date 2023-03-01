@@ -562,7 +562,7 @@ def crear_orden_servicio(name):
 					'currency':'USD',
 					'opportunity_prospect': plan.name
 				})	
-				od.insert()
+				od.insert(ignore_permissions=True)
 				upd_OP = frappe.get_doc("Opportunity Prospect", {"name":plan.name})	
 				upd_OP.update(
 					{
@@ -687,6 +687,7 @@ def crear_sus_por_items(name):
 					"qty": item[1],
 					"estado_plan":"Inactivo",
 					"direccion": item[3],
+					
 				}
 			suscripcion.append("plans", plans)
 

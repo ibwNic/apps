@@ -3810,7 +3810,13 @@ def agregar_pago_batch(deudas=None,pagos=None,Recibo=None,NumCheque=None,ChequeC
 @frappe.whitelist()
 def aplicar_batch(id_batch):
 	batch = frappe.get_doc('Pago Batch', id_batch)
+	# task = frappe.get_last_doc('Task', filters={"status": "Cancelled"})
+	# batchDetail = frappe.get_last_doc('Pago Batch Detalle', filters={"parent": id_batch})
+	
 
+	# list(batchDetail)
+	# return batch.pagos_detalle
+	
 	deudas=[]
 	pagos=[]
 	metadata=dict()
@@ -3825,16 +3831,51 @@ def aplicar_batch(id_batch):
 			pagos.append(dict(colector = batch.pagos_detalle[a].colector, moneda = 'USD', monto = batch.pagos_detalle[a].monto_dolar, tipo_de_pago = 'Cheque' if batch.pagos_detalle[a].cheque else 'Efectivo'))
 		
 		metadata = dict(colector =  batch.pagos_detalle[a].colector, recibo =  batch.pagos_detalle[a].no_recibo)
+		try:
+			aplicar_pago_batch(batch.pagos_detalle[a].regnumber, batch.pagos_detalle[a].fecha, batch.tasa_de_cambio,deudas, None,pagos, None, None, metadata, False)
+			# return res
 
-		res = aplicar_pago_batch(batch.pagos_detalle[a].regnumber, batch.pagos_detalle[a].fecha, batch.tasa_de_cambio,deudas, None,pagos, None, None, metadata, False)
+			# if batch.pagos_detalle[a].factura = batchDetail
+			# batch.append("pagos_detalle", {'journal_entry':res})
+			# batch.pagos_detalle[a].journal_entry.update(res)
+			# batch.update(batch.pagos_detalle[a]:{'journal_entry':res})
+			# batch.pagos_detalle[a].journal_entry = res
+			
+			# batchDetail = frappe.get_doc('Pago Batch Detalle',batch.pagos_detalle[a].name)
 
-		# return batch.pagos_detalle[a].regnumber
-		deudas.clear()
-		pagos.clear()
+			# # batchDetail.journal_entry = res
+			
+			# batchDetail.journal_entry = res
+			# batchDetail.flags.ignore_submit_comment = True
+			# batchDetail.save()
+			# batchDetail.save(ignore_permissions=True)
+			# doc = frappe.get_last_doc("User")
+			# doc.last_active = now()
+			# doc.db_update()
+			# for de in batchDetail:
+			# 	if de.journal_entry == batch.pagos_detalle[a].factura:
+			# 		batchDetail.update({'journal_entry': res})
+			# 		batchDetail.save()
+			# 		break
+			# frappe.db.sql(		
+			# 	""" update  `tabPago Batch Detalle` set journal_entry ='prueba'	WHERE parent %(id_batch)s  AND factura =  %(factura)s ;""", {"id_batch":id_batch,"factura":batch.pagos_detalle[a].factura})
+			deudas.clear()
+			pagos.clear()
+		except Exception as e:
+			return {
+				'response': 'Error res',
+				'variables': ['InternalError'],
+				'messsage': str(e)
+			}
+	# batch.aplicado = 1
+	# batch.flags.ignore_submit_comment = True
+	# batch.save()
+	# batch.submit()
+	# frappe.db.commit()
 	# pass
 	# return type(pagos), type(deudas)
 
-	# return deudas,pagos
+	# return deudas,pagos,metadata
 	return 'Ok'
 
 def validate_payment_entries_batch(entries, accounts, messages, tc, dc='d'):
@@ -4239,6 +4280,7 @@ def aplicar_pago_batch(regnumber=None, fecha=None, tc=None,deudas=None, creditos
 		'posting_date': fecha,
 		'multi_currency': 1,
 		'accounts': accounts,
+		'regnumber': customer,
 		'mode_of_payment': pagos[0]['tipo_de_pago'],
 		# 'user_remark': 'Recibo de pago' + fecha,
 		'ui': _ui_
@@ -4252,17 +4294,17 @@ def aplicar_pago_batch(regnumber=None, fecha=None, tc=None,deudas=None, creditos
 			#  Collector toma una cuenta
 			# metadata['collector'] = frappe.db.get_value('Colectores', filters={'colectorid': metadata.pop('colector')})
 			subject = frappe.db.get_value('Task', 'TASK00002', 'subject')
-			TipoColector = frappe.db.get_value('Colectores', metadata.pop('colector'),'collector_type')
+			name,TipoColector = frappe.db.get_value('Colectores', metadata.pop('colector'),['name', 'collector_type'])
 			
 			if TipoColector == 'Dealer':
-				metadata['dealer'] = TipoColector
+				metadata['dealer'] = name
 			if TipoColector == 'Colector':
-				metadata['collector'] = TipoColector
+				metadata['collector'] = name
 			# return metadata
 		# if 'IDdealer' in metadata:
 		# 	metadata['dealer'] = frappe.db.get_value('Colectores', filters={'iddealer':metadata.pop('IDdealer')})
 		if 'recibo' in metadata:
-			metadata['user_remark'] = metadata.pop('recibo')
+			metadata['user_remark'] = str('Numero de recibo: ' +  metadata.pop('recibo'))
 			# return metadata
 			
 		doc.update(metadata)
@@ -4310,9 +4352,10 @@ def aplicar_pago_batch(regnumber=None, fecha=None, tc=None,deudas=None, creditos
 		}
 
 	frappe.db.commit()
-	# frappe.set_user(local_user)
+	frappe.set_user(local_user)
 
-	return doc.name.split("-")[1]
+	# return doc.name.split("-")[1]
+	return doc.name
 
 def validate_party_entries_batch(entries, accounts, messages, tc, dc='c', customer=None):
 	# return type(entries)

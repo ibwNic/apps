@@ -3,6 +3,16 @@
 
 frappe.ui.form.on('Gestion', {
 	refresh: function(frm) {
+        if(frm.doc.issue.length>1){
+            frm.doc.issue.forEach(item => {
+                if(item.tipo_documento === 'Service Order' && item.estado === 'Finalizado'){
+                    frm.add_custom_button("Generar Factura", () => {
+                        msgprint("generar factura")
+                    });
+                }
+            });
+        }
+    
         if(frm.doc.convertido === 0 && frm.doc.estado === 'Retenido' && !frm.doc.__islocal){
             frappe.call({					
                 method: "erpnext.support.doctype.gestion.gestion.ocultar_actualizacion",

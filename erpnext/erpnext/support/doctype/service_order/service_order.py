@@ -31,7 +31,10 @@ class ServiceOrder(Document):
 
 	def on_update(self):
 		
+		
 		if self.workflow_state == "Finalizado":
+			if self.tipo_de_origen == 'Gestion':
+				frappe.db.sql("update `tabIssue Detalle` set estado = %(estado)s where issue = %(so)s;",{"estado":self.workflow_state,"so":self.name})		
 			try:
 				solucion = self.solucion
 			except:
@@ -590,6 +593,23 @@ class ServiceOrder(Document):
 				# 	frappe.msgprint(frappe._('Fatality Error Project {0} ').format(e))
 			
 		if self.workflow_state == "Abierto":
+			if self.tipo == 'Customer':
+				phones= frappe.db.sql(
+				"""select phone from `tabContact Phone` where parent in 
+					(select parent from `tabDynamic Link` t1 where t1.link_name like %(customer)s and t1.parenttype = 'Contact');""",
+					{"customer": '%' + self.tercero + '%'})				
+				telefono = []
+				for phone in range(len(phones)): 
+						telefono.append(phones[phone][0])
+
+				cadena=""
+				for t in telefono:
+					if t == telefono[-1]:
+						cadena= cadena + t
+					else :
+						cadena= cadena + t + " / "
+				frappe.db.set_value("Service Order",self.name,"telefonos",cadena)
+
 			if not frappe.db.exists("Bitacora Orden",{"detalle":'Orden ABIERTA',"parent":self.name}):
 				idx = frappe.db.sql(""" select idx from `tabBitacora Orden` where parent=%(parent)s ORDER BY fecha_transaccion DESC LIMIT 1 """,{"parent":self.name})	
 				try:
@@ -810,6 +830,11 @@ class ServiceOrder(Document):
 			frappe.db.set_value(self.doctype, self.name, 'estado_anterior', 'SEGUIMIENTO')	
 
 		if self.workflow_state == "Pending":
+			if not self.razon_pendiente:
+				frappe.db.set_value(self.doctype, self.name, 'workflow_state', 'Atendido')
+				frappe.msgprint("Inserte razón de estado pendiente")
+				self.reload()
+				return
 			idx = frappe.db.sql(""" select idx from `tabBitacora Orden` where parent=%(parent)s ORDER BY fecha_transaccion DESC LIMIT 1 """,{"parent":self.name})	
 			try:
 				idx = int(idx[0][0]) + 1

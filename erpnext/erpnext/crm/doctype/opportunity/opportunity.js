@@ -32,9 +32,9 @@ frappe.ui.form.on("Opportunity", {
 		}
 	},
 
-	onload_post_render: function(frm) {
-		frm.get_field("items").grid.set_multiple_add("item_code", "qty");
-	},
+	// onload_post_render: function(frm) {
+	// 	frm.get_field("items").grid.set_multiple_add("item_code", "qty");
+	// },
 
 	party_name: function(frm) {
 		frm.trigger('set_contact_link');
@@ -50,9 +50,9 @@ frappe.ui.form.on("Opportunity", {
 		}
 	},
 
-	onload_post_render: function(frm) {
-		frm.get_field("items").grid.set_multiple_add("item_code", "qty");
-	},
+	// onload_post_render: function(frm) {
+	// 	frm.get_field("items").grid.set_multiple_add("item_code", "qty");
+	// },
 
 	status:function(frm){
 		if (frm.doc.status == "Lost"){
@@ -236,7 +236,14 @@ frappe.ui.form.on("Opportunity", {
 
 		} else {
 			frappe.contacts.clear_address_and_contact(frm);
-		}			
+		}	
+		// frm.set_value('flujo_neto',flt(frm.doc.total_de_ingresos)-flt(frm.doc.total_de_egresos))
+		// frm.set_value('flujo',(flt(frm.doc.flujo_neto)/flt(frm.doc.total_de_ingresos))*100)
+		// frm.trigger("calculate_total_egresos");
+		// frm.trigger("calculate_total_ingresos");
+		// frm.trigger("calculate_flujo_de_caja");
+		// frm.trigger("calculate_total_otc");
+		// frm.trigger("calculate_total");		
 	},
 	before_save(frm){
 		frm.set_value('flujo_neto',flt(frm.doc.total_de_ingresos)-flt(frm.doc.total_de_egresos))
@@ -249,7 +256,7 @@ frappe.ui.form.on("Opportunity", {
 
 	},
 	after_save(frm){
-		frm.reload_doc();
+		//frm.reload_doc();
 	},
 	calculate_Precios_planes: function(frm) {
 		let total = 0, base_total = 0;
@@ -650,12 +657,12 @@ erpnext.crm.Opportunity = class Opportunity extends frappe.ui.form.Controller {
 
 		me.frm.set_query('customer_address', erpnext.queries.address_query);
 
-		this.frm.set_query("item_code", "items", function() {
-			return {
-				query: "erpnext.controllers.queries.item_query",
-				filters: {'is_sales_item': 1}
-			};
-		});
+		// this.frm.set_query("item_code", "items", function() {
+		// 	return {
+		// 		query: "erpnext.controllers.queries.item_query",
+		// 		filters: {'is_sales_item': 1}
+		// 	};
+		// });
 
 		me.frm.set_query('contact_person', erpnext.queries['contact_query'])
 
@@ -710,20 +717,20 @@ erpnext.crm.Opportunity = class Opportunity extends frappe.ui.form.Controller {
 
 extend_cscript(cur_frm.cscript, new erpnext.crm.Opportunity({frm: cur_frm}));
 
-cur_frm.cscript.item_code = function(doc, cdt, cdn) {
-	var d = locals[cdt][cdn];
-	if (d.item_code) {
-		return frappe.call({
-			method: "erpnext.crm.doctype.opportunity.opportunity.get_item_details",
-			args: {"item_code":d.item_code},
-			callback: function(r, rt) {
-				if(r.message) {
-					$.each(r.message, function(k, v) {
-						frappe.model.set_value(cdt, cdn, k, v);
-					});
-					refresh_field('image_view', d.name, 'items');
-				}
-			}
-		})
-	}
-}
+// cur_frm.cscript.item_code = function(doc, cdt, cdn) {
+// 	var d = locals[cdt][cdn];
+// 	if (d.item_code) {
+// 		return frappe.call({
+// 			method: "erpnext.crm.doctype.opportunity.opportunity.get_item_details",
+// 			args: {"item_code":d.item_code},
+// 			callback: function(r, rt) {
+// 				if(r.message) {
+// 					$.each(r.message, function(k, v) {
+// 						frappe.model.set_value(cdt, cdn, k, v);
+// 					});
+// 					refresh_field('image_view', d.name, 'items');
+// 				}
+// 			}
+// 		})
+// 	}
+// }

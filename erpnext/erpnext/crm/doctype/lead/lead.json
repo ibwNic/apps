@@ -514,7 +514,7 @@
  "idx": 5,
  "image_field": "image",
  "links": [],
- "modified": "2023-02-02 09:22:24.762281",
+ "modified": "2023-03-01 08:31:34.836689",
  "modified_by": "Administrator",
  "module": "CRM",
  "name": "Lead",
@@ -584,6 +584,15 @@
    "read": 1,
    "report": 1,
    "role": "Sales User"
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Vendedor Corporativo",
+   "share": 1
   }
  ],
  "search_fields": "lead_name,lead_owner,status",
