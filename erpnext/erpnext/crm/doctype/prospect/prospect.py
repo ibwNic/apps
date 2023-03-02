@@ -6,7 +6,19 @@ from frappe.contacts.address_and_contact import load_address_and_contact
 from frappe.model.mapper import get_mapped_doc
 
 from erpnext.crm.utils import CRMNote, copy_comments, link_communications, link_open_events
-
+from frappe.utils.data import (
+	add_days,
+	add_months,
+	add_to_date,
+	cint,
+	cstr,
+	date_diff,
+	flt,
+	get_last_day,
+	getdate,
+	nowdate,
+	formatdate,
+)
 
 class Prospect(CRMNote):
 	def onload(self):
@@ -14,6 +26,30 @@ class Prospect(CRMNote):
 
 	def on_update(self):
 		self.link_with_lead_contact_and_address()
+		
+		if self.overview!=self.estado_anterior or self.fecha_anterior != self.fecha_de_cierre:
+			idx = frappe.db.sql(""" select idx from `tabBitacora Prospectos` where parent=%(parent)s ORDER BY creation DESC LIMIT 1 """,{"parent":self.name})	
+			try:
+				idx = int(idx[0][0]) + 1
+			except:
+				idx = 1	
+
+
+			bitacora_Prospect = frappe.get_doc({
+				"doctype": "Bitacora Prospectos",
+				"estado":self.overview,
+				"parent": self.name,
+				"parentfield":"bitacora_prospecto",
+				"fecha":nowdate(),
+				"fecha_cierre":self.fecha_de_cierre,
+				"parenttype": "Prospect",
+				"idx":idx
+				})
+			bitacora_Prospect.insert()	
+
+		frappe.db.set_value(self.doctype, self.name, 'estado_anterior', self.overview)
+		frappe.db.set_value(self.doctype, self.name, 'fecha_anterior', nowdate())
+		self.reload()
 
 	def on_trash(self):
 		self.unlink_dynamic_links()
@@ -74,6 +110,9 @@ class Prospect(CRMNote):
 				if to_remove:
 					linked_doc.remove(to_remove)
 					linked_doc.save(ignore_permissions=True)
+
+
+
 
 
 @frappe.whitelist()
@@ -212,7 +251,7 @@ def vincular_direccion_cliente_existente(name):
 		direcciones = frappe.db.get_values("Dynamic Link",{"parenttype": "Address", "link_name": prospect.cliente_existente},'parent')
 		if direcciones:
 			for dir in direcciones:
-				if not frappe.db.exists("Dynamic Link", {"parenttype": "Address","parent":dir[0], "link_doctype":"Prospect","link_name":prospect.company_name}):
+				if not frappe.db.exists("Dynamic Link", {"parenttype": "Address","parent":dir[0], "link_doctype":"Prospect","link_name":prospect.name}):
 					#return 'sis'
 					dir = frappe.get_doc({
 						'doctype': "Dynamic Link",
@@ -227,7 +266,7 @@ def vincular_direccion_cliente_existente(name):
 		contactos = frappe.db.get_values("Dynamic Link",{"parenttype": "Contact", "link_name": prospect.cliente_existente},'parent')
 		if contactos:
 			for con in contactos:
-				if not frappe.db.exists("Dynamic Link", {"parenttype": "Contact","parent":con[0], "link_doctype":"Prospect","link_name":prospect.company_name}):
+				if not frappe.db.exists("Dynamic Link", {"parenttype": "Contact","parent":con[0], "link_doctype":"Prospect","link_name":prospect.name}):
 					#return 'sis'
 					con = frappe.get_doc({
 						'doctype': "Dynamic Link",
@@ -241,3 +280,10 @@ def vincular_direccion_cliente_existente(name):
 					con.insert()
 	except Exception as e:
 		frappe.msgprint(frappe._('Fatality Error Project {0} ').format(e))
+
+# @frappe.whitelist
+# def fecha_finalizacion(name):
+# 	frappe.db.set_value(prospect, name, 'fecha_de_cierre', add_days(nowdate(), cint(15)))
+
+
+

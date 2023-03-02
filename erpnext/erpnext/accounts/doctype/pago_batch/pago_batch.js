@@ -384,8 +384,8 @@ frappe.ui.form.on('Pago Batch', {
             });
 		}
 
-		cur_frm.cscript.AplicarPagos = function (){
-			console.log(frm.doc.name)
+		cur_frm.cscript.AplicarPagos = function (frm){
+			// console.log(frm.doc.name)
 			frappe.call({
 				'method': "erpnext.api.aplicar_batch",
 				'args': {
@@ -394,24 +394,28 @@ frappe.ui.form.on('Pago Batch', {
 				// 'args': frm.doc.name,
 				'callback': function (r) {
 					// console.log(r.message)
-						if (r.message) {
-							console.log(r.message)
-							if(r.message === 'Ok')
-							{	
-								
-								// // frm.set_value('aplicado',1);
-								// // frm.set_value('docstatus',1);
-								// // doc.db_set('docstatus',1)
-								// // frm.set_value('docstatus',1);
-								// frm.save('Submit');
-								// frappe.msgprint({
-								// 	title: __('Sastifactorio'),
-								// 	indicator: 'green',
-								// 	message: __('Se aplicaron pagos')
-								// });
-								// frm.reload_doc();
-							}
-					}
+					// frm.refresh();
+					// console.log(r.message)
+					// if(r.message === 'Ok'){
+					// 	frm.reload_doc();
+					// }
+					// {	
+						
+						
+						// frm.set_value('aplicado',1);
+						// frm.set_value('docstatus',1);
+						// frappe.db_set('docstatus',1)
+					// 	// // frm.set_value('docstatus',1);
+						// frm.reload_doc();
+						// frm.save('Submit');
+					// 	// frappe.msgprint({
+					// 	// 	title: __('Sastifactorio'),
+					// 	// 	indicator: 'green',
+					// 	// 	message: __('Se aplicaron pagos')
+					// 	// });
+						
+					// }
+					
 				}
 			});
 		}

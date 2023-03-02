@@ -141,8 +141,7 @@ class ServiceOrder(Document):
 			frappe.db.set_value(self.doctype, self.name, 'finalizado_por', frappe.session.user)
 			frappe.db.set_value(self.doctype, self.name, 'docstatus', 1)
 
-			if self.tipo_de_orden == "SITE SURVEY" and self.factible == 'El proyecto es factible':
-
+			if self.tipo_de_orden == "SITE SURVEY" and (self.factible == 'El proyecto es factible' or self.factible == 'El proyecto es factible con tercero'):
 				od = frappe.get_doc({
 					'doctype': "Service Order",
 					'tipo_de_orden': "PRESUPUESTO",

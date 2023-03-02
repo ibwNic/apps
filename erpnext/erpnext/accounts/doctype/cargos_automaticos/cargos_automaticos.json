@@ -13,11 +13,6 @@
  ],
  "fields": [
   {
-   "fieldname": "fecha",
-   "fieldtype": "Date",
-   "label": "Fecha"
-  },
-  {
    "fieldname": "tasa_de_cambio",
    "fieldtype": "Float",
    "label": "Tasa de Cambio"
@@ -32,11 +27,16 @@
    "fieldtype": "Table",
    "label": "Cargos",
    "options": "Cargos Automaticos Detalle"
+  },
+  {
+   "fieldname": "fecha",
+   "fieldtype": "Datetime",
+   "label": "Fecha"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-03-01 15:12:49.402779",
+ "modified": "2023-03-02 15:21:17.186488",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Cargos Automaticos",

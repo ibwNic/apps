@@ -40,6 +40,7 @@ from erpnext.utilities.transaction_base import TransactionBase
 
 
 class Opportunity(TransactionBase, CRMNote):
+
 	def onload(self):
 		ref_doc = frappe.get_doc(self.opportunity_from, self.party_name)
 		load_address_and_contact(ref_doc)
@@ -60,7 +61,7 @@ class Opportunity(TransactionBase, CRMNote):
 		self.make_new_lead_if_required()
 		self.validate_item_details()
 		self.validate_uom_is_integer("uom", "qty")
-		self.validate_cust_name()
+		# self.validate_cust_name()
 		self.map_fields()
 		self.set_exchange_rate()
 
@@ -254,21 +255,21 @@ class Opportunity(TransactionBase, CRMNote):
 				return False
 			return True
 
-	def validate_cust_name(self):
-		if self.party_name:
-			if self.opportunity_from == "Customer":
-				self.customer_name = frappe.db.get_value("Customer", self.party_name, "customer_name")
-			elif self.opportunity_from == "Lead":
-				customer_name = frappe.db.get_value("Prospect Lead", {"lead": self.party_name}, "parent")
-				if not customer_name:
-					lead_name, company_name = frappe.db.get_value(
-						"Lead", self.party_name, ["lead_name", "company_name"]
-					)
-					customer_name = company_name or lead_name
+	# def validate_cust_name(self):
+	# 	if self.party_name:
+	# 		if self.opportunity_from == "Customer":
+	# 			self.customer_name = frappe.db.get_value("Customer", self.party_name, "customer_name")
+	# 		elif self.opportunity_from == "Lead":
+	# 			customer_name = frappe.db.get_value("Prospect Lead", {"lead": self.party_name}, "parent")
+	# 			if not customer_name:
+	# 				lead_name, company_name = frappe.db.get_value(
+	# 					"Lead", self.party_name, ["lead_name", "company_name"]
+	# 				)
+	# 				customer_name = company_name or lead_name
 
-				self.customer_name = customer_name
-			elif self.opportunity_from == "Prospect":
-				self.customer_name = self.party_name
+	# 			self.customer_name = customer_name
+	# 		elif self.opportunity_from == "Prospect":
+	# 			self.customer_name = self.party_name
 
 	def validate_item_details(self):
 		if not self.get("items"):
@@ -546,7 +547,7 @@ def crear_orden_servicio(name):
 					'workflow_state': "Abierto",
 					'tipo_de_origen': doc.doctype,
 					'nombre_de_origen': doc.name,
-					'descripcion': plan.description.replace('<div class="ql-editor read-mode"><p>','').replace('</p></div>',''),
+					'descripcion': plan.description,
 					'tipo': 'Prospect',
 					'tercero': doc.party_name,
 					'nombre': doc.party_name,
@@ -572,7 +573,7 @@ def crear_orden_servicio(name):
 				upd_OP.save()
 				frappe.msgprint(frappe._('Nueva orden de {0} con ID {1}').format(frappe._(od.tipo_de_orden), od.name))	
 			else:
-				frappe.msgprint(frappe._("Ya existe una site survey para el plan {0}").format(plan.item_code))
+				continue
 		
 	except Exception as e:
 		frappe.msgprint(frappe._('Fatality Error Project {0} ').format(e))
@@ -702,9 +703,12 @@ def crear_sus_por_items(name):
 		)
 		suscripcion_actualizar.save()
 		frappe.db.set_value('Opportunity', name, 'suscripcion', suscripcion.name)
+		frappe.db.set_value('Opportunity', name, 'status', 'Closed')
+		frappe.db.set_value('Opportunity', name, 'docstatus', 1)
 		frappe.msgprint(frappe._('Nueva Suscripción con ID {0}').format(suscripcion.name))	
 		
 		return suscripcion.name
+		
 
 	except Exception as e:
 			frappe.msgprint(frappe._('Fatality Error Project {0} ').format(e))	

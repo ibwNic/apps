@@ -160,10 +160,10 @@ frappe.ui.form.on("Opportunity", {
 
 		if(!frm.doc.__islocal && frm.perm[0].write && frm.doc.docstatus==0) {
 			if(frm.doc.status==="Open") {
-				frm.add_custom_button(__("Close"), function() {
-					frm.set_value("status", "Closed");
-					frm.save();
-				});
+				// frm.add_custom_button(__("Close"),  function() {
+				// 	frm.set_value("status", "Closed");
+				// 	frm.save();
+				// });
 					if(frm.doc.opportunity_type === 'Nuevo Contrato'){
 						frm.add_custom_button(__("Crear Contrato"), function() {						
 							let total = 0;

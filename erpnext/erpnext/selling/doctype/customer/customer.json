@@ -8,6 +8,7 @@
  "description": "Buyer of Goods and Services.",
  "doctype": "DocType",
  "document_type": "Setup",
+ "documentation": "www.google.com",
  "engine": "InnoDB",
  "field_order": [
   "basic_info",
@@ -511,7 +512,7 @@
    "link_fieldname": "party"
   }
  ],
- "modified": "2023-02-02 09:27:57.767106",
+ "modified": "2023-03-02 11:04:37.691818",
  "modified_by": "Administrator",
  "module": "Selling",
  "name": "Customer",
@@ -615,6 +616,7 @@
   }
  ],
  "quick_entry": 1,
+ "route": "app/web-page/pagina-de-prueba",
  "search_fields": "customer_name,customer_group,territory, mobile_no,primary_address",
  "show_name_in_global_search": 1,
  "sort_field": "modified",

@@ -1,6 +1,6 @@
 {
  "actions": [],
- "autoname": "TC-.######",
+ "autoname": "field:cliente",
  "creation": "2023-03-01 14:51:30.748901",
  "doctype": "DocType",
  "editable_grid": 1,
@@ -18,7 +18,8 @@
    "fieldname": "cliente",
    "fieldtype": "Link",
    "label": "Cliente",
-   "options": "Customer"
+   "options": "Customer",
+   "unique": 1
   },
   {
    "fieldname": "nombre",
@@ -48,11 +49,11 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-03-01 14:51:30.748901",
+ "modified": "2023-03-02 11:07:39.812925",
  "modified_by": "Administrator",
  "module": "Selling",
  "name": "Tarjetas de Credito",
- "naming_rule": "Expression (old style)",
+ "naming_rule": "By fieldname",
  "owner": "Administrator",
  "permissions": [
   {

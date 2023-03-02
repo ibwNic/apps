@@ -3832,33 +3832,7 @@ def aplicar_batch(id_batch):
 		
 		metadata = dict(colector =  batch.pagos_detalle[a].colector, recibo =  batch.pagos_detalle[a].no_recibo)
 		try:
-			aplicar_pago_batch(batch.pagos_detalle[a].regnumber, batch.pagos_detalle[a].fecha, batch.tasa_de_cambio,deudas, None,pagos, None, None, metadata, False)
-			# return res
-
-			# if batch.pagos_detalle[a].factura = batchDetail
-			# batch.append("pagos_detalle", {'journal_entry':res})
-			# batch.pagos_detalle[a].journal_entry.update(res)
-			# batch.update(batch.pagos_detalle[a]:{'journal_entry':res})
-			# batch.pagos_detalle[a].journal_entry = res
-			
-			# batchDetail = frappe.get_doc('Pago Batch Detalle',batch.pagos_detalle[a].name)
-
-			# # batchDetail.journal_entry = res
-			
-			# batchDetail.journal_entry = res
-			# batchDetail.flags.ignore_submit_comment = True
-			# batchDetail.save()
-			# batchDetail.save(ignore_permissions=True)
-			# doc = frappe.get_last_doc("User")
-			# doc.last_active = now()
-			# doc.db_update()
-			# for de in batchDetail:
-			# 	if de.journal_entry == batch.pagos_detalle[a].factura:
-			# 		batchDetail.update({'journal_entry': res})
-			# 		batchDetail.save()
-			# 		break
-			# frappe.db.sql(		
-			# 	""" update  `tabPago Batch Detalle` set journal_entry ='prueba'	WHERE parent %(id_batch)s  AND factura =  %(factura)s ;""", {"id_batch":id_batch,"factura":batch.pagos_detalle[a].factura})
+			aplicar_pago_batch(batch.pagos_detalle[a].regnumber, batch.pagos_detalle[a].fecha, batch.tasa_de_cambio,deudas, None,pagos, None, None, metadata, False,id_batch)
 			deudas.clear()
 			pagos.clear()
 		except Exception as e:
@@ -3867,15 +3841,10 @@ def aplicar_batch(id_batch):
 				'variables': ['InternalError'],
 				'messsage': str(e)
 			}
-	# batch.aplicado = 1
-	# batch.flags.ignore_submit_comment = True
-	# batch.save()
-	# batch.submit()
-	# frappe.db.commit()
-	# pass
-	# return type(pagos), type(deudas)
-
-	# return deudas,pagos,metadata
+	batch.aplicado = 1
+	batch.flags.ignore_submit_comment = True
+	batch.submit()
+	frappe.db.commit()
 	return 'Ok'
 
 def validate_payment_entries_batch(entries, accounts, messages, tc, dc='d'):
@@ -3885,7 +3854,7 @@ def validate_payment_entries_batch(entries, accounts, messages, tc, dc='d'):
 		'usd': 'USD',
 		'$': 'USD'
 	}
-
+    
 	for entry in entries:
 		currency = currency_map.get((entry['moneda'] or '').lower())
 		if not currency:
@@ -3911,26 +3880,24 @@ def validate_payment_entries_batch(entries, accounts, messages, tc, dc='d'):
 					er = tc
 				# row[prefix] = compute_nio(row[field], er)
 				# er = 1.0
-				print(er)
-				print(row[field])
 				row[prefix] = compute_nio(row[field], er)
 				row['exchange_rate'] = flt(compute_tc(row[field], row[prefix]),4)
 				accounts.append(row)
 
 @frappe.whitelist()
-def aplicar_pago_batch(regnumber=None, fecha=None, tc=None,deudas=None, creditos=None, pagos=None, cambios=None, aplicable=None, metadata=None, _ui_=False):
+def aplicar_pago_batch(regnumber=None, fecha=None, tc=None,deudas=None, creditos=None, pagos=None, cambios=None, aplicable=None, metadata=None, _ui_=False,IdBatch = None):
 	local_user = frappe.session.user
-
+	
 	if isinstance(metadata, six.string_types):
 		# lo convierte en un diccionario
 		metadata = json.loads(metadata)
-
+	# return regnumber
 	# Asiganar a la metadata de Interfaz
 	if regnumber:
 		customer = frappe.db.exists("Customer", {"name": ["like", "%{}".format(regnumber)]})
-
+	
 	# tc = tc.replace('\"','')
-	print(type(deudas))
+	# print(type(deudas))
 	
 	# Dealer
 	if metadata and 'colector' and 'IDdealer' in metadata:
@@ -3973,7 +3940,7 @@ def aplicar_pago_batch(regnumber=None, fecha=None, tc=None,deudas=None, creditos
 	# 			'tipo': 'User',
 	# 			'tercero': Tercero
 	# 		}).insert()
-
+	
 	if not fecha:
 		fecha = today()
 	# else:
@@ -3982,7 +3949,7 @@ def aplicar_pago_batch(regnumber=None, fecha=None, tc=None,deudas=None, creditos
 	# Tasa de cambio paralela
 	if not tc:
 		tc = get_exchange_rate('USD', 'NIO', fecha, throw=True)
-
+	
 	messages = []
 	accounts = []
 	if isinstance(deudas, six.string_types):
@@ -3995,7 +3962,7 @@ def aplicar_pago_batch(regnumber=None, fecha=None, tc=None,deudas=None, creditos
 		cambios = json.loads(cambios, object_pairs_hook=frappe._dict)
 	if isinstance(aplicable, six.string_types):
 		aplicable = json.loads(aplicable, object_pairs_hook=frappe._dict)
-
+	
 	if deudas:
 		messages += validate_list_of_dicts(deudas, 'deudas', ('link_doctype', 'link_name'))
 	if creditos:
@@ -4004,7 +3971,7 @@ def aplicar_pago_batch(regnumber=None, fecha=None, tc=None,deudas=None, creditos
 		messages += validate_list_of_dicts(pagos, 'pagos', ('tipo_de_pago', 'moneda', 'monto'), ('referencia',))
 	if cambios:
 		messages += validate_list_of_dicts(cambios, 'cambios', ('moneda', 'monto'))
-
+	
 	if not regnumber and not deudas and not (creditos or pagos):
 		return {
 			'status': 'error',
@@ -4016,7 +3983,7 @@ def aplicar_pago_batch(regnumber=None, fecha=None, tc=None,deudas=None, creditos
 				'status': 'error',
 				'message': 'You should provide at least the creditos or pagos values'
 			}
-
+	
 	if not regnumber:
 		return {
 				'status': 'error',
@@ -4024,20 +3991,23 @@ def aplicar_pago_batch(regnumber=None, fecha=None, tc=None,deudas=None, creditos
 			}
 	else:
 		customer = frappe.db.exists("Customer", {"name": ["like", "%{}".format(regnumber)]})
-
+	
+	
 	# Falta depurar
 	# list(deudas)
 	# return deudas
 	# return type(deudas)
+	
 	if deudas:
 		validate_party_entries_batch(deudas, accounts, messages, tc, 'c', customer=customer)
 	# if creditos:
 	# 	validate_party_entries_batch(creditos, accounts, messages, tc, 'd', customer=customer)
+	
 	if pagos:
 		validate_payment_entries_batch(pagos, accounts, messages, tc, 'd')
 	# if cambios:
 	# 	validate_payment_entries( list(map(lambda d: d.update({'tipo_de_pago': 'Efectivo'}), cambios)), accounts, messages, tc, 'c')
-
+	
 	# print(accounts)
 	# return accounts
 	# return tc
@@ -4283,6 +4253,7 @@ def aplicar_pago_batch(regnumber=None, fecha=None, tc=None,deudas=None, creditos
 		'regnumber': customer,
 		'mode_of_payment': pagos[0]['tipo_de_pago'],
 		# 'user_remark': 'Recibo de pago' + fecha,
+		'pago_batch':IdBatch,
 		'ui': _ui_
 	})
 
@@ -4359,6 +4330,7 @@ def aplicar_pago_batch(regnumber=None, fecha=None, tc=None,deudas=None, creditos
 
 def validate_party_entries_batch(entries, accounts, messages, tc, dc='c', customer=None):
 	# return type(entries)
+	
 	customer_founds = set()
 	if customer:
 		customer_founds.add(customer)
@@ -4408,10 +4380,10 @@ def get_party_account_row_batch(entry, customer, accounts, tc, dc='c'):
 		#ret['exchange_rate'] = compute_tc(ret[field], ret[prefix])
 		ret['exchange_rate'] = er
 	accounts.append(ret)
-	print(ret[field])
+	# print(ret[field])
 	#diff_amount = flt(compute_nio(ret[field], tc) - ret[prefix], 2)
 	#frappe.msgprint('<pre>{}</pre>'.format(diff_amount))
-	
+
 	diff_amount = flt(ret[field] - (ret[prefix] / er), 2)
 	#frappe.msgprint('<pre>{}</pre>'.format(diff_amount))
 	if diff_amount:
