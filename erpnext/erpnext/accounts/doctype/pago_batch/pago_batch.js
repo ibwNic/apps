@@ -393,11 +393,13 @@ frappe.ui.form.on('Pago Batch', {
 				},
 				// 'args': frm.doc.name,
 				'callback': function (r) {
-					// console.log(r.message)
+					console.log(r.message)
+
+					frm.save('Submit');
 					// frm.refresh();
 					// console.log(r.message)
 					// if(r.message === 'Ok'){
-					// 	frm.reload_doc();
+						// frm.reload_doc();
 					// }
 					// {	
 						

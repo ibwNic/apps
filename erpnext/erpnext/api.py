@@ -3813,7 +3813,7 @@ def aplicar_batch(id_batch):
 	# task = frappe.get_last_doc('Task', filters={"status": "Cancelled"})
 	# batchDetail = frappe.get_last_doc('Pago Batch Detalle', filters={"parent": id_batch})
 	
-
+	return batch
 	# list(batchDetail)
 	# return batch.pagos_detalle
 	
@@ -3831,16 +3831,11 @@ def aplicar_batch(id_batch):
 			pagos.append(dict(colector = batch.pagos_detalle[a].colector, moneda = 'USD', monto = batch.pagos_detalle[a].monto_dolar, tipo_de_pago = 'Cheque' if batch.pagos_detalle[a].cheque else 'Efectivo'))
 		
 		metadata = dict(colector =  batch.pagos_detalle[a].colector, recibo =  batch.pagos_detalle[a].no_recibo)
-		try:
-			aplicar_pago_batch(batch.pagos_detalle[a].regnumber, batch.pagos_detalle[a].fecha, batch.tasa_de_cambio,deudas, None,pagos, None, None, metadata, False,id_batch)
-			deudas.clear()
-			pagos.clear()
-		except Exception as e:
-			return {
-				'response': 'Error res',
-				'variables': ['InternalError'],
-				'messsage': str(e)
-			}
+		
+		aplicar_pago_batch(batch.pagos_detalle[a].regnumber, batch.pagos_detalle[a].fecha, batch.tasa_de_cambio,deudas, None,pagos, None, None, metadata, False,id_batch)
+		deudas.clear()
+		pagos.clear()
+		
 	batch.aplicado = 1
 	batch.flags.ignore_submit_comment = True
 	batch.submit()

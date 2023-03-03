@@ -443,7 +443,6 @@ def programar_cancelaciones():
 				od.latitud = spd.latitud
 				od.longitud = spd.longitud
 				od.save()
-				od.submit()
 				frappe.db.commit()
 
 				for equipos in susc.equipos:
