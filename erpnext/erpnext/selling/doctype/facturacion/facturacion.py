@@ -169,7 +169,7 @@ def get_items_from_customer(self,customer, currency_invoice,prorate=0):
 
 		# en las pruebas se esta usando el "current_invoice_end" pero en produccion hay que usar el "current_invoice_start"
 		plans = frappe.db.sql(
-		"""select t2.plan,t2.qty,t4.currency,t2.cost,t3.periodo_de_facturacion,t2.name from   `tabSubscription Plan Detail` t2
+		"""select t2.plan,t2.qty,t2.currency,t2.cost,t3.periodo_de_facturacion,t2.name from   `tabSubscription Plan Detail` t2
 			inner join `tabSubscription`  t3 on  t2.parent =t3.name 
 			inner join `tabSubscription Plan` t4 on t4.name= t2.plan  
 			where t3.party=%(party)s and t3.current_invoice_start=%(cis)s and t2.estado_plan='Activo' and t4.cost>0""",
