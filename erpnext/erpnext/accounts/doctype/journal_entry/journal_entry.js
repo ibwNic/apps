@@ -61,7 +61,7 @@ frappe.ui.form.on("Journal Entry", {
 			// 'octavio.aguirre@ibw.com':"O-"
 		};
 		series[frappe.user.name] && frm.doc.__islocal && frm.set_value('naming_series', series[frappe.user.name]);
-		// frm.toggle_enable('naming_series', false);
+		frm.toggle_enable('naming_series', false);
 
 		//#region Pagos Caja
 		cur_frm.cscript.make_customer_payment = function(frm){

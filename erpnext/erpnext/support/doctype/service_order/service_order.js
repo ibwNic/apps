@@ -43,7 +43,7 @@ frappe.ui.form.on('Service Order', {
 				"method": "erpnext.accounts.doctype.subscription.subscription.get_addresses_user","args":{'party': frm.doc.tercero}, callback: function(r) {
 				//para filtrar en una tabla secundaria:
 				console.log(r.message)
-					frm.set_query('dirección_de_traslado', function(d){            			
+					frm.set_query('direccion_de_traslado', function(d){            			
 						return {
 								filters: {
 									name: ["in", r.message]

@@ -25,6 +25,8 @@
   "barrio",
   "column_break_15",
   "solucion",
+  "direccion_de_traslado",
+  "nueva_direccion",
   "tecnico",
   "equipos__bom_section",
   "currency",
@@ -181,12 +183,25 @@
    "options": "Service Order",
    "print_hide": 1,
    "read_only": 1
+  },
+  {
+   "fieldname": "direccion_de_traslado",
+   "fieldtype": "Link",
+   "label": "Direccion de Traslado",
+   "options": "Address"
+  },
+  {
+   "fetch_from": "direccion_de_traslado.address_line1",
+   "fieldname": "nueva_direccion",
+   "fieldtype": "Data",
+   "label": "Nueva Direccion",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-03-06 08:49:27.555165",
+ "modified": "2023-03-06 17:02:41.662760",
  "modified_by": "Administrator",
  "module": "Support",
  "name": "Service Order",

@@ -166,7 +166,7 @@ def generar_orden_de_servicio(name):
 				for equipos in doc.equipos:
 					ran = random_string(6)
 					ran = ran + equipos.name
-					if name==equipos.plan:
+					if od.plan_de_subscripcion==equipos.plan:
 						code = frappe.db.get_value('Serial No', {"name": equipos.equipo}, 'item_code')
 						frappe.db.sql(""" insert into `tabEquipo_Orden_Servicio` (name,serial_no,parent,parenttype,parentfield,item_code) 
 							values (%(name)s,%(serial_no)s,%(parent)s,'Service Order','equipo_orden_servicio',%(item_code)s) """, {"name":ran,"serial_no":equipos.equipo,"parent":od.name,"item_code":code})
