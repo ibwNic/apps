@@ -621,8 +621,9 @@
  ],
  "icon": "fa fa-info-sign",
  "idx": 195,
+ "is_submittable": 1,
  "links": [],
- "modified": "2023-03-02 17:12:26.071870",
+ "modified": "2023-03-06 08:48:05.999217",
  "modified_by": "Administrator",
  "module": "CRM",
  "name": "Opportunity",
@@ -642,7 +643,6 @@
   },
   {
    "create": 1,
-   "delete": 1,
    "email": 1,
    "export": 1,
    "import": 1,
@@ -651,6 +651,7 @@
    "report": 1,
    "role": "Sales Manager",
    "share": 1,
+   "submit": 1,
    "write": 1
   }
  ],

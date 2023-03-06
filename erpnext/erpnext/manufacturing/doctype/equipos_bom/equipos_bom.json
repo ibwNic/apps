@@ -69,8 +69,7 @@
    "in_list_view": 1,
    "in_preview": 1,
    "label": "Precio",
-   "options": "currency",
-   "read_only": 1
+   "options": "currency"
   },
   {
    "fieldname": "total",
@@ -84,7 +83,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-01-09 08:03:32.183804",
+ "modified": "2023-03-06 09:14:19.437788",
  "modified_by": "Administrator",
  "module": "Manufacturing",
  "name": "Equipos BOM",

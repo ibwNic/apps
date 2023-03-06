@@ -3770,7 +3770,8 @@ def Aplicar_Nota_Credito(deudas=None,pagos=None,cuentaBanco=None,regnumber=None,
 		'multi_currency': True,
 		'codigo_nota_credito' : codigo_nota_credito,
 		'aplico_nota_credito':1,
-		'regnumber':customer
+		'regnumber':customer,
+		'voucher_type':'Credit Note'
 		# 'tipo_de_pago' : "DepositoBanco",
 		# 'aplico_deposito_banco':1
 		# 'observacion': 'Se revertio el pag'
@@ -3810,13 +3811,7 @@ def agregar_pago_batch(deudas=None,pagos=None,Recibo=None,NumCheque=None,ChequeC
 @frappe.whitelist()
 def aplicar_batch(id_batch):
 	batch = frappe.get_doc('Pago Batch', id_batch)
-	# task = frappe.get_last_doc('Task', filters={"status": "Cancelled"})
-	# batchDetail = frappe.get_last_doc('Pago Batch Detalle', filters={"parent": id_batch})
-	
-	return batch
-	# list(batchDetail)
-	# return batch.pagos_detalle
-	
+
 	deudas=[]
 	pagos=[]
 	metadata=dict()
@@ -3832,11 +3827,17 @@ def aplicar_batch(id_batch):
 		
 		metadata = dict(colector =  batch.pagos_detalle[a].colector, recibo =  batch.pagos_detalle[a].no_recibo)
 		
-		aplicar_pago_batch(batch.pagos_detalle[a].regnumber, batch.pagos_detalle[a].fecha, batch.tasa_de_cambio,deudas, None,pagos, None, None, metadata, False,id_batch)
+		res = aplicar_pago_batch(batch.pagos_detalle[a].regnumber, batch.pagos_detalle[a].fecha, batch.tasa_de_cambio,deudas, None,pagos, None, None, metadata, False,id_batch)
+		
+		batchDetail = batch.get("pagos_detalle", {"name": batch.pagos_detalle[a].name})
+
+		batchDetail[0].journal_entry =  res
+
 		deudas.clear()
 		pagos.clear()
 		
 	batch.aplicado = 1
+	batch.save(ignore_permissions=True)
 	batch.flags.ignore_submit_comment = True
 	batch.submit()
 	frappe.db.commit()
@@ -4003,11 +4004,7 @@ def aplicar_pago_batch(regnumber=None, fecha=None, tc=None,deudas=None, creditos
 	# if cambios:
 	# 	validate_payment_entries( list(map(lambda d: d.update({'tipo_de_pago': 'Efectivo'}), cambios)), accounts, messages, tc, 'c')
 	
-	# print(accounts)
-	# return accounts
-	# return tc
-	# Importante
-	#sum_debits es el pago que hara el cliente.
+
 	sum_debits = sum([d.get('debit', 0.0) for d in accounts])
 	#sum_credits es el monto total de las facturas pendientes.
 	sum_credits = sum([d.get('credit', 0.0) for d in accounts])
@@ -4228,7 +4225,7 @@ def aplicar_pago_batch(regnumber=None, fecha=None, tc=None,deudas=None, creditos
 					diff['credit'] -= diff['debit']
 					diff['debit_in_account_currency'] = diff['debit'] = 0.0
 
-	# return accounts,metadata
+	# return accounts
 	# if _ui_:
 	# 	return {
 	# 		'accounts': accounts,
@@ -4248,7 +4245,7 @@ def aplicar_pago_batch(regnumber=None, fecha=None, tc=None,deudas=None, creditos
 		'regnumber': customer,
 		'mode_of_payment': pagos[0]['tipo_de_pago'],
 		# 'user_remark': 'Recibo de pago' + fecha,
-		'pago_batch':IdBatch,
+		# 'pago_batch':IdBatch,
 		'ui': _ui_
 	})
 
@@ -4318,7 +4315,7 @@ def aplicar_pago_batch(regnumber=None, fecha=None, tc=None,deudas=None, creditos
 		}
 
 	frappe.db.commit()
-	frappe.set_user(local_user)
+	# frappe.set_user(local_user)
 
 	# return doc.name.split("-")[1]
 	return doc.name

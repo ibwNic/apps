@@ -55,7 +55,7 @@
    "in_list_view": 1,
    "in_preview": 1,
    "label": "Compresion",
-   "options": "1:1\n2:1"
+   "options": "1:1\n2:1\n4:1"
   },
   {
    "default": "Managua",
@@ -108,7 +108,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-03-02 09:55:00.461460",
+ "modified": "2023-03-06 10:54:24.250443",
  "modified_by": "Administrator",
  "module": "CRM",
  "name": "Opportunity Prospect",

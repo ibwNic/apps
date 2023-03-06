@@ -2078,7 +2078,7 @@ def SumaDeAnticiposFactura(Customer):
 		from `tabSubscription Plan Detail` t2
 		inner join `tabSubscription`  t3 on  t2.parent =t3.name
 		inner join `tabSubscription Plan` t4 on t4.name= t2.plan
-			where t3.party= %(Customer)s and t2.estado_plan !='Plan Cerrado' and t4.cost>0""",
+			where t3.party= %(Customer)s and t2.estado_plan ='Activo' and t4.cost>0""",
 		{"Customer": Customer},
 	)
 	# return SumFact

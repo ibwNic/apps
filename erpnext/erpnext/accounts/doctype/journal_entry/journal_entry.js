@@ -35,14 +35,9 @@ frappe.ui.form.on("Journal Entry", {
 			}, __('Actions'));
 		}
 
+		// Entrada Rapida Default Journal Entry
 		// if (frm.doc.__islocal) {
 		// 	frm.add_custom_button(__('Quick Entry'), function() {
-		// 		return erpnext.journal_entry.quick_entry(frm);
-		// 	});
-		// }
-
-		// if (frm.doc.docstatus==0) {
-		// 	frm.add_custom_button(__('Crear Anticipo'), function() {
 		// 		return erpnext.journal_entry.quick_entry(frm);
 		// 	});
 		// }
@@ -57,6 +52,7 @@ frappe.ui.form.on("Journal Entry", {
 				}, __('Make'));
 		}
 
+		// Series de Caja
 		var series = {
 			"frania.lainez@ibw.com": "D-",
 			"hegarcia@ibw.com": "I-",
@@ -65,8 +61,9 @@ frappe.ui.form.on("Journal Entry", {
 			// 'octavio.aguirre@ibw.com':"O-"
 		};
 		series[frappe.user.name] && frm.doc.__islocal && frm.set_value('naming_series', series[frappe.user.name]);
-		frm.toggle_enable('naming_series', false);
+		// frm.toggle_enable('naming_series', false);
 
+		//#region Pagos Caja
 		cur_frm.cscript.make_customer_payment = function(frm){
             function aplicar_Pagos (values){
 					// var values = d.get_values();
@@ -347,7 +344,6 @@ frappe.ui.form.on("Journal Entry", {
 			function TCBAnco(tcB){
 				d.fields_dict.totals_wrapper.$wrapper.find("#Banco").text(tcB);
 					// wrapper.find('#Banco').text(tcB);
-				
 			}
 
 			function TituloName(name){
@@ -1400,7 +1396,9 @@ frappe.ui.form.on("Journal Entry", {
 
 			});
 		};
+		//#endregion
 
+		//#region Creacion Anticipos
 		cur_frm.cscript.CrearAnticipos = function(frm){
 
 			function toggle_action(fields, wrapper){
@@ -2223,52 +2221,6 @@ frappe.ui.form.on("Journal Entry", {
 							fieldtype: "Section Break",
 							label: __("Forma de Pagos")
 						},
-						// {
-						// // fieldtype: 'Select',
-						// // options: [null].concat(data.tipos_de_pago),
-						// // fieldname: 'mode_of_payment',
-						// // label: 'Tipo de Pago',
-						// // // // placeholder: 'Tipo de Pago',
-						// // reqd: 1
-						// 	fieldtype: 'Select',
-						// 	label: 'Tipo de Pago',
-						// 	options: ['Efectivo','Cheque','Tarjeta de Credito'],
-						// 	fieldname: "mode_of_payment",
-						// 	reqd: 1
-						// 	// on_make: assign_df_to_input,
-						// 	// change: get_outstanding_details
-						// },
-						// {
-						// 	fieldtype: "Column Break",
-						// 	// fieldtype: "Section Break",
-						// },
-						// {
-						// 	fieldtype: 'Select',
-						// 	label: 'Moneda',
-						// 	options: ['C$','$'],
-						// 	fieldname: "currency",
-						// 	reqd: 1
-						// 	// on_make: assign_df_to_input,
-						// 	// change: get_outstanding_details
-						// },
-						// {
-						// 	fieldtype: "Column Break",
-						// 	// fieldtype: "Section Break",
-						// },
-						// {
-						// 	fieldtype: 'Float',
-						// 	label: 'Monto',
-						// 	precision: 2,
-						// 	// options: ['C$','$'],
-						// 	fieldname: "Monto",
-						// 	reqd: 1
-						// 	// on_make: assign_df_to_input,
-						// 	// change: get_outstanding_details
-						// },
-						// {
-						// 	// fieldtype: "Column Break",
-						// 	fieldtype: "Section Break",
-						// },
 						{
 							fieldtype: "HTML",
 							fieldname: "FormasDePagos_wrapper",
@@ -2358,61 +2310,10 @@ frappe.ui.form.on("Journal Entry", {
 				if (Monto_DigitadoNIO == true && Monto_DigitadoUSD == true){
 					var values = d.get_values();
 					ValidarCamposDigitados(pm_args,tipopago,monedaNIO,monedaUSD,values);
-					// montos.includes(total1);
-						// if (montos.includes(total1) || montos.includes(total2)){
-						// 	console.log("PAso");
-						// 	var values = d.get_values();
-						// 	[
-						// 		['customer', 'regnumber'],
-						// 		['sales_invoice', 'factura'],re
-						// 		['conversion_rate', 'tc'],
-						// 		['posting_date', 'fecha']
-						// 	].forEach(function(pair){
-						// 		var v = values[pair[0]];
-						// 		if (v) pm_args[pair[1]] = v;
-						// 	});
-						// 	pm_args._ui_ = true;
-						// 	console.log(pm_args);
-						// 	console.log('Requisición Aplicar Anticipo');
-						// 	console.log(Object.keys(pm_args).map(function(k) { return k + ': ' + JSON.stringify(pm_args[k]) }).join('\n'));
-						// 	frappe.call({
-						// 		'method': 'erpnext.api.crear_anticipo',
-						// 		'args': pm_args,
-						// 		'callback': function(res){
-						// 			if (res.message) {
-						// 				if (res.message.accounts.length && !res.message.messages.length){
-						// 					res.message.accounts.forEach(function(c){
-						// 						frm.add_child("accounts", c);
-						// 					});
-						// 					cur_frm.refresh_fields()
-						// 					cur_frm.set_value("posting_date", pm_args.fecha);
-						// 					cur_frm.set_value("multi_currency", 1);
-						// 					cur_frm.set_value("customer",pm_args.regnumber);
-						// 					cur_frm.set_value("tasa_de_cambio",pm_args.tc);
-						// 					cur_frm.set_value("meses_anticipo",d.get_value('Cantidad_Meses'));
-						// 					cur_frm.set_value("tipo_de_pago","Anticipo");
-						// 					cur_frm.set_value("title","Anticipo");
-						// 					cur_frm.trigger("validate");
 
-
-						// 					// No cambiar
-						// 					series[frappe.user.name] && frm.doc.__islocal && frm.set_value('naming_series', series[frappe.user.name]);
-						// 					frm.toggle_enable('naming_series', false);
-						// 					d.hide();
-						// 				} else {
-						// 					frappe.msgprint(res.message.messages.join("<br/>"));
-						// 				}
-						// 			}
-						// 		}
-						// 	});
-						// } else {
-						// 	frappe.msgprint({
-						// 		title: __('Advertencia'),
-						// 		indicator: 'red',
-						// 		message: __('No es igual a los montos totales!')
-						// 	});
-						// 	// frappe.msgprint("No es igual a los montos totales!");
-						// };
+				}else if (Monto_DigitadoUSD == true){
+					var values = d.get_values();
+					ValidarCamposDigitados(pm_args,tipopago,monedaNIO,monedaUSD,values);
 				}else {
 					frappe.msgprint({
 						title: __('Advertencia'),
@@ -2425,7 +2326,9 @@ frappe.ui.form.on("Journal Entry", {
 
 			});
 		}
-		// Revisar a la hora de dar click en el boton
+		//#endregion
+		
+		//#region Aplicar Anticipos
 		cur_frm.cscript.AplicarAnticipos = function(frm){
 
 			function toggle_action(fields, wrapper){
@@ -3205,8 +3108,9 @@ frappe.ui.form.on("Journal Entry", {
 
 			});
 		}
+		//#endregion
 
-		// Revisar
+		//#region Depositos en Garantia
 		cur_frm.cscript.CrearDepositoGarantia = function(frm){
 			function ValidarCamposDigitados (pm_args,tipopago,monedaNIO,monedaUSD,values){
 				for(let i = 0; i < pm_args.pagos.length; i++){
@@ -4236,7 +4140,9 @@ frappe.ui.form.on("Journal Entry", {
 
 			});
 		}
+		//#endregion
 
+		//#region Aplicar Deposito en Garantia
 		cur_frm.cscript.AplicarDepositoDeposito = function(frm){
 
 			function toggle_action(fields, wrapper){
@@ -5015,7 +4921,9 @@ frappe.ui.form.on("Journal Entry", {
 
 			});
 		}
+		//#endregion
 
+		//#region Reversion
 		cur_frm.cscript.AplicarReversion = function(frm){
 			// console.log(frm.doc.name)
 			frappe.call({
@@ -5048,7 +4956,9 @@ frappe.ui.form.on("Journal Entry", {
 			// })
 			
 		}
+		//#endregion
 
+		//#region Botones Personalizados
 	    if (frm.doc.docstatus === 0){
             frm.add_custom_button('Crear Pago', function(){
                 cur_frm.cscript.make_customer_payment(frm);
@@ -5061,23 +4971,12 @@ frappe.ui.form.on("Journal Entry", {
             });
         }
 
-		// if (frm.doc.docstatus === 0){
-        //     frm.add_custom_button('Aplicar de Anticipo', function(){
-        //         cur_frm.cscript.AplicarAnticipos(frm);
-        //     });
-        // }
-
 		if (frm.doc.docstatus === 0){
             frm.add_custom_button('Crear Deposito en Garantia', function(){
                 cur_frm.cscript.CrearDepositoGarantia(frm);
             });
         }
 
-		// if (frm.doc.docstatus === 0){
-        //     frm.add_custom_button('Aplicar Deposito en Garantia', function(){
-        //         cur_frm.cscript.AplicarDepositoDeposito(frm);
-        //     });
-        // }
 		frappe.call({
 			"method": "erpnext.crm.doctype.opportunity.opportunity.consultar_rol",
 		}).then(r =>{
@@ -5086,14 +4985,28 @@ frappe.ui.form.on("Journal Entry", {
 					if (frm.doc.docstatus === 1){
 						frm.add_custom_button('Aplicar reversion', function(){
 							cur_frm.cscript.AplicarReversion(frm);
-						});
+						}, __("Finanzas"));
+					}
+
+					if (frm.doc.docstatus === 0){
+					    frm.add_custom_button('Aplicar Deposito en Garantia', function(){
+					        cur_frm.cscript.AplicarDepositoDeposito(frm);
+					    }, __("Finanzas"));
+					}
+
+					if (frm.doc.docstatus === 0){
+					    frm.add_custom_button('Aplicar Anticipo', function(){
+					        cur_frm.cscript.AplicarAnticipos(frm);
+					    }, __("Finanzas"));
 					}
 				}
 			}
 
 		);
+		//#endregion
 	},
 
+	//#region Journal Entry Default frappe on
 	make_inter_company_journal_entry: function(frm) {
 		var d = new frappe.ui.Dialog({
 			title: __("Select Company"),
@@ -5210,40 +5123,11 @@ frappe.ui.form.on("Journal Entry", {
 				});
 		}
 	}
-
-
+	//#endregion
 });
 
-frappe.ui.form.on("Journal Entry", "customerA", function(frm) {
 
-	console.log(frm.doc.customerA);
-	// if (frm.doc.currency == "nio"){
-	// 	console.log("Entra");
-
-	// 	set_field_options("amount", ["","Personal","Billing","Other"]);
-	// 	// console.log(set_field_options);
-
-	// 	// return montosC$;
-	// }
-
-});
-
-// frappe.ui.form.on("Journal Entry", "customerA", function(frm) {
-// 	// let data = frappe.web_form.get_values();
-// 	console.log(frm.doc.customerA);
-// 	// console.log(frm);
-// 	// if (frm.doc.currency == "nio"){
-// 	// 	console.log("Entra");
-
-// 	// 	set_field_options("amount", ["","Personal","Billing","Other"]);
-// 	// 	// console.log(set_field_options);
-
-// 	// 	// return montosC$;
-// 	// }
-
-// });
-
-
+//#region Scripts Journal Enty Default 
 var update_jv_details = function(doc, r) {
 	$.each(r, function(i, d) {
 		var row = frappe.model.add_child(doc, "Journal Entry Account", "accounts");
@@ -5355,8 +5239,6 @@ erpnext.accounts.JournalEntry = class JournalEntry extends frappe.ui.form.Contro
 
 			return out;
 		});
-
-
 	}
 
 	setup_balance_formatter() {
@@ -5696,3 +5578,4 @@ $.extend(erpnext.journal_entry, {
 		}
 	},
 });
+//#endregion

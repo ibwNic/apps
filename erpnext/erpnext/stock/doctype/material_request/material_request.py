@@ -585,6 +585,7 @@ def update_completed_and_requested_qty(stock_entry, method):
 						idx = int(idx[0][0]) + 1
 					except:
 						idx = 1		
+					frappe.msgprint(f"agregando a bitacora de {serie[0]}")	
 					add_to_bitacora_a = frappe.get_doc({
 						"doctype": "Bitacora Equipos",
 						"fecha_transaccion":now(),

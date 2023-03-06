@@ -394,8 +394,21 @@ frappe.ui.form.on('Pago Batch', {
 				// 'args': frm.doc.name,
 				'callback': function (r) {
 					console.log(r.message)
-
-					frm.save('Submit');
+					if (r.message === 'Ok'){
+						frappe.show_alert({
+							message:__('Se aplicaron los pagos.'),
+							indicator:'green'
+						}, 5);
+						frm.reload_doc();
+						// frm.set_value('aplicado',1)
+						// frm.save('Submit');
+						// frappe.msgprint({
+						// 	title: __('Sastifactorio'),
+						// 	indicator: 'green',
+						// 	message: __('Se aplicaron pagos')
+						// });
+					}
+					
 					// frm.refresh();
 					// console.log(r.message)
 					// if(r.message === 'Ok'){
@@ -410,11 +423,7 @@ frappe.ui.form.on('Pago Batch', {
 					// 	// // frm.set_value('docstatus',1);
 						// frm.reload_doc();
 						// frm.save('Submit');
-					// 	// frappe.msgprint({
-					// 	// 	title: __('Sastifactorio'),
-					// 	// 	indicator: 'green',
-					// 	// 	message: __('Se aplicaron pagos')
-					// 	// });
+						
 						
 					// }
 					
