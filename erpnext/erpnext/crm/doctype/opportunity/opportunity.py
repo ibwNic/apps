@@ -550,7 +550,7 @@ def crear_orden_servicio(name):
 					'descripcion': plan.description,
 					'tipo': 'Prospect',
 					'tercero': doc.party_name,
-					'nombre': doc.party_name,
+					'nombre': doc.customer_name,
 					'direccion_de_instalacion': plan.direccion,
 					'venta_en_caliente':0,
 					'portafolio': plan.portafolio,
