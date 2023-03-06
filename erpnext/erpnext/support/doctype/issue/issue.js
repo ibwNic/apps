@@ -98,7 +98,7 @@ frappe.ui.form.on("Issue", {
 			frm.toggle_display("averia_masivo",false);
 		}else{
 			frm.toggle_display("cortesia", false);
-			frm.toggle_display("genera_débito",false);
+			// frm.toggle_display("genera_débito",false);
 		}	   
 	   
 	   	    if (frm.doc.tecnico !== undefined && frm.doc.cambiar_equipo ===1) {

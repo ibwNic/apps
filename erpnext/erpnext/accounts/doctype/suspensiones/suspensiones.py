@@ -115,22 +115,22 @@ def generar_vista_previa(name):
 	if suspension.treinta == 1 or suspension.sesenta == 1 or suspension.noventa == 1 or suspension.mas == 1:
 		query = query + 'and ('
 		if suspension.treinta == 1:
-			query = query +  " treinta >= " + str(suspension.deuda_mínima_30)
+			query = query +  " treinta >= " + str(suspension.deuda_minima_30)
 		if suspension.sesenta == 1:
 			if query[-1] == '(':
-				query = query +  " sesenta >= " + str(suspension.deuda_mínima_60)
+				query = query +  " sesenta >= " + str(suspension.deuda_minima_60)
 			else:
-				query = query +  " or sesenta >= " + str(suspension.deuda_mínima_60)
+				query = query +  " or sesenta >= " + str(suspension.deuda_minima_60)
 		if suspension.noventa == 1:
 			if query[-1] == '(':
-				query = query +  " noventa >= " + str(suspension.deuda_mínima_90)
+				query = query +  " noventa >= " + str(suspension.deuda_minima_90)
 			else:
-				query = query +  " or noventa >= " + str(suspension.deuda_mínima_90)
+				query = query +  " or noventa >= " + str(suspension.deuda_minima_90)
 		if suspension.mas == 1:
 			if query[-1] == '(':
-				query = query +  " mas >= " + str(suspension.deuda_mínima_90_a_más)
+				query = query +  " mas >= " + str(suspension.deuda_minima_90_a_más)
 			else:
-				query = query +  " or mas >= " + str(suspension.deuda_mínima_90_a_más)
+				query = query +  " or mas >= " + str(suspension.deuda_minima_90_a_más)
 		query = query + ')'
 		
 	excepciones = frappe.db.get_values("Excepciones",{"parent": name},"cliente")

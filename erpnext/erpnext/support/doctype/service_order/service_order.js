@@ -31,7 +31,7 @@ frappe.ui.form.on('Service Order', {
 			frm.toggle_display("equipo_orden_servicio", false);
 		}
 		if(frm.doc.tipo_de_orden !== 'TRASLADO'){
-			frm.toggle_display("dirección_de_traslado", false);
+			frm.toggle_display("direccion_de_traslado", false);
 			frm.toggle_display("longitud_traslado", false);
 			frm.toggle_display("latitud_traslado", false);
 			frm.toggle_display("nuevo_nodo", false);

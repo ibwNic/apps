@@ -710,8 +710,8 @@ class ServiceOrder(Document):
 					return
 				spd = frappe.get_doc("Subscription Plan Detail",self.plan_de_subscripcion)
 				spd.update({
-							'direccion':self.dirección_de_traslado,
-							'address_line':self.nueva_dirección,
+							'direccion':self.direccion_de_traslado,
+							'address_line':self.nueva_direccion,
 							'latitud':self.latitud_traslado,
 							'longitud':self.longitud_traslado,
 							'nodo':nuevo_nodo
