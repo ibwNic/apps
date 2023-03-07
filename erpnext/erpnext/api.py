@@ -11,6 +11,7 @@ import requests
 
 from frappe.desk.query_report import run
 
+#region get_exchange_rate
 @frappe.whitelist()
 def get_exchange_rate(from_currency, to_currency, date=None, alternative=True, throw=False):
 	if from_currency == to_currency:
@@ -57,7 +58,9 @@ def get_exchange_rate(from_currency, to_currency, date=None, alternative=True, t
 			))
 		return 0.0
 	return value
+#endregion
 
+#region get_exchange_rate
 @frappe.whitelist()
 def prueba():
 	return 'No'
@@ -67,6 +70,7 @@ def truncate(num, n):
     integer = int(num * (10**n))/(10**n)
     return float(integer)
 
+#region consulta_deuda
 # Regnumber es name del doctype Customers
 @frappe.whitelist()
 def consulta_deuda(name=None, factura=None, fecha=None, tc=None):
@@ -222,7 +226,9 @@ def consulta_deuda(name=None, factura=None, fecha=None, tc=None):
 		],
 		'TCBanco': frappe.db.get_value('Currency Exchange',{'date':today()}, 'lafise')
 	}
+#endregion
 
+#region render_row
 def render_row(row, tc):
 	ret = {'doctype': row['voucher_type'], 'name': row['voucher_no'], 'comentarios': row['remarks'], 'fecha': row['posting_date']}
 	deuda = get_deuda(row['voucher_type'], row['voucher_no'])
@@ -230,6 +236,7 @@ def render_row(row, tc):
 	ret['deuda'] = deuda
 	ret['actual'] = actual
 	return ret
+#endregion
 
 def compute_nio(usd, tc):
 	return flt(flt(usd, 2) * flt(tc, 9), 4)
@@ -267,6 +274,7 @@ def get_actual(deuda, tc):
 	ret['diferencial'] = flt(ret['nio'] - deuda['nio'], 2)
 	return ret
 
+#region aplicar_pago
 @frappe.whitelist()
 def aplicar_pago(regnumber=None, fecha=None, tc=None,deudas=None, creditos=None, pagos=None, cambios=None, aplicable=None, metadata=None, _ui_=False):
 	local_user = frappe.session.user
@@ -688,6 +696,7 @@ def aplicar_pago(regnumber=None, fecha=None, tc=None,deudas=None, creditos=None,
 		frappe.set_user(local_user)
 
 		return doc.name.split("-")[1]
+#endregion
 
 def registrarPagoEnElCierre(pago, idDealer=0, for_owner=False):
 	# Trae el doctype del cierre de caja
@@ -1035,6 +1044,7 @@ def abrirCierre(idDealer=0, for_owner=False):
 	doc.insert()
 	return doc
 
+#region obtenerCierreCaja
 # Validacion para el cierre de Caja
 @frappe.whitelist()
 def obtenerCierreCaja(for_owner=False):
@@ -1052,6 +1062,7 @@ def obtenerCierreCaja(for_owner=False):
 		else:
 			# Si tiene cierre abierto, debe de cerrarlo antes.
 			return 1
+#endregion
 
 # Reversion de Pagos
 @frappe.whitelist()
@@ -3783,6 +3794,8 @@ def Aplicar_Nota_Credito(deudas=None,pagos=None,cuentaBanco=None,regnumber=None,
 	return {'docs': newJe.as_dict()}
 	# return accounts
 
+
+#region Pagos Batch
 # Registrar pagos de Batch
 @frappe.whitelist()
 def agregar_pago_batch(deudas=None,pagos=None,Recibo=None,NumCheque=None,ChequeChek=None,Colector=None,NameBatch=None,regnumber=None,factura=None,tc=None,fecha=None,montoNIO=None,montoUSD = None,dc='c',_ui_=True):
@@ -3807,6 +3820,7 @@ def agregar_pago_batch(deudas=None,pagos=None,Recibo=None,NumCheque=None,ChequeC
 	batch.save()
 	frappe.db.commit()
 	return 'Ok'
+
 
 @frappe.whitelist()
 def aplicar_batch(id_batch):
@@ -3879,6 +3893,7 @@ def validate_payment_entries_batch(entries, accounts, messages, tc, dc='d'):
 				row[prefix] = compute_nio(row[field], er)
 				row['exchange_rate'] = flt(compute_tc(row[field], row[prefix]),4)
 				accounts.append(row)
+
 
 @frappe.whitelist()
 def aplicar_pago_batch(regnumber=None, fecha=None, tc=None,deudas=None, creditos=None, pagos=None, cambios=None, aplicable=None, metadata=None, _ui_=False,IdBatch = None):
@@ -4391,3 +4406,4 @@ def get_party_account_row_batch(entry, customer, accounts, tc, dc='c'):
 		# ABS Funcion que transforma los numeros a positivos
 		diff[p] += abs(diff_amount)
 		diff['{0}_in_account_currency'.format(p)] += abs(diff_amount)
+#endregion
