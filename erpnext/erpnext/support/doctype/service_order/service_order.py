@@ -947,7 +947,7 @@ def filtrar_productos_disponibles(tecnico):
 	bodegas = frappe.db.sql(""" select almacen from `tabAlmacenes de Tecnico` where parent = %(tecnico)s; """,{"tecnico":tecnico})
 	for item in item_codes:	
 		for bodega in bodegas:
-			if "USADO" not in bodega[0]:
+			if "USADO" not in (bodega[0]).upper():
 				actual_qty = frappe.db.sql(""" select qty_after_transaction from `tabStock Ledger Entry` where item_code = %(item_code)s and 
 					warehouse = %(bodega)s and is_cancelled = 0 order by (creation) desc limit 1 """,{"item_code":item[0],"bodega":bodega[0]})
 				try:
@@ -968,7 +968,7 @@ def filtrar_productos_disponibles_usados(tecnico):
 	bodegas = frappe.db.sql(""" select almacen from `tabAlmacenes de Tecnico` where parent = %(tecnico)s; """,{"tecnico":tecnico})
 	for item in item_codes:
 		for bodega in bodegas:
-			if "USADO" in bodega[0]:
+			if "USADO" in (bodega[0]).upper():
 				
 				actual_qty = frappe.db.sql(""" select qty_after_transaction from `tabStock Ledger Entry` where item_code = %(item_code)s and 
 					warehouse = %(bodega)s and is_cancelled = 0 order by (creation) desc limit 1 """,{"item_code":item[0],"bodega":bodega[0]})

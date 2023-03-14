@@ -389,9 +389,9 @@ scheduler_events = {
 		# 26 de cada mes
 		"0 9 26 * *": [
 			"erpnext.support.doctype.gestion.gestion.programar_cancelaciones",
-		]
-		# por minuto
-		"0 9 26 * *": [
+		],
+		# cada 4 minuto
+		"*/3 * * * *": [
 			"erpnext.accounts.doctype.sales_invoice.sales_invoice.validar_facturas",
 		]
 	},
