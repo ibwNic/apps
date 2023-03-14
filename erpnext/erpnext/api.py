@@ -698,6 +698,7 @@ def aplicar_pago(regnumber=None, fecha=None, tc=None,deudas=None, creditos=None,
 		return doc.name.split("-")[1]
 #endregion
 
+#region registrarPagoEnElCierre
 def registrarPagoEnElCierre(pago, idDealer=0, for_owner=False):
 	# Trae el doctype del cierre de caja
 	cierre = obtenerCierre(idDealer, for_owner=for_owner)
@@ -839,7 +840,9 @@ def registrarPagoEnElCierre(pago, idDealer=0, for_owner=False):
 	cierre.save()
 
 	return cierre
+#endregion
 
+#region movimentarPagoEnElCierre
 #Cancelacion de pagos en cierre activo
 def movimentarPagoEnElCierre(pago, idDealer=None, for_owner=False):
 	#Obtiene el cierre de caja
@@ -955,7 +958,9 @@ def movimentarPagoEnElCierre(pago, idDealer=None, for_owner=False):
 	cierre.flags.ignore_permissions = True
 	cierre.save()
 	return cierre
+#endregion
 
+#region obtenerCierre
 def obtenerCierre(idDealer=None, for_owner=False):
 	if not for_owner:
 		# return 'LLEGA'
@@ -995,7 +1000,9 @@ def obtenerCierre(idDealer=None, for_owner=False):
 			doc = abrirCierre(0, True)
 
 	return doc
+#endregion
 
+#region abrirCierre
 # Apertura de cierre de caja
 def abrirCierre(idDealer=0, for_owner=False):
 	if not for_owner:
@@ -1043,6 +1050,7 @@ def abrirCierre(idDealer=0, for_owner=False):
 	doc.flags.ignore_permissions = True
 	doc.insert()
 	return doc
+#endregion
 
 #region obtenerCierreCaja
 # Validacion para el cierre de Caja
@@ -1064,6 +1072,7 @@ def obtenerCierreCaja(for_owner=False):
 			return 1
 #endregion
 
+#region Reversion de Pagos
 # Reversion de Pagos
 @frappe.whitelist()
 def Obtener_cuentass(AsientoContable):
@@ -1145,7 +1154,9 @@ def Obtener_cuentass(AsientoContable):
 
 	return {'docs': newJe.as_dict()}
 	# return accounts
+#endregion
 
+#region  Validacion para el cierre de caja Interfaz
 # Apertura de cierre de caja
 def abrirCierreCaja(idDealer=0, for_owner=False):
 	if for_owner:
@@ -1157,6 +1168,7 @@ def abrirCierreCaja(idDealer=0, for_owner=False):
 			elif len(acl) > 1:
 				return 1
 	return 0
+#endregion
 
 def validate_list_of_dicts(obj, variable, mandatory, optional=()):
 	if not isinstance(obj, (list, tuple, set)):
@@ -1306,6 +1318,7 @@ def get_cliente_id(regnumber):
 	if customers:
 		return customers[0].name
 
+#region revertirPago API - BTN Cancelar
 @frappe.whitelist(allow_guest=True)
 def revertirPago(AprobadoIBW=None,AprobadoExterno=None, Recibo=None, CollectorID=None):
 	# return 'Ok'
@@ -1363,7 +1376,9 @@ def revertirPago(AprobadoIBW=None,AprobadoExterno=None, Recibo=None, CollectorID
 				'messsage': str(e)
 			}
 		return 'Pago cancelado'
+#endregion
 
+#region cierreTransaciones
 @frappe.whitelist(allow_guest=True)
 def cierreTransaciones(idDealer=None):
 	# iddealer = frappe.db.exists("Colectores", {'name': ['like', '%' + str(idDealer.strip()).rjust(5, '0')]})
@@ -1415,7 +1430,9 @@ def cierreTransaciones(idDealer=None):
 	frappe.db.commit()
 	# return doc.name.replace("CLS", "").replace("-", "")
 	return cierre.name
+#endregion
 
+#region ConsultaDeFacturas
 @frappe.whitelist(allow_guest=True)
 def ConsultaDeFacturas(CodigoCliente=None, SaldoCordobas=False):
 
@@ -1458,6 +1475,8 @@ def ConsultaDeFacturas(CodigoCliente=None, SaldoCordobas=False):
 			'response': 'Error',
 			'message': 'No args provided'
 		}
+#endregion
+
 
 @frappe.whitelist(allow_guest=True)
 def ConsultaDeCliente(CodigoCliente=None,NombreCompleto=None,NoIdentificacion=None,Factura=None):
@@ -1528,6 +1547,7 @@ def ConsultaDeCliente(CodigoCliente=None,NombreCompleto=None,NoIdentificacion=No
 			'message': 'No args provided'
 		}
 
+#region Anticipos
 #Anticipos
 @frappe.whitelist()
 def crear_anticipo(regnumber=None, fecha=None, tc=None,deudas=None, creditos=None, pagos=None, cambios=None, aplicable=None, metadata=None, _ui_=False):
@@ -2438,7 +2458,9 @@ def validate_payment_entriesAnticipos(entries, accounts, messages, tc, dc='d'):
 				row[prefix] = compute_nio(row[field], er)
 				row['exchange_rate'] = flt(compute_tc(row[field], row[prefix]),4)
 				accounts.append(row)
+#endregion
 
+#region Depositos en Garantia
 #Depositos
 @frappe.whitelist()
 def crear_deposito(regnumber=None, fecha=None, tc=None,deudas=None, creditos=None, pagos=None, cambios=None, aplicable=None, metadata=None, _ui_=False):
@@ -3350,7 +3372,9 @@ def validate_payment_entriesDepositos(entries, accounts, messages, tc, dc='d'):
 				row[prefix] = compute_nio(row[field], er)
 				row['exchange_rate'] = flt(compute_tc(row[field], row[prefix]),4)
 				accounts.append(row)
+#endregion
 
+#region Depositos de BAnco
 # Depositos de BAnco
 @frappe.whitelist()
 def Aplicar_Deposito_Banco(deudas=None,pagos=None,cuentaBanco=None,regnumber=None, tc=None,fecha=None,ID_pago_ZZ = None,dc='c',_ui_=True):
@@ -3558,7 +3582,9 @@ def Aplicar_Deposito_Banco(deudas=None,pagos=None,cuentaBanco=None,regnumber=Non
 	# # return {'docs': newJe.as_dict()}
 	return {'docs': newJe.as_dict()}
 	# return accounts
+#endregion
 
+#region notas de Credito
 # Aplicar notas de Credito
 @frappe.whitelist()
 def Aplicar_Nota_Credito(deudas=None,pagos=None,cuentaBanco=None,regnumber=None, tc=None,fecha=None,codigo_nota_credito = None,dc='c',_ui_=True):
@@ -3793,6 +3819,7 @@ def Aplicar_Nota_Credito(deudas=None,pagos=None,cuentaBanco=None,regnumber=None,
 	# # return {'docs': newJe.as_dict()}
 	return {'docs': newJe.as_dict()}
 	# return accounts
+#endregion
 
 
 #region Pagos Batch

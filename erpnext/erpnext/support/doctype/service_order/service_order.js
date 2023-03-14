@@ -2,6 +2,9 @@
 // For license information, please see license.txt
 frappe.ui.form.on('Service Order', {
 	refresh: function(frm) {
+		if(frm.doc.tipo_de_orden !== 'INSTALACION' && frm.doc.tipo_de_orden !== 'TRASLADO' && frm.doc.tipo_de_orden !== 'SITE SURVEY'){
+			frm.toggle_display("coordenadas", false);
+		}
 		if(frm.doc.workflow_state === 'Atendido'){
 			frm.set_df_property('razon_pendiente', 'read_only',false);
 		}
@@ -35,7 +38,6 @@ frappe.ui.form.on('Service Order', {
 			frm.toggle_display("longitud_traslado", false);
 			frm.toggle_display("latitud_traslado", false);
 			frm.toggle_display("nuevo_nodo", false);
-
 		}
 		else{
 			if(frm.doc.tercero !== undefined && frm.doc.tipo === 'Customer'){
@@ -55,8 +57,7 @@ frappe.ui.form.on('Service Order', {
 			}
 		}
 		if(frm.doc.tipo_de_orden === "DESINSTALACION" || frm.doc.tipo_de_orden === "REACTIVACION"){
-			frm.set_df_property('equipo_orden_servicio', 'read_only', frm.doc.__islocal ? 0 : 1);
-			// frm.set_df_property('nodo', 'read_only', frm.doc.__islocal ? 0 : 1);
+			frm.set_df_property('equipo_orden_servicio', 'read_only', true);
 		}
 
 		if(frm.doc.tipo_de_orden !== "SITE SURVEY" && frm.doc.tipo_de_orden !== "PRESUPUESTO"){
@@ -74,6 +75,7 @@ frappe.ui.form.on('Service Order', {
 		}else{
 			frm.set_df_property('fecha_solicitud', 'read_only', false);
 		}
+		
 		frappe.call({
 			"method": "erpnext.crm.doctype.opportunity.opportunity.consultar_rol",
 				callback: function(r){
@@ -170,5 +172,34 @@ frappe.ui.form.on('Service Order', {
 				d.show();
 			});
 		}
+	},
+	coordenadas: function(frm){
+		let mapdata = JSON.parse(frm.doc.coordenadas).features[0];
+		if(mapdata && mapdata.geometry.type == 'Point'){
+			let lat = mapdata.geometry.coordinates[1];
+			let lon = mapdata.geometry.coordinates[0];
+			if(frm.doc.tipo_de_orden !== 'TRASLADO')
+			{
+				frm.set_value("latitud",lat);
+				frm.set_value("longitud",lon);
+			}
+			else{
+				frm.set_value("latitud_traslado",lat);
+				frm.set_value("longitud_traslado",lon);
+			}
+		}
 	}
 });
+// frappe.ui.form.on('Materiales detalles', {
+// 	refresh(frm) {
+// 		// your code here
+// 	}
+// })
+
+// frappe.ui.form.on('Materiales detalles', {
+//     form_render: function(frm,cdt,cdn) {
+//     //    let row = frappe.get_doc(cdt, cdn);
+// 	   frappe.model.set_value(cdt, cdn, "bodega", 'Bodega Central');
+//        frm.refresh_field('bodega');
+//     },
+// });

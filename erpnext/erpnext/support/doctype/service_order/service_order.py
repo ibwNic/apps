@@ -141,7 +141,7 @@ class ServiceOrder(Document):
 			frappe.db.set_value(self.doctype, self.name, 'finalizado_por', frappe.session.user)
 			frappe.db.set_value(self.doctype, self.name, 'docstatus', 1)
 
-			if self.tipo_de_orden == "SITE SURVEY" and (self.factible == 'El proyecto es factible' or self.factible == 'El proyecto es factible con tercero'):
+			if self.tipo_de_orden == "SITE SURVEY" and (self.factible == 'El proyecto es factible' or self.factible == 'El proyecto es factible con tercero') and self.opportunity_prospect:
 				od = frappe.get_doc({
 					'doctype': "Service Order",
 					'tipo_de_orden': "PRESUPUESTO",
@@ -660,13 +660,25 @@ class ServiceOrder(Document):
 						frappe.db.set_value(self.doctype, self.name, 'workflow_state', 'Seguimiento')
 						self.reload()
 						return
+				almacenes = []
+				if frappe.db.exists("Almacenes de Tecnico",{'parent':self.tecnico},"almacen"):
+					for almacen in frappe.db.get_values("Almacenes de Tecnico",{'parent':self.tecnico},"almacen"):
+						almacenes.append(almacen[0])
+				else:
+					frappe.msgprint("El tecnico no tiene bodegas asignadas")
+					frappe.db.set_value(self.doctype, self.name, 'workflow_state', 'Seguimiento')
+					self.reload()
+					return
 				if len(self.equipo_orden_servicio) > 0:
 					for equipo in self.equipo_orden_servicio:
-						if frappe.db.get_value("Serial No",equipo.serial_no,"warehouse") != frappe.db.get_value("Tecnico",self.tecnico,"almacen"):
+						if frappe.db.get_value("Serial No",equipo.serial_no,"warehouse") not in almacenes:							
 							frappe.msgprint("El equipo " + equipo.serial_no + " no pertenece a la bodega del técnico")
 							frappe.db.set_value(self.doctype, self.name, 'workflow_state', 'Seguimiento')
 							self.reload()
 							return
+								
+								
+						
 			if not solucion:
 				frappe.msgprint("Inserte una solución")
 				frappe.db.set_value(self.doctype, self.name, 'workflow_state', 'Seguimiento')
@@ -676,7 +688,7 @@ class ServiceOrder(Document):
 				tecnico = self.tecnico
 			except:
 				tecnico = None
-			if self.tipo_de_orden not in ('SUSPENSION','REACTIVACION'):
+			if self.tipo_de_orden not in ('SUSPENSION','REACTIVACION','CORTE','RECONEXION','APROVISIONAMIENTO'):
 				if not tecnico or tecnico=="":
 					frappe.msgprint("Asigne un técnico para esta orden de servicio")
 					frappe.db.set_value(self.doctype, self.name, 'workflow_state', 'Seguimiento')
@@ -886,7 +898,7 @@ def equipos_de_almacen(portafolio,tecnico):
 		portafolio = "GPON"	
 	portafolio = "%" + portafolio + "%"
 	equipos = frappe.db.sql(""" select name from `tabSerial No` where item_group like %(portafolio)s AND warehouse in 
-	(select almacen from `tabTecnico` where name = %(tecnico)s);""",{"portafolio": portafolio, "tecnico":tecnico})
+	(select almacen from `tabAlmacenes de Tecnico` where parent = %(tecnico)s);""",{"portafolio": portafolio, "tecnico":tecnico})
 	equipo=''
 	lista =[]
 	for i in range(len(equipos)):
@@ -896,9 +908,8 @@ def equipos_de_almacen(portafolio,tecnico):
 
 @frappe.whitelist()
 def materiales_segun_portafolio(name):
-	so = frappe.get_doc("Service Order", name)
-	
-	if not so.productos and so.workflow_state == "Abierto":
+	so = frappe.get_doc("Service Order", name)	
+	if not so.productos and so.workflow_state in ["Abierto","Seguimiento"] and so.tipo_de_orden == 'INSTALACION':
 		portafolio = ''
 		for p in frappe.db.sql(""" select name from `tabKit de Materiales`;"""):
 			if p[0] in so.portafolio:
@@ -906,11 +917,16 @@ def materiales_segun_portafolio(name):
 				break
 			else:
 				portafolio = so.portafolio	
-		materiales = frappe.db.get_values("Detalle Kit Materiales",{"parent":portafolio},["item","qty"])
+		materiales = frappe.db.get_values("Detalle Kit Materiales",{"parent":portafolio},["item","qty","uom"])
 		for m in materiales:
+			nombre_bodega = ''
+			bodegas = frappe.db.sql(""" select almacen from `tabAlmacenes de Tecnico` where parent = %(tecnico)s; """,{"tecnico":so.tecnico})
+			for bodega in bodegas:
+				if "USADO" not in (bodega[0]).upper():
+					nombre_bodega = bodega[0]
 			frappe.db.sql(""" insert into `tabMateriales detalles` 
-			(name,material,cantidad,parent,parentfield,parenttype) values 
-			(%(name)s, %(material)s,%(cantidad)s,%(parent)s,'productos','Service Order')""",{"name":randStr(chars='abcdefghijklmnopqrstuvwxyz1234567890'), "material": m[0], "cantidad": m[1], "parent": name})
+			(name,material,cantidad,uom,parent,parentfield,parenttype,bodega) values 
+			(%(name)s, %(material)s,%(cantidad)s,%(uom)s,%(parent)s,'productos','Service Order',%(bodega)s)""",{"name":randStr(chars='abcdefghijklmnopqrstuvwxyz1234567890'), "material": m[0], "cantidad": m[1],"uom":m[2] ,"parent": name, "bodega":nombre_bodega})
 		# 	lista_materiales = frappe.get_doc({
 		# 		"doctype": "Materiales detalles",
 		# 		"material": m[0],
@@ -926,18 +942,45 @@ def materiales_segun_portafolio(name):
 @frappe.whitelist()
 def filtrar_productos_disponibles(tecnico):
 	materiales = []
+	almacen = []
 	item_codes= frappe.db.sql(""" select item_code from `tabItem`; """)
-	bodega = frappe.db.sql(""" select almacen from `tabTecnico` where name = %(tecnico)s; """,{"tecnico":tecnico})
+	bodegas = frappe.db.sql(""" select almacen from `tabAlmacenes de Tecnico` where parent = %(tecnico)s; """,{"tecnico":tecnico})
 	for item in item_codes:	
-		try:
-			actual_qty = frappe.db.sql(""" select qty_after_transaction from `tabStock Ledger Entry` where item_code = %(item_code)s and 
-				warehouse = %(bodega)s and is_cancelled = 0 order by (creation) desc limit 1 """,{"item_code":item[0],"bodega":bodega[0][0]})
-			actual_qty = actual_qty[0][0]
-		except:
-			actual_qty = 0
-		if actual_qty > 0:
-			materiales.append(item[0])
-	return materiales
+		for bodega in bodegas:
+			if "USADO" not in bodega[0]:
+				actual_qty = frappe.db.sql(""" select qty_after_transaction from `tabStock Ledger Entry` where item_code = %(item_code)s and 
+					warehouse = %(bodega)s and is_cancelled = 0 order by (creation) desc limit 1 """,{"item_code":item[0],"bodega":bodega[0]})
+				try:
+					actual_qty = actual_qty[0][0]
+				except:
+					actual_qty = 0
+				if actual_qty > 0:
+					almacen.append(bodega[0])
+					materiales.append(item[0])
+		
+	return materiales,almacen
+	
+@frappe.whitelist()
+def filtrar_productos_disponibles_usados(tecnico):
+	materiales = []
+	almacen = []
+	item_codes= frappe.db.sql(""" select item_code from `tabItem`; """)
+	bodegas = frappe.db.sql(""" select almacen from `tabAlmacenes de Tecnico` where parent = %(tecnico)s; """,{"tecnico":tecnico})
+	for item in item_codes:
+		for bodega in bodegas:
+			if "USADO" in bodega[0]:
+				
+				actual_qty = frappe.db.sql(""" select qty_after_transaction from `tabStock Ledger Entry` where item_code = %(item_code)s and 
+					warehouse = %(bodega)s and is_cancelled = 0 order by (creation) desc limit 1 """,{"item_code":item[0],"bodega":bodega[0]})
+				try:
+					actual_qty = actual_qty[0][0]
+				except:
+					actual_qty = 0
+				if actual_qty > 0:
+					almacen.append(bodega[0])
+					materiales.append(item[0])
+		
+	return materiales,almacen
 
 @frappe.whitelist()
 def filtrar_encuesta(doctype,name):

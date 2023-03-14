@@ -266,23 +266,25 @@ frappe.ui.form.on("User", {
 		// 			method: "frappe.core.doctype.user.user.permisos_tecnicos",
 		// 		});
 		// 	}
-		frappe.call({
-			"method": "erpnext.crm.doctype.opportunity.opportunity.consultar_rol",
-				callback: function(r){
+		// frappe.call({
+		// 	"method": "erpnext.crm.doctype.opportunity.opportunity.consultar_rol",
+		// 		callback: function(r){
 					
-					if(r.message.includes("Administrador Tecnicos")){
-						//if (frappe.user.has_role("Administrador Tecnicos")){
-								frappe.call({
-									method: "frappe.core.doctype.user.user.permisos_tecnicos",
-								});
-							//}
-					}
+		// 			if(r.message.includes("Administrador Tecnicos")){
+		// 				//if (frappe.user.has_role("Administrador Tecnicos")){
+		// 						frappe.call({
+		// 							method: "frappe.core.doctype.user.user.permisos_tecnicos",
+		// 						});
+		// 					//}
+		// 			}
 			
-			}
-		});
+		// 	}
+		// });
 	},
 	validate: function (frm) {
+		
 		if (frm.roles_editor) {
+			console.log("hola")
 			frm.roles_editor.set_roles_in_table();
 		}
 	},
@@ -361,7 +363,12 @@ frappe.ui.form.on("User Email", {
 });
 
 function has_access_to_edit_user() {
+	// console.log(frappe
+	// 	.get_meta("User"));
+	// console.log(get_roles_for_editing_user());
+	// console.log(has_common(frappe.user_roles, get_roles_for_editing_user()));
 	return has_common(frappe.user_roles, get_roles_for_editing_user());
+	
 }
 
 function get_roles_for_editing_user() {

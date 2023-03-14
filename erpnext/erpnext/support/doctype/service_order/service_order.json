@@ -36,11 +36,9 @@
   {
    "fieldname": "tipo_de_orden",
    "fieldtype": "Select",
-   "in_filter": 1,
    "in_global_search": 1,
    "in_list_view": 1,
    "in_preview": 1,
-   "in_standard_filter": 1,
    "label": "Tipo de Orden",
    "options": "CORTE\nSUSPENSION\nREACTIVACION\nDESINSTALACION\nDESINSTALACION RCPE\nINSTALACION\nINSTALACION OTC\nRECONEXION\nSITE SURVEY\nSUPERVISION\nTRASLADO\nAPROVISIONAMIENTO\nTV ADICIONAL\nCABLEADO\nPRESUPUESTO",
    "reqd": 1
@@ -50,7 +48,7 @@
    "fieldtype": "Select",
    "in_list_view": 1,
    "label": "Tipo",
-   "options": "Customer\nLead\nOpportunity\nProspect\nSuspensiones",
+   "options": "Customer\nLead\nOpportunity\nProspect\nSuspensiones\nIssue",
    "reqd": 1,
    "translatable": 1
   },
@@ -201,7 +199,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-03-06 17:02:41.662760",
+ "modified": "2023-03-14 09:54:11.285889",
  "modified_by": "Administrator",
  "module": "Support",
  "name": "Service Order",

@@ -10,6 +10,13 @@ frappe.ui.form.on('Subscription Update', {
 				}
 			}
 		})
+		frm.set_query('gestion', function(d){
+			return {
+				filters: {
+					customer: frm.doc.customer
+				}
+			}
+			})
 		if(frm.doc.tipo_contrato ===  'RETENCION'){
 			frm.set_df_property('gestion', 'read_only', true);
 		}

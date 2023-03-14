@@ -79,6 +79,29 @@ frappe.ui.form.on("Issue", {
 	refresh: function(frm) {
 	    //console.log(frm.doc.customer);
 	  // console.log(frm.doc.cambiar_equipo);
+	  if(frm.doc.tipo_de_orden === 'Tramite' && frm.doc.sub_tipo === 'Oferta Comercial'){
+		frm.add_custom_button(__("Solicitar Site"), function() {
+			let d = frappe.model.get_new_name('service-order');
+			frappe.route_options = {
+				'tipo_de_orden':'SITE SURVEY',
+				'tipo':'Issue',
+				'tercero':frm.doc.name,
+				'nombre':frm.doc.nombre,
+				'descripcion':frm.doc.descripcion,
+				'coordenadas':frm.doc.coordenadas,
+				'latitud': frm.doc.latitud,
+				'longitud':frm.doc.longitud,
+				'telefonos': frm.doc.numero_de_telefono,
+				'direccion':frm.doc.address_line1,
+				'departamento':frm.doc.departamento,
+				'municipio':frm.doc.municipio,
+				'barrio':frm.doc.barrio,				
+			};
+			frappe.set_route(['Form', 'service-order', d]);
+		})
+	  }
+	 
+
 	  frm.set_query('tecnico', function(d){
 			return {
 				filters: {
@@ -122,7 +145,6 @@ frappe.ui.form.on("Issue", {
 
             }
             
-
 		frm.set_query('averia_masivo', function(d){
 			return {
 				filters: {
@@ -130,8 +152,6 @@ frappe.ui.form.on("Issue", {
 				}
 			}
 		})
-
-
 
         if (frm.doc.customer !== undefined) {
             frappe.db.get_value("Customer", {"name": frm.doc.customer},"customer_name",function(res){ 
@@ -173,20 +193,7 @@ frappe.ui.form.on("Issue", {
                     }
                      }) 
         }
-         
 
-	// 	if (frm.doc.servicio.length===0) {
-	// 		frm.set_query('issue_type', function(d){
-    //             return {
-    //                 filters: {
-    //                     nivel_problema: 100,
-    //         }
-    //     			}
-	// 	   })
-	//    }
-
-
-        //Glen
         if (frm.doc.issue_type !== undefined && frm.doc.sub_averia !== undefined) {
            frappe.db.get_value("Issue Type", {"name": frm.doc.sub_averia},["id_averia","id_padre"],function(res){
                 res.id_averia;
@@ -257,7 +264,6 @@ frappe.ui.form.on("Issue", {
         	frappe.set_route(['Form', 'issue', d]);
         }, __("Escalar ordenes"));}
 	
-		// your code here
     		frm.set_query('gestion', function(d){
                 return {
                     filters: {
@@ -266,7 +272,39 @@ frappe.ui.form.on("Issue", {
                             }
                         }
             })
+			frm.set_query('departamento', function(d){
+				return {
+					filters: {
+						 tipo_territorio: "Departamento"
+					}
+				}
+			})
+			frm.set_query('municipio', function(d){
+				return {
+					filters: {
+						 tipo_territorio: "Municipio"
+					}
+				}
+			})
+			frm.set_query('barrio', function(d){
+				return {
+					filters: {
+						 tipo_territorio: "Barrio"
+					}
+				}
+			})
     	},
+		coordenadas: function(frm){
+			let mapdata = JSON.parse(frm.doc.coordenadas).features[0];
+			if(mapdata && mapdata.geometry.type == 'Point'){
+				let lat = mapdata.geometry.coordinates[1];
+				let lon = mapdata.geometry.coordinates[0];
+				
+				frm.set_value("latitud",lat);
+				frm.set_value("longitud",lon);
+				
+			}
+		},
 
 	timeline_refresh: function(frm) {
 		if (!frm.timeline.wrapper.find(".btn-split-issue").length) {
@@ -352,4 +390,27 @@ frappe.ui.form.on("Issue", "tipo_de_orden", function(frm) {
 		frm.toggle_display("cortesia", false);
 		frm.toggle_display("genera_débito",false);
 	}
+});
+
+frappe.ui.form.on("Issue", "departamento", function(frm) {
+	frm.set_query('municipio', function(d){
+	return {
+		filters: {
+			tipo_territorio: "Municipio",
+			 "parent_territory": frm.doc.departamento
+		}
+	}
+})
+
+});
+
+frappe.ui.form.on("Issue", "municipio", function(frm) {
+frm.set_query('barrio', function(d){
+	return {
+		filters: {
+			tipo_territorio: "Barrio",
+		   "parent_territory": frm.doc.municipio
+		}
+	}
+})
 });

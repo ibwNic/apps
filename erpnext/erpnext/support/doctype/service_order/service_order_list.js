@@ -39,17 +39,3 @@ frappe.listview_settings["Service Order"] = {
 	},
 };
 
-// frappe.listview_settings["Service Order"] = {
-// 	onload: async function(listview) {	
-
-//         let tecnico = (await frappe.db.get_value("Tecnico",
-// 			{
-// 				"usuario": frappe.session.user
-// 			},
-// 			"name",
-// 		)).message.name;
-// 		frappe.route_options = {
-// 			"tecnico": ["=", tecnico]
-// 		};
-// 	},
-// };

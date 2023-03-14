@@ -7,7 +7,8 @@
  "field_order": [
   "material",
   "cantidad",
-  "uom"
+  "uom",
+  "bodega"
  ],
  "fields": [
   {
@@ -29,12 +30,23 @@
    "label": "UOM",
    "options": "UOM",
    "read_only": 1
+  },
+  {
+   "fieldname": "bodega",
+   "fieldtype": "Link",
+   "in_filter": 1,
+   "in_global_search": 1,
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Bodega",
+   "options": "Warehouse"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-02-20 09:05:46.538999",
+ "modified": "2023-03-13 09:10:44.785681",
  "modified_by": "Administrator",
  "module": "Support",
  "name": "Materiales detalles",

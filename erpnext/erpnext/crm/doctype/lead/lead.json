@@ -75,7 +75,8 @@
   "notes_tab",
   "notes_html",
   "notes",
-  "dashboard_tab"
+  "dashboard_tab",
+  "amended_from"
  ],
  "fields": [
   {
@@ -508,13 +509,23 @@
    "fieldtype": "Tab Break",
    "label": "Dashboard",
    "show_dashboard": 1
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Lead",
+   "print_hide": 1,
+   "read_only": 1
   }
  ],
  "icon": "fa fa-user",
  "idx": 5,
  "image_field": "image",
+ "is_submittable": 1,
  "links": [],
- "modified": "2023-03-01 08:31:34.836689",
+ "modified": "2023-03-08 13:41:25.982584",
  "modified_by": "Administrator",
  "module": "CRM",
  "name": "Lead",

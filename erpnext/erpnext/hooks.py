@@ -390,6 +390,10 @@ scheduler_events = {
 		"0 9 26 * *": [
 			"erpnext.support.doctype.gestion.gestion.programar_cancelaciones",
 		]
+		# por minuto
+		"0 9 26 * *": [
+			"erpnext.accounts.doctype.sales_invoice.sales_invoice.validar_facturas",
+		]
 	},
 	"all": [
 		"erpnext.projects.doctype.project.project.project_status_update_reminder",

@@ -404,7 +404,7 @@
  "idx": 7,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-03-01 08:36:58.287666",
+ "modified": "2023-03-09 08:05:02.764832",
  "modified_by": "Administrator",
  "module": "Support",
  "name": "Issue",
@@ -456,7 +456,6 @@
    "share": 1
   }
  ],
- "quick_entry": 1,
  "search_fields": "status,customer,subject,raised_by",
  "sender_field": "raised_by",
  "sort_field": "modified",

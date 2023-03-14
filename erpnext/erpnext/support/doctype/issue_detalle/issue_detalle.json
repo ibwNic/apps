@@ -1,0 +1,54 @@
+{
+ "actions": [],
+ "creation": "2022-09-27 11:38:21.859676",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "issue",
+  "estado",
+  "tipo",
+  "problema"
+ ],
+ "fields": [
+  {
+   "fieldname": "issue",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Issue",
+   "options": "Issue",
+   "reqd": 1
+  },
+  {
+   "fieldname": "estado",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Estado"
+  },
+  {
+   "fieldname": "tipo",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Tipo"
+  },
+  {
+   "fieldname": "problema",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Problema"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2023-03-07 11:05:24.872432",
+ "modified_by": "Administrator",
+ "module": "Support",
+ "name": "Issue Detalle",
+ "owner": "Administrator",
+ "permissions": [],
+ "show_title_field_in_link": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

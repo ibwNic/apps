@@ -276,9 +276,14 @@ frappe.ui.form.on('Stock Entry', {
 						method: "erpnext.stock.doctype.stock_entry.stock_entry.solicitud_de_equipos",
 						args: values,
 						callback: function(r) {
-							console.log(r.message)
-							var doc = frappe.model.sync(r.message)[0];
-							frappe.set_route("Form", doc.doctype, doc.name);	
+							if (r.message){
+								var doc = frappe.model.sync(r.message)[0];
+								frappe.set_route("Form", doc.doctype, doc.name);
+							}
+							else{
+								msgprint("este técnico no tiene equipos o materiales para su expedición")
+							}
+								
 						}
 					});
 				});

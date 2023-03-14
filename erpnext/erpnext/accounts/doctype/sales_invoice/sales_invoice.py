@@ -2890,3 +2890,14 @@ def validar(name):
 			frappe.msgprint(frappe._('Create Invoice : Error Project {0} ').format(e))
 
 
+@frappe.whitelist()
+def validar_facturas():
+	tabTodas= frappe.db.sql(
+		"""select name from `tabSales Invoice` where docstatus = 0 limit 500"""
+		)
+
+	for client in tabTodas:
+			upd_child = frappe.get_doc("Sales Invoice", {"name": client[0]})	
+			upd_child.submit()
+	
+	frappe.db.commit()

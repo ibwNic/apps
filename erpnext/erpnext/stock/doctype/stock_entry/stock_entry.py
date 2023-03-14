@@ -2726,51 +2726,50 @@ def almacenes_permitidos(owner):
 
 
 @frappe.whitelist()
-def solicitud_de_equipos(staff_type, staff_name):	
-		
-		
-	warehouse= frappe.db.get_value("Tecnico", {"name": staff_name},"almacen")
+def solicitud_de_equipos(staff_type, staff_name):		
+	warehouses= frappe.db.get_values("Almacenes de Tecnico", {"parent": staff_name},"almacen")
 
 	work_orders = frappe.db.sql(""" select name from `tabService Order`  where tipo_de_orden='INSTALACION' and ordered_on_stock= 0 and docstatus=1 and workflow_state="Finalizado"
 	and tecnico=%(owner)s 
 	union all
 	select name from `tabIssue` where tipo_de_orden="Averia" and ordered_on_stock= 0 and docstatus=1 and workflow_state="Finalizado"
 	and tecnico=%(owner)s;""", {'owner':staff_name})
+	wo = False
 
-	lista =[]
-	for i in range(len(work_orders)):
-		lista.append(work_orders[i][0])
-		
-	# return lista
-	# frappe.msgprint(work_orders.tipo_de_orden)
-	if work_orders:
+	if len(work_orders) > 0:
+		wo = True
+	
+	if wo:
+		lista =[]
+		for i in range(len(work_orders)):
+			lista.append(work_orders[i][0])
 		# frappe.msgprint(work_orders[0][0])
 		mr = frappe.new_doc('Stock Entry')
 		mr.update({
 			'material_request_type': 'Material Issue',
 			'posting_date': nowdate(),
 			'posting_time': nowtime(),
-			'from_warehouse': warehouse,
+			# 'from_warehouse': warehouse,
 			'stock_entry_type': "Material Issue",
 			'tecnico': staff_name
 		})
-		equipos = frappe.db.sql(""" select SO.serial_no,(select item_code from    `tabSerial No` where name=SO.serial_no) item_code,SO.creation,SO.parent from `tabEquipo_Orden_Servicio` as SO where SO.parent in %(owner)s 
-		union all
-		select equipo_nuevo,modelo,creation,parent from `tabIssue_Equipos` where parent in %(owner)s and equipo_nuevo is not null;""", {'owner':lista})
+		equipos = frappe.db.sql("""select SO.serial_no,(select item_code from    `tabSerial No` where name=SO.serial_no) item_code,(select warehouse from    `tabSerial No` where name=SO.serial_no) warehouse,SO.creation,SO.parent from `tabEquipo_Orden_Servicio` as SO where SO.parent in %(owner)s 
+				union all
+				select equipo_nuevo,modelo, (select warehouse from    `tabSerial No` where name=equipo_nuevo) warehouse ,creation,parent from `tabIssue_Equipos` where parent in %(owner)s and equipo_nuevo is not null;""", {'owner':lista})
 		for row in equipos:				
 			
 			item1 = mr.append('items', {"serial_no": ""})				
 
 			item1.schedule_date = nowdate()
 			item1.item_code = row[1]
-			item1.service_order = row[3]
+			item1.service_order = row[4]
 			item1.serial_no = row[0]
 			item1.qty=1
-			item1.s_warehouse=warehouse
+			item1.s_warehouse=row[2]
 			item1.uom='Unidad(es)'
 			item1.stock_uom='Unidad(es)'
 
-		materiales = frappe.db.sql(""" select material,cantidad,parent from `tabMateriales detalles` where parent in %(owner)s ;""", {'owner':lista})
+		materiales = frappe.db.sql(""" select material,cantidad,parent,bodega,uom from `tabMateriales detalles` where parent in %(owner)s ;""", {'owner':lista})
 		for row in materiales:				
 			
 			item1 = mr.append('items', {"serial_no": ""})				
@@ -2781,9 +2780,24 @@ def solicitud_de_equipos(staff_type, staff_name):
 			item1.service_order = row[2]
 			# item1.serial_no = row[0]
 			# item1.qty=1
-			item1.s_warehouse=warehouse
-			item1.uom='Unidad(es)'
-			item1.stock_uom='Unidad(es)'
+			item1.s_warehouse=row[3]
+			item1.uom=row[4]
+			# item1.stock_uom='Unidad(es)'
+		
+		materiales_usados = frappe.db.sql(""" select material,cantidad,parent,bodega,uom from `tabMateriales Usados Detalles` where parent in %(owner)s ;""", {'owner':lista})
+		for row in materiales_usados:				
+			
+			item1 = mr.append('items', {"serial_no": ""})				
+
+			item1.schedule_date = nowdate()
+			item1.item_code = row[0]
+			item1.qty = row[1]
+			item1.service_order = row[2]
+			# item1.serial_no = row[0]
+			# item1.qty=1
+			item1.s_warehouse=row[3]
+			item1.uom=row[4]
+			# item1.stock_uom='Unidad(es)'
 
 		return {'docs': mr.as_dict()}
 
@@ -2853,6 +2867,7 @@ def solicitud_de_materiales_segun_portafolio(portafolio,cantidad):
 		item1.schedule_date = nowdate()
 		item1.item_code = m[0]
 		item1.qty=int(m[1])*int(cantidad)
+		item1.uom = m[2]
 
 	return {'docs': mr.as_dict()}
 

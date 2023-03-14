@@ -3,6 +3,26 @@
 
 frappe.ui.form.on('Gestion', {
 	refresh: function(frm) {
+        if(!frm.doc.__islocal){
+            if(frm.doc.tipo_gestion === 'Tramites' || frm.doc.tipo_gestion === 'Venta' || frm.doc.tipo_gestion === 'Reclamos'){
+                frm.add_custom_button(__("Solicitar Site"), function() {
+                    let d = frappe.model.get_new_name('service-order');
+                    frappe.route_options = {
+                        'tipo_de_orden':'SITE SURVEY',
+                        'tipo':'Customer',
+                        'tercero':frm.doc.customer,
+                        'nombre':frm.doc.nombre,
+                        'descripcion':frm.doc.detalle_gestion,
+                        'departamento':frm.doc.departamento,
+                        'municipio': frm.doc.municipio,
+                        'barrio':frm.doc.barrio,
+                        'tipo_de_origen': frm.doc.numero_de_telefono,
+                        'nombre_de_origen':frm.doc.name,				
+                    };
+                    frappe.set_route(['Form', 'service-order', d]);
+                })
+            }
+        }
         if(frm.doc.issue.length>1){
             frm.doc.issue.forEach(item => {
                 if(item.tipo_documento === 'Service Order' && item.estado === 'Finalizado'){
@@ -38,7 +58,7 @@ frappe.ui.form.on('Gestion', {
         frm.toggle_display("motivo", false);
 
     }
-	}
+	},
 });
 frappe.ui.form.on('Gestion', 'tipo_gestion', function(frm) {
     if(frm.doc.tipo_gestion === 'Cancelaciones' || frm.doc.tipo_gestion === 'Suspension Temporal'){

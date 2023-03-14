@@ -1070,7 +1070,7 @@ def crear_orden_servicio(name):
 					var = True
 
 				if status=="Pasa" or var:
-					if plan.estado_plan!="Activo":
+					if plan.estado_plan=="Inactivo":
 
 						portafolio=get_portafolio_plan(plan.plan)
 						direccion=frappe.get_doc("Address", plan.direccion)
@@ -1170,7 +1170,7 @@ def crear_orden_Desinstalacion(name):
 				else:
 					frappe.msgprint("No se pueden crear ordenes de trabajo para planes activos")
 	except Exception as e:
-				frappe.msgprint(frappe._('Get Item : Fatality Error Project {0} ').format(e))
+				frappe.msgprint(frappe._('crear_orden_Desinstalacion: Fatality Error Project {0} ').format(e))
 
 
 
