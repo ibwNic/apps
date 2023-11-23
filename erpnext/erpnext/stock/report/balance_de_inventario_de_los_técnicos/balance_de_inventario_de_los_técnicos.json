@@ -1,0 +1,45 @@
+{
+ "add_total_row": 1,
+ "columns": [],
+ "creation": "2023-09-25 13:55:48.646720",
+ "disable_prepared_report": 0,
+ "disabled": 1,
+ "docstatus": 0,
+ "doctype": "Report",
+ "filters": [],
+ "idx": 0,
+ "is_standard": "Yes",
+ "modified": "2023-11-14 15:00:18.052605",
+ "modified_by": "Administrator",
+ "module": "Stock",
+ "name": "Balance de Inventario de los T\u00e9cnicos",
+ "owner": "Administrator",
+ "prepared_report": 0,
+ "query": "SELECT sle.posting_date, atec.parent as tecnico, sle.warehouse, sle.item_code, \n \n\t\tROUND( (SELECT slex.qty_after_transaction  from `tabStock Ledger Entry` slex  \n\t\t\twhere slex.item_code = sle.item_code and slex.warehouse = sle.warehouse\n\t\t\tAND slex.is_cancelled = 0 and slex.posting_date >= '2023-04-30' ORDER BY CONCAT(slex.posting_date, ' ', slex.posting_time) desc,slex.creation desc limit 1),2 ) \n\t\tas cantidad, sle.stock_uom,\n (SELECT GROUP_CONCAT(name SEPARATOR ', ') FROM `tabSerial No` where warehouse = sle.warehouse and item_code = sle.item_code) as serial_no, sle.voucher_no as ultima_transferencia ,\n (select se.modified_by from `tabStock Entry` se where se.name = sle.voucher_no ) as validado_por\nFROM  `tabStock Ledger Entry` sle\ninner join `tabAlmacenes de Tecnico` atec on sle.warehouse = atec.almacen\nwhere\n sle.is_cancelled = 0  and sle.posting_date >= '2023-04-30'  \ngroup by sle.item_code, sle.warehouse, atec.parent\n ORDER BY CONCAT(sle.posting_date, ' ', sle.posting_time) desc ;",
+ "ref_doctype": "Stock Entry",
+ "report_name": "Balance de Inventario de los T\u00e9cnicos",
+ "report_type": "Query Report",
+ "roles": [
+  {
+   "role": "Stock User"
+  },
+  {
+   "role": "Manufacturing User"
+  },
+  {
+   "role": "Stock Manager"
+  },
+  {
+   "role": "Manufacturing Manager"
+  },
+  {
+   "role": "Administrator"
+  },
+  {
+   "role": "Support Team"
+  },
+  {
+   "role": "Tecnico"
+  }
+ ]
+}

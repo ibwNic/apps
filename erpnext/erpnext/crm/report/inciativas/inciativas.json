@@ -1,0 +1,71 @@
+{
+ "add_total_row": 0,
+ "columns": [],
+ "creation": "2023-07-18 11:10:32.223868",
+ "disable_prepared_report": 0,
+ "disabled": 0,
+ "docstatus": 0,
+ "doctype": "Report",
+ "filters": [
+  {
+   "fieldname": "mes",
+   "fieldtype": "Select",
+   "label": "Mes",
+   "mandatory": 1,
+   "options": "1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12",
+   "wildcard_filter": 0
+  },
+  {
+   "fieldname": "ano",
+   "fieldtype": "Select",
+   "label": "A\u00f1o",
+   "mandatory": 1,
+   "options": "2023\n2024\n2025\n2026\n2027",
+   "wildcard_filter": 0
+  }
+ ],
+ "idx": 0,
+ "is_standard": "Yes",
+ "modified": "2023-08-25 14:36:39.631887",
+ "modified_by": "Administrator",
+ "module": "CRM",
+ "name": "Inciativas",
+ "owner": "Administrator",
+ "prepared_report": 0,
+ "query": "select l.name,l.first_name,l.last_name,l.company_name,\n( select concat(phone,\" - \",mobile_no) from `tabContact` where name in (select parent from `tabDynamic Link` where link_name=l.name) limit 1) as Phone,\nl.nis,l.ruc,(select note from `tabCRM Note`  where parent=l.name  order by creation desc limit 1)  Observaciones,l.creation as Creado,l.owner as Creado_por,l.modified_by as Aprobado_por,l.workflow_state as Estado,l.cedula,l.sales_person as Vendedor,l.cliente,l.territory as Departamento,l.barrio,l.coordinador,\nl.address_line1 as Direccion,\n(select t2.nodo from `tabSubscription`  t1 \ninner join `tabSubscription Plan Detail`  t2 on  t2.parent = t1.name\nwhere t1.party=l.cliente limit 1) nodo,l.tipo_de_servicio_ as Servicio,l.monto_a_contratar\nfrom `tabLead` l\nwhere month(l.creation)=%(mes)s and \nyear(l.creation)=%(ano)s\n",
+ "ref_doctype": "Lead",
+ "report_name": "Inciativas",
+ "report_type": "Query Report",
+ "roles": [
+  {
+   "role": "System Manager"
+  },
+  {
+   "role": "Sales User"
+  },
+  {
+   "role": "Sales Manager"
+  },
+  {
+   "role": "Support Team"
+  },
+  {
+   "role": "Back Office"
+  },
+  {
+   "role": "CSC"
+  },
+  {
+   "role": "Cobranza"
+  },
+  {
+   "role": "Gerencia General"
+  },
+  {
+   "role": "Comisiones"
+  },
+  {
+   "role": "Vendedor Masivo"
+  }
+ ]
+}

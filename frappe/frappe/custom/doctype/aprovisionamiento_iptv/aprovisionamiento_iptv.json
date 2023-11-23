@@ -1,0 +1,92 @@
+{
+ "actions": [],
+ "autoname": "field:identificador",
+ "creation": "2023-08-23 21:46:36.741885",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "identificador",
+  "nombres",
+  "appaterno",
+  "apmaterno",
+  "column_break_5",
+  "estado",
+  "section_break_7",
+  "dispositivos"
+ ],
+ "fields": [
+  {
+   "fieldname": "identificador",
+   "fieldtype": "Link",
+   "label": "Regnumber",
+   "options": "Customer",
+   "unique": 1
+  },
+  {
+   "fetch_from": "identificador.customer_name",
+   "fieldname": "nombres",
+   "fieldtype": "Data",
+   "label": "nombres"
+  },
+  {
+   "fetch_from": "identificador.first_name",
+   "fieldname": "appaterno",
+   "fieldtype": "Data",
+   "label": "Nombre Paterno"
+  },
+  {
+   "fetch_from": "identificador.last_name",
+   "fieldname": "apmaterno",
+   "fieldtype": "Data",
+   "label": "Nombre Materno"
+  },
+  {
+   "fieldname": "column_break_5",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_7",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "dispositivos",
+   "fieldtype": "Table",
+   "label": "Dispositivos",
+   "options": "Dispositivos IPTv"
+  },
+  {
+   "fieldname": "estado",
+   "fieldtype": "Select",
+   "label": "Estado del servicio",
+   "options": "Inactivo\nActivo\nSuspendido",
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-08-24 11:01:43.338697",
+ "modified_by": "Administrator",
+ "module": "Custom",
+ "name": "Aprovisionamiento IPTv",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

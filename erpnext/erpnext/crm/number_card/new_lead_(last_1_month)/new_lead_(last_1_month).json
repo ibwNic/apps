@@ -1,0 +1,21 @@
+{
+ "creation": "2022-09-13 10:43:55.099067",
+ "docstatus": 0,
+ "doctype": "Number Card",
+ "document_type": "Lead",
+ "dynamic_filters_json": "[[\"Lead\",\"company\",\"=\",\"frappe.defaults.get_user_default(\\\"Company\\\")\"]]",
+ "filters_json": "[[\"Lead\",\"creation\",\"Timespan\",\"today\",false]]",
+ "function": "Count",
+ "idx": 0,
+ "is_public": 1,
+ "is_standard": 1,
+ "label": "New Lead (today)",
+ "modified": "2023-05-15 09:41:52.074838",
+ "modified_by": "emilio.jimenez@ibw.com",
+ "module": "CRM",
+ "name": "New Lead (Last 1 Month)",
+ "owner": "luis.olivares@ibw.com",
+ "show_percentage_stats": 1,
+ "stats_time_interval": "Daily",
+ "type": "Document Type"
+}

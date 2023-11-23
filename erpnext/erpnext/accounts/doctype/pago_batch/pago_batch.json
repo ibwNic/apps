@@ -1,0 +1,107 @@
+{
+ "actions": [],
+ "autoname": "Batch-.########",
+ "creation": "2023-02-15 16:43:49.386515",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "fecha_carga",
+  "tasa_de_cambio",
+  "aplicado",
+  "validado",
+  "column_break_4",
+  "tipo_pago",
+  "detalle_section",
+  "pagos_detalle",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "tasa_de_cambio",
+   "fieldtype": "Float",
+   "label": "Tasa de Cambio",
+   "precision": "4",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "aplicado",
+   "fieldtype": "Check",
+   "label": "Aplicado"
+  },
+  {
+   "fieldname": "detalle_section",
+   "fieldtype": "Section Break",
+   "label": "Detalle"
+  },
+  {
+   "allow_bulk_edit": 1,
+   "fieldname": "pagos_detalle",
+   "fieldtype": "Table",
+   "label": "Pagos Detalle",
+   "options": "Pago Batch Detalle"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Pago Batch",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "fecha_carga",
+   "fieldtype": "Date",
+   "in_filter": 1,
+   "in_list_view": 1,
+   "label": "Fecha Carga"
+  },
+  {
+   "fieldname": "column_break_4",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "tipo_pago",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Tipo Pago",
+   "options": "\nPago Batch\nPago Anticipos",
+   "reqd": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "validado",
+   "fieldtype": "Check",
+   "label": "Validado",
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-09-20 12:15:08.688959",
+ "modified_by": "Administrator",
+ "module": "Accounts",
+ "name": "Pago Batch",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "select": 1,
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

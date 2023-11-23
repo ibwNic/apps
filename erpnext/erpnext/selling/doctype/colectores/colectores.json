@@ -1,0 +1,63 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2022-10-19 17:34:52.462015",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "colectorid",
+  "colector",
+  "email",
+  "pass"
+ ],
+ "fields": [
+  {
+   "fieldname": "colectorid",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "colectorID"
+  },
+  {
+   "fieldname": "colector",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "colector"
+  },
+  {
+   "fieldname": "email",
+   "fieldtype": "Data",
+   "label": "email"
+  },
+  {
+   "fieldname": "pass",
+   "fieldtype": "Data",
+   "label": "pass"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-06-19 10:17:16.359271",
+ "modified_by": "Administrator",
+ "module": "Selling",
+ "name": "Colectores",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

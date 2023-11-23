@@ -1,0 +1,368 @@
+{
+ "actions": [],
+ "autoname": "OSI-.#####",
+ "creation": "2023-02-16 14:55:43.363620",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "fecha_programada_inicio",
+  "fecha_inicio",
+  "column_break_2",
+  "fecha_programada_fin",
+  "section_break_4",
+  "fecha_seguimiento",
+  "fecha_pendiente",
+  "column_break_8",
+  "fecha_atendido",
+  "fecha_finalizado",
+  "section_break_11",
+  "tipo_de_orden",
+  "gestion",
+  "tecnico",
+  "cuadrilla_tecnica",
+  "nodo",
+  "column_break_14",
+  "averia_masiva",
+  "descripcion",
+  "solucion",
+  "section_break_16",
+  "departamento",
+  "municipio",
+  "barrio",
+  "column_break_20",
+  "direccion",
+  "materiales_tab",
+  "almacen_filtro",
+  "column_break_29",
+  "boton_de_inventario",
+  "section_break_31",
+  "materiales_detalles",
+  "materiales_desinstalados",
+  "bitacora_tab",
+  "total_abierto",
+  "column_break_26",
+  "total_seguimiento",
+  "column_break_28",
+  "total_atendido",
+  "column_break_30",
+  "total_pendiente",
+  "section_break_29",
+  "bitacora_de_orden",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "fecha_programada_inicio",
+   "fieldtype": "Datetime",
+   "label": "Fecha Programada Inicio"
+  },
+  {
+   "fieldname": "fecha_programada_fin",
+   "fieldtype": "Datetime",
+   "label": "Fecha Programada Fin"
+  },
+  {
+   "fieldname": "fecha_inicio",
+   "fieldtype": "Datetime",
+   "label": "Fecha Inicio"
+  },
+  {
+   "fieldname": "fecha_seguimiento",
+   "fieldtype": "Datetime",
+   "label": "Fecha Seguimiento",
+   "read_only": 1
+  },
+  {
+   "fieldname": "fecha_pendiente",
+   "fieldtype": "Datetime",
+   "label": "Fecha Pendiente",
+   "read_only": 1
+  },
+  {
+   "fieldname": "fecha_atendido",
+   "fieldtype": "Datetime",
+   "label": "Fecha Atendido",
+   "read_only": 1
+  },
+  {
+   "fieldname": "fecha_finalizado",
+   "fieldtype": "Datetime",
+   "label": "Fecha Finalizado",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_4",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_8",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_11",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "tipo_de_orden",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Tipo de Orden",
+   "options": "\nGESTI\u00d3N ADMINISTRATIVA\nMANTENIMIENTO INTERNO\nVENTANA DE MANTENIMIENTO\nINSTALACI\u00d3N DE NODO\nPRESUPUESTO\nAMPLIACION DE RED\nVENTA DE EQUIPOS",
+   "reqd": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "gestion",
+   "fieldtype": "Select",
+   "label": "Subtipo",
+   "options": "\nFIBRA OPTICA\nGPON\nRETIRO DE MATERIALES/EQUIPOS\nRETIRO DE ENCOMIENDAS\nTRASLADO DE PERSONAL\nAPOYO A INGENIER\u00cdA\nAPOYO A VTA. DE EQUIPOS\nAPOYO AL TALLER\nGESTION DE PAGO\nAIRE ACONDICIONADO\nPINTURA\nSEGURIDAD\nNOC\nEL\u00c9CTRICO\nREPARACI\u00d3N TECHO/PARED\nSERVICIOS FIBRA\nSERVICIOS GPON\nSERVICIOS HFC\nDIALUP/EMAIL\nEQUIPOS\nIMOVIL\nPUNTO A PUNTO\nPUNTO MULTIPUNTO\nLTE\nIPTV\nGPON INT RESIDENCIAL\nGPON TV RESIDENCIAL\nGPON CORPORATIVO\nGPON TV CORPORATIVO\nGPON INT PYME\nGPON TV PYME\nHFC\nAMPLIACION DE RED\nPRESUPUESTO\nINSTALACION DE EQUIPOS\nGESTION DE VENTAS MASIVAS\nLIMPIEZA\nLiquidacion Por Conciliacion de balance de Inventario\nConsumos del Taller",
+   "reqd": 1
+  },
+  {
+   "fieldname": "descripcion",
+   "fieldtype": "Small Text",
+   "label": "Descripcion",
+   "max_height": "80px"
+  },
+  {
+   "fieldname": "direccion",
+   "fieldtype": "Small Text",
+   "label": "Direccion"
+  },
+  {
+   "fieldname": "column_break_14",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_16",
+   "fieldtype": "Section Break",
+   "label": "Direcci\u00f3n"
+  },
+  {
+   "fieldname": "departamento",
+   "fieldtype": "Link",
+   "label": "Departamento",
+   "options": "Territory"
+  },
+  {
+   "fieldname": "municipio",
+   "fieldtype": "Link",
+   "label": "Municipio",
+   "options": "Territory"
+  },
+  {
+   "fieldname": "barrio",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Barrio",
+   "options": "Territory"
+  },
+  {
+   "fieldname": "column_break_20",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "bitacora_tab",
+   "fieldtype": "Tab Break",
+   "label": "Bitacora"
+  },
+  {
+   "fieldname": "bitacora_de_orden",
+   "fieldtype": "Table",
+   "label": "Bitacora de Orden",
+   "options": "Bitacora Orden",
+   "read_only": 1
+  },
+  {
+   "fieldname": "materiales_tab",
+   "fieldtype": "Tab Break",
+   "label": "Materiales"
+  },
+  {
+   "fieldname": "materiales_detalles",
+   "fieldtype": "Table",
+   "label": "Materiales",
+   "options": "Materiales detalles"
+  },
+  {
+   "fieldname": "total_abierto",
+   "fieldtype": "Duration",
+   "label": "total_abierto",
+   "read_only": 1
+  },
+  {
+   "fieldname": "total_seguimiento",
+   "fieldtype": "Duration",
+   "label": "total_seguimiento",
+   "read_only": 1
+  },
+  {
+   "fieldname": "total_atendido",
+   "fieldtype": "Duration",
+   "label": "total_atendido",
+   "read_only": 1
+  },
+  {
+   "fieldname": "total_pendiente",
+   "fieldtype": "Duration",
+   "label": "total_pendiente",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_29",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_26",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_28",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_30",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "tecnico",
+   "fieldtype": "Link",
+   "in_filter": 1,
+   "in_global_search": 1,
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Tecnico",
+   "options": "Tecnico"
+  },
+  {
+   "fieldname": "solucion",
+   "fieldtype": "Small Text",
+   "label": "Solucion",
+   "max_height": "90px"
+  },
+  {
+   "fieldname": "nodo",
+   "fieldtype": "Link",
+   "in_filter": 1,
+   "in_global_search": 1,
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Nodo",
+   "options": "Nodo"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Orden de Servicio Interno",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "cuadrilla_tecnica",
+   "fieldtype": "Table",
+   "label": "Cuadrilla Tecnica",
+   "options": "Tecnicos Service Order"
+  },
+  {
+   "fieldname": "almacen_filtro",
+   "fieldtype": "Link",
+   "label": "Almacen Filtro",
+   "options": "Warehouse"
+  },
+  {
+   "fieldname": "averia_masiva",
+   "fieldtype": "Link",
+   "in_filter": 1,
+   "in_global_search": 1,
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Averia Masiva",
+   "options": "AveriasMasivas",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_29",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "boton_de_inventario",
+   "fieldtype": "HTML",
+   "label": "boton de inventario",
+   "options": "<div id=\"boton-balance\"></div>"
+  },
+  {
+   "fieldname": "section_break_31",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "materiales_desinstalados",
+   "fieldtype": "Table",
+   "label": "Materiales Desinstalados",
+   "options": "Materiales Usados Detalles"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2023-10-11 10:05:28.831554",
+ "modified_by": "Administrator",
+ "module": "Support",
+ "name": "Orden de Servicio Interno",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "read": 1,
+   "role": "Support Team",
+   "select": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "O&M",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1,
+ "track_seen": 1
+}

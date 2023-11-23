@@ -1,0 +1,22 @@
+{
+ "creation": "2023-05-09 14:14:57.911338",
+ "docstatus": 0,
+ "doctype": "Number Card",
+ "filters_json": "{\"FechaD\":\"2023-05-01\",\"FechaH\":\"2023-05-09\"}",
+ "function": "Count",
+ "idx": 0,
+ "is_public": 0,
+ "is_standard": 1,
+ "label": "Prueba",
+ "modified": "2023-05-09 14:14:57.982233",
+ "modified_by": "emilio.jimenez@ibw.com",
+ "module": "CRM",
+ "name": "Prueba",
+ "owner": "emilio.jimenez@ibw.com",
+ "report_field": "precio",
+ "report_function": "Sum",
+ "report_name": "Altas del mes",
+ "show_percentage_stats": 1,
+ "stats_time_interval": "Daily",
+ "type": "Report"
+}

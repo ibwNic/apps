@@ -1,0 +1,129 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:reunion",
+ "creation": "2023-05-19 09:18:30.546099",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "reunion",
+  "fecha_y_hora_de_reunion",
+  "column_break_3",
+  "lugar_de_reunion",
+  "column_break_5",
+  "moderador",
+  "secretario_de_minuta",
+  "section_break_5",
+  "objetivos_de_la_reunion",
+  "asistentes",
+  "agenda",
+  "desarrollo_de_reunion",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "reunion",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Nombre de la Reunion",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "fecha_y_hora_de_reunion",
+   "fieldtype": "Datetime",
+   "in_filter": 1,
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Fecha y hora de reunion"
+  },
+  {
+   "fieldname": "asistentes",
+   "fieldtype": "Table",
+   "label": "Asistentes",
+   "options": "Asistentes"
+  },
+  {
+   "columns": 10,
+   "fieldname": "objetivos_de_la_reunion",
+   "fieldtype": "Text Editor",
+   "label": "Objetivos de la Reunion",
+   "max_height": "120px"
+  },
+  {
+   "fieldname": "column_break_3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "lugar_de_reunion",
+   "fieldtype": "Data",
+   "label": "Lugar de Reunion"
+  },
+  {
+   "fieldname": "section_break_5",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_5",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "moderador",
+   "fieldtype": "Data",
+   "label": "Moderador"
+  },
+  {
+   "fieldname": "secretario_de_minuta",
+   "fieldtype": "Data",
+   "label": "Secretario de minuta"
+  },
+  {
+   "fieldname": "agenda",
+   "fieldtype": "Text Editor",
+   "label": "Agenda"
+  },
+  {
+   "fieldname": "desarrollo_de_reunion",
+   "fieldtype": "Table",
+   "label": "Desarrollo de Reunion",
+   "options": "Desarrollo de Reunion"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Minuta de Reunion",
+   "print_hide": 1,
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2023-05-25 08:29:55.106651",
+ "modified_by": "Administrator",
+ "module": "Desk",
+ "name": "Minuta de Reunion",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

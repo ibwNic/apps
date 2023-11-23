@@ -1,0 +1,166 @@
+{
+ "actions": [],
+ "autoname": "field:mac",
+ "creation": "2022-12-28 11:20:47.579603",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "mac",
+  "customer",
+  "plan",
+  "contrato",
+  "provisor",
+  "provisor_speed_id",
+  "provisor_instruction",
+  "estado",
+  "activacion_forzosa",
+  "column_break_10",
+  "cmts",
+  "velocidad",
+  "fecha_activacion_forzosa"
+ ],
+ "fields": [
+  {
+   "fieldname": "mac",
+   "fieldtype": "Link",
+   "ignore_user_permissions": 1,
+   "in_list_view": 1,
+   "label": "Mac",
+   "options": "Serial No",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "plan",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Plan",
+   "options": "Subscription Plan Detail",
+   "read_only": 1
+  },
+  {
+   "fieldname": "cmts",
+   "fieldtype": "Data",
+   "label": "CMTS",
+   "read_only": 1
+  },
+  {
+   "default": "Inactivo",
+   "fieldname": "estado",
+   "fieldtype": "Select",
+   "label": "Estado",
+   "options": "Activo\nInactivo\nSuspendido",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "activacion_forzosa",
+   "fieldtype": "Check",
+   "label": "Activacion Forzosa"
+  },
+  {
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "label": "Customer",
+   "options": "Customer",
+   "read_only": 1
+  },
+  {
+   "fieldname": "provisor",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Aprovisionamiento",
+   "options": "\nHfc\nYota\nNetspan\nGPON",
+   "read_only": 1
+  },
+  {
+   "fieldname": "provisor_speed_id",
+   "fieldtype": "Data",
+   "label": "ID Velocidad",
+   "read_only": 1
+  },
+  {
+   "fieldname": "provisor_instruction",
+   "fieldtype": "Data",
+   "label": "Instruccion",
+   "read_only": 1
+  },
+  {
+   "fieldname": "contrato",
+   "fieldtype": "Link",
+   "label": "Contrato",
+   "options": "Subscription",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_10",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "velocidad",
+   "fieldtype": "Data",
+   "label": "Velocidad",
+   "read_only": 1
+  },
+  {
+   "fieldname": "fecha_activacion_forzosa",
+   "fieldtype": "Datetime",
+   "label": "Fecha Activacion Forzosa",
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-11-23 11:34:34.321829",
+ "modified_by": "Administrator",
+ "module": "Custom",
+ "name": "Aprovisionamiento",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Support Team",
+   "select": 1,
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "NOC",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1,
+ "track_seen": 1,
+ "track_views": 1
+}

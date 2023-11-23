@@ -1,0 +1,55 @@
+{
+ "add_total_row": 0,
+ "columns": [],
+ "creation": "2023-03-15 15:46:43.678716",
+ "disable_prepared_report": 0,
+ "disabled": 0,
+ "docstatus": 0,
+ "doctype": "Report",
+ "filters": [
+  {
+   "fieldname": "FechaD",
+   "fieldtype": "Date",
+   "label": "Fecha Desde",
+   "mandatory": 1,
+   "wildcard_filter": 0
+  },
+  {
+   "fieldname": "FechaH",
+   "fieldtype": "Date",
+   "label": "Fecha Hasta",
+   "mandatory": 1,
+   "wildcard_filter": 0
+  }
+ ],
+ "idx": 0,
+ "is_standard": "Yes",
+ "modified": "2023-03-16 15:44:59.134356",
+ "modified_by": "Administrator",
+ "module": "Accounts",
+ "name": "Altas del Mes 2",
+ "owner": "Administrator",
+ "prepared_report": 0,
+ "query": "select\ns.party as Cliente,\ns.nombre_del_cliente as nombre,\ns.name as contrato,\ns.no_contrato as no_contrato,\nspd.plan,\nspd.cost as precio,\nspd.estado_plan as estado,\nsp.item_group as portafolio,\nad.departamento,\nad.municipio,\nad.barrio,\nspd.service_start,\nday(spd.service_start) as dia,\nmonth(spd.service_start) as mes,\nyear(spd.service_start) as a\u00f1o,\ncu.company_name as Compania,\ncu.customer_type as Tipo_Cliente,\ncu.mobile_no as N_Celular,\nsp.name as Plan_ID,\nsp. item_group as Tipo_Servicio,\nsp.item as Velocidad,\n(select op.payback from `tabCustomer` cus inner join `tabOpportunity` op on  op.customer = cus.name where op.customer = (cu.name))as Payback,\ns.vendedor,\n(select canal_general from `tabSales Person` where name = (select sales.parent_sales_person from `tabSales Person` sales where sales.name = (select sales.parent_sales_person from `tabSubscription` sub inner join `tabSales Person` sales on sales.name = sub.vendedor where sales.name = (s.vendedor) limit 1)limit 1) limit 1) as Canal_General,\n(select sales.parent_sales_person from `tabSales Person` sales where sales.name = (select sales.parent_sales_person from `tabSubscription` sub inner join `tabSales Person` sales on sales.name = sub.vendedor where sales.name = (s.vendedor)limit 1)) as Canal,\n(select usuario from `tabSales Person` where name = (select sales.parent_sales_person from `tabSales Person` sales where sales.name = (select sales.parent_sales_person from `tabSubscription` sub inner join `tabSales Person` sales on sales.name = sub.vendedor where sales.name = (s.vendedor) limit 1)limit 1) limit 1) as Coordinador,\n(select GROUP_CONCAT(CONCAT('\"', equipo, '\"')) AS N_Serie from `tabSubscription Plan Equipos` t1 inner join `tabSubscription` t2 on t1.parent = t2.name where t1.parent = (s.name) limit 1) as Mac\nfrom `tabSubscription Plan Detail` spd\ninner join   `tabSubscription` s on spd.parent = s.name\ninner join  `tabSubscription Plan` sp on sp.name = spd.plan\ninner join `tabAddress` ad on ad.name = spd.direccion\ninner join `tabCustomer` cu on  cu.name = s.party\nwhere s.tipo_contrato = 'NUEVO' and s.workflow_state = 'Activo'\nand spd.service_start >= %(FechaD)s and spd.service_start <= %(FechaH)s",
+ "ref_doctype": "Subscription",
+ "report_name": "Altas del Mes 2",
+ "report_script": "frappe.query_reports['Altas del Mes 2'] = {\r\n\t\"filters\": [\r\n\t\t\t{\r\n\t\t\t\"fieldname\":\"customer\",\r\n\t\t\t\"label\": __(\"Customer\"),\r\n\t\t\t\"fieldtype\": \"Link\",\r\n\t\t\t\"options\": \"Customer\"\r\n\t\t    }\r\n\t]\r\n}",
+ "report_type": "Query Report",
+ "roles": [
+  {
+   "role": "System Manager"
+  },
+  {
+   "role": "Accounts User"
+  },
+  {
+   "role": "Accounts Manager"
+  },
+  {
+   "role": "Sales User"
+  },
+  {
+   "role": "Back Office"
+  }
+ ]
+}

@@ -1,0 +1,73 @@
+{
+ "actions": [],
+ "creation": "2022-10-20 15:35:11.707040",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "bodega",
+  "material",
+  "cantidad",
+  "uom",
+  "serial_no"
+ ],
+ "fields": [
+  {
+   "fieldname": "material",
+   "fieldtype": "Link",
+   "ignore_user_permissions": 1,
+   "label": "Material",
+   "options": "Item",
+   "reqd": 1
+  },
+  {
+   "default": "1",
+   "fieldname": "cantidad",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Cantidad",
+   "reqd": 1
+  },
+  {
+   "fieldname": "uom",
+   "fieldtype": "Link",
+   "ignore_user_permissions": 1,
+   "label": "UOM",
+   "options": "UOM",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "bodega",
+   "fieldtype": "Link",
+   "ignore_user_permissions": 1,
+   "in_filter": 1,
+   "in_global_search": 1,
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Bodega",
+   "options": "Warehouse",
+   "reqd": 1
+  },
+  {
+   "fieldname": "serial_no",
+   "fieldtype": "Link",
+   "ignore_user_permissions": 1,
+   "label": "Serial No",
+   "options": "Serial No"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2023-07-05 10:44:26.101632",
+ "modified_by": "Administrator",
+ "module": "Support",
+ "name": "Materiales detalles",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

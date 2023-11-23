@@ -1,0 +1,86 @@
+{
+ "actions": [],
+ "creation": "2022-09-13 17:24:01.141765",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "plan",
+  "equipo",
+  "modelo",
+  "column_break_3",
+  "precio_de_venta",
+  "deposito",
+  "numero_de_cuotas",
+  "cuotas_pendientes",
+  "pendientes_de_pago"
+ ],
+ "fields": [
+  {
+   "fieldname": "plan",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Plan",
+   "options": "Subscription Plan Detail"
+  },
+  {
+   "fieldname": "equipo",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Equipo",
+   "options": "Serial No"
+  },
+  {
+   "fieldname": "column_break_3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "description": "Precio de Venta Sin IVA",
+   "fieldname": "precio_de_venta",
+   "fieldtype": "Currency",
+   "label": "Precio de Venta"
+  },
+  {
+   "default": "0",
+   "fieldname": "pendientes_de_pago",
+   "fieldtype": "Check",
+   "label": "Pendientes de Pago",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "deposito",
+   "fieldtype": "Currency",
+   "label": "Deposito"
+  },
+  {
+   "fieldname": "numero_de_cuotas",
+   "fieldtype": "Int",
+   "label": "Numero de Cuotas"
+  },
+  {
+   "fieldname": "cuotas_pendientes",
+   "fieldtype": "Int",
+   "label": "Cuotas Pendientes",
+   "read_only": 1
+  },
+  {
+   "fieldname": "modelo",
+   "fieldtype": "Data",
+   "label": "Modelo"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2023-11-21 16:14:26.986352",
+ "modified_by": "Administrator",
+ "module": "Accounts",
+ "name": "Subscription Plan Equipos",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

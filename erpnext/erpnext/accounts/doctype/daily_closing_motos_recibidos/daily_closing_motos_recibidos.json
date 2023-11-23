@@ -1,0 +1,45 @@
+{
+ "actions": [],
+ "autoname": "autoincrement",
+ "creation": "2023-02-03 16:56:29.824088",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "modo_de_pago",
+  "nio",
+  "usd"
+ ],
+ "fields": [
+  {
+   "fieldname": "modo_de_pago",
+   "fieldtype": "Data",
+   "label": "Modo de pago"
+  },
+  {
+   "fieldname": "nio",
+   "fieldtype": "Float",
+   "label": "NIO",
+   "precision": "2"
+  },
+  {
+   "fieldname": "usd",
+   "fieldtype": "Float",
+   "label": "USD",
+   "precision": "2"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2023-04-13 12:18:26.591399",
+ "modified_by": "Administrator",
+ "module": "Accounts",
+ "name": "Daily Closing Motos Recibidos",
+ "naming_rule": "Autoincrement",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

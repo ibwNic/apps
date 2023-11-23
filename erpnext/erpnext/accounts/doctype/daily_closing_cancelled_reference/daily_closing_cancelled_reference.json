@@ -1,0 +1,129 @@
+{
+ "actions": [],
+ "creation": "2022-11-03 10:26:44.944369",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "document_type",
+  "nombre",
+  "document_name",
+  "voucher_type",
+  "voucher_status",
+  "column_break_5",
+  "party_type",
+  "party",
+  "currency",
+  "amount",
+  "nio",
+  "usd",
+  "modo_de_pago"
+ ],
+ "fields": [
+  {
+   "default": "Journal Entry",
+   "fieldname": "document_type",
+   "fieldtype": "Select",
+   "label": "Document Type",
+   "options": "\nJournal Entry",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "document_name",
+   "fieldtype": "Data",
+   "label": "Document Name",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "voucher_type",
+   "fieldtype": "Select",
+   "label": "Voucher Type",
+   "options": "Journal Entry\nBank Entry\nCash Entry\nCredit Card Entry\nDebit Note\nCredit Note\nContra Entry\nExcise Entry\nWrite Off Entry\nOpening Entry",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "voucher_status",
+   "fieldtype": "Select",
+   "label": "Voucher Status",
+   "options": "\nSubmitted\nCancelled",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_5",
+   "fieldtype": "Column Break"
+  },
+  {
+   "columns": 1,
+   "fieldname": "party_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Party Type",
+   "options": "\nCustomer\nSupplier",
+   "read_only": 1
+  },
+  {
+   "columns": 1,
+   "fieldname": "party",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Party",
+   "read_only": 1
+  },
+  {
+   "fieldname": "amount",
+   "fieldtype": "Currency",
+   "label": "Amount",
+   "options": "currency"
+  },
+  {
+   "fieldname": "currency",
+   "fieldtype": "Data",
+   "label": "currency"
+  },
+  {
+   "columns": 1,
+   "fieldname": "nio",
+   "fieldtype": "Float",
+   "label": "NIO",
+   "precision": "2",
+   "read_only": 1
+  },
+  {
+   "columns": 1,
+   "fieldname": "usd",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "USD",
+   "precision": "2",
+   "read_only": 1
+  },
+  {
+   "fieldname": "nombre",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Nombre",
+   "read_only": 1
+  },
+  {
+   "fieldname": "modo_de_pago",
+   "fieldtype": "Data",
+   "label": "Modo de Pago"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2023-03-27 15:30:42.051587",
+ "modified_by": "Administrator",
+ "module": "Accounts",
+ "name": "Daily Closing Cancelled Reference",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

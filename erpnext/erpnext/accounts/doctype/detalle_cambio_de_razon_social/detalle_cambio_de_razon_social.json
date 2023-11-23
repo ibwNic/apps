@@ -1,0 +1,44 @@
+{
+ "actions": [],
+ "creation": "2023-01-10 08:31:31.025148",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "plan",
+  "plan_name",
+  "contrato"
+ ],
+ "fields": [
+  {
+   "fieldname": "plan",
+   "fieldtype": "Link",
+   "label": "Plan",
+   "options": "Subscription Plan Detail"
+  },
+  {
+   "fieldname": "plan_name",
+   "fieldtype": "Link",
+   "label": "Plan Name",
+   "options": "Subscription Plan"
+  },
+  {
+   "fieldname": "contrato",
+   "fieldtype": "Link",
+   "label": "Contrato de origen",
+   "options": "Subscription"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2023-01-10 11:49:21.984919",
+ "modified_by": "Administrator",
+ "module": "Accounts",
+ "name": "Detalle Cambio de Razon Social",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

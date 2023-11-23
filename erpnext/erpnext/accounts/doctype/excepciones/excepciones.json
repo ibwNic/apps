@@ -1,0 +1,37 @@
+{
+ "actions": [],
+ "creation": "2022-12-14 08:51:06.499017",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "cliente",
+  "motivo"
+ ],
+ "fields": [
+  {
+   "fieldname": "cliente",
+   "fieldtype": "Link",
+   "label": "Cliente",
+   "options": "Customer"
+  },
+  {
+   "fieldname": "motivo",
+   "fieldtype": "Data",
+   "label": "Motivo"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "max_attachments": 1,
+ "modified": "2023-03-25 10:48:21.506372",
+ "modified_by": "Administrator",
+ "module": "Accounts",
+ "name": "Excepciones",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

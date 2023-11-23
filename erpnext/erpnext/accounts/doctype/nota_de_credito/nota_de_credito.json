@@ -1,0 +1,175 @@
+{
+ "actions": [],
+ "autoname": "NC-.########",
+ "creation": "2023-02-07 12:07:48.974021",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "regnumber",
+  "nombre",
+  "tipo_cliente",
+  "portafolio",
+  "tipo_de_nota",
+  "column_break_5",
+  "fecha",
+  "no_recibo",
+  "tasa_de_cambio",
+  "moneda",
+  "monto",
+  "descripcion_de_solicitud_section",
+  "gestion",
+  "descripcion_solicitud",
+  "aplicacion_de_nc_section",
+  "detalle",
+  "amended_from",
+  "codigo_arreglo_de_pago"
+ ],
+ "fields": [
+  {
+   "fieldname": "regnumber",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Regnumber",
+   "options": "Customer"
+  },
+  {
+   "fieldname": "nombre",
+   "fieldtype": "Data",
+   "label": "Nombre"
+  },
+  {
+   "fieldname": "tipo_cliente",
+   "fieldtype": "Data",
+   "label": "Tipo Cliente",
+   "read_only": 1
+  },
+  {
+   "fieldname": "gestion",
+   "fieldtype": "Link",
+   "label": "Gestion",
+   "options": "Gestion",
+   "read_only": 1
+  },
+  {
+   "fieldname": "tipo_de_nota",
+   "fieldtype": "Select",
+   "label": "Tipo de Nota",
+   "options": "Problemas Tecnicos\nCanje Comercial\nServicio de Cortesia\nError de Facturacion\nCambio de Planes\nDescuento Recuperacion de Mora\nBorra Saldo\nRetencion de Cliente\nRetencion de IR\nRetencion de IMI\nLimpieza\nFallecimiento\nDeduccion de Planilla\nExonerado de IVA"
+  },
+  {
+   "default": "00",
+   "fieldname": "no_recibo",
+   "fieldtype": "Data",
+   "label": "No Recibo",
+   "reqd": 1
+  },
+  {
+   "fieldname": "monto",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Monto",
+   "precision": "2",
+   "reqd": 1
+  },
+  {
+   "default": "USD",
+   "fieldname": "moneda",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Moneda",
+   "options": "USD\nNIO",
+   "reqd": 1
+  },
+  {
+   "fieldname": "descripcion_de_solicitud_section",
+   "fieldtype": "Section Break",
+   "label": "Descripcion de Solicitud"
+  },
+  {
+   "fieldname": "descripcion_solicitud",
+   "fieldtype": "Small Text",
+   "in_list_view": 1,
+   "label": "Descripcion Solicitud",
+   "reqd": 1
+  },
+  {
+   "fieldname": "aplicacion_de_nc_section",
+   "fieldtype": "Section Break",
+   "label": "Aplicacion de NC"
+  },
+  {
+   "fieldname": "tasa_de_cambio",
+   "fieldtype": "Float",
+   "label": "Tasa de Cambio",
+   "precision": "4",
+   "read_only": 1
+  },
+  {
+   "fieldname": "detalle",
+   "fieldtype": "Table",
+   "label": "Detalle",
+   "options": "Nota de Credito Detalle"
+  },
+  {
+   "fieldname": "column_break_5",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "fecha",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Fecha",
+   "options": "today",
+   "reqd": 1
+  },
+  {
+   "fieldname": "portafolio",
+   "fieldtype": "Data",
+   "label": "Portafolio"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Nota de Credito",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "codigo_arreglo_de_pago",
+   "fieldtype": "Data",
+   "label": "Codigo arreglo de pago"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2023-10-31 08:56:51.429196",
+ "modified_by": "Administrator",
+ "module": "Accounts",
+ "name": "Nota de Credito",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

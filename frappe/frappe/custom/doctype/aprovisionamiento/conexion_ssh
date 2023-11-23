@@ -1,0 +1,12 @@
+#!/usr/bin/expect -f
+
+
+#!/usr/bin/expect
+
+set numero_a_ingresar [lindex $argv 0]
+
+spawn python3 prueba_ssh.py
+expect "dame un numero:"
+send "$numero_a_ingresar\n"
+expect eof
+

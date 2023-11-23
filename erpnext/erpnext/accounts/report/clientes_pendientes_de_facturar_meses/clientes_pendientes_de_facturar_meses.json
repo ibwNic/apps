@@ -1,0 +1,137 @@
+{
+ "add_total_row": 1,
+ "columns": [
+  {
+   "fieldname": "Cliente",
+   "fieldtype": "Link",
+   "label": "cliente",
+   "options": "Customer",
+   "width": 0
+  },
+  {
+   "fieldname": "nombre",
+   "fieldtype": "Data",
+   "label": "nombre",
+   "width": 0
+  },
+  {
+   "fieldname": "Contrato",
+   "fieldtype": "Link",
+   "label": "Contrato",
+   "options": "Subscription",
+   "width": 0
+  },
+  {
+   "fieldname": "campana",
+   "fieldtype": "Data",
+   "label": "campana",
+   "width": 0
+  },
+  {
+   "fieldname": "PrecioPlan",
+   "fieldtype": "Data",
+   "label": "PrecioPlan",
+   "width": 0
+  },
+  {
+   "fieldname": "portafolio",
+   "fieldtype": "Data",
+   "label": "portafolio",
+   "width": 0
+  },
+  {
+   "fieldname": "departamento",
+   "fieldtype": "Data",
+   "label": "departamento",
+   "width": 0
+  },
+  {
+   "fieldname": "municipio",
+   "fieldtype": "Data",
+   "label": "municipio",
+   "width": 0
+  },
+  {
+   "fieldname": "barrio",
+   "fieldtype": "Data",
+   "label": "barrio",
+   "width": 0
+  },
+  {
+   "fieldname": "service_start",
+   "fieldtype": "Data",
+   "label": "service_start",
+   "width": 0
+  },
+  {
+   "fieldname": "Inicio de Perdiodo a Facturar",
+   "fieldtype": "Data",
+   "label": "Inicio de Perdiodo a Facturar",
+   "width": 0
+  },
+  {
+   "fieldname": "Fin de Perdiodo a Facturar",
+   "fieldtype": "Data",
+   "label": "Fin de Perdiodo a Facturar",
+   "width": 0
+  },
+  {
+   "fieldname": "Tiene_facturas_Canceladas",
+   "fieldtype": "Data",
+   "label": "Tiene_facturas_Canceladas",
+   "width": 0
+  },
+  {
+   "fieldname": "notas_referido",
+   "fieldtype": "Data",
+   "label": "notas_referido",
+   "width": 0
+  }
+ ],
+ "creation": "2023-06-21 10:20:06.317211",
+ "disable_prepared_report": 0,
+ "disabled": 0,
+ "docstatus": 0,
+ "doctype": "Report",
+ "filters": [
+  {
+   "fieldname": "FechaD",
+   "fieldtype": "Date",
+   "label": "Fecha Desde",
+   "mandatory": 1,
+   "wildcard_filter": 0
+  }
+ ],
+ "idx": 0,
+ "is_standard": "Yes",
+ "json": "{}",
+ "modified": "2023-10-18 14:02:42.587058",
+ "modified_by": "Administrator",
+ "module": "Accounts",
+ "name": "Clientes Pendientes de Facturar Meses",
+ "owner": "Administrator",
+ "prepared_report": 0,
+ "query": "select c.name,c.customer_name as nombre,s.name as Contrato,s.campana,spd.cost as PrecioPlan\n,c.item_group as portafolio,c.territory as departamento,c.municipio,\nc.barrio,spd.service_start,s.current_invoice_start as 'Inicio de Perdiodo a Facturar'\n,s.current_invoice_end as 'Fin de Perdiodo a Facturar',\n(select count(si.name) from `tabSales Invoice` si where month(si.posting_date)=month(%(FechaD)s)  and year(si.posting_date)=year(%(FechaD)s) and si.docstatus=2 and si.customer=c.name) Tiene_facturas_Canceladas\n,(select (concat(nota,\" \",cliente)) from `tabClientes Referidos` cr where cr.parent=s.name order by cr.creation desc limit 1) notas_referido\nfrom `tabSubscription` s \ninner join `tabCustomer` c on s.party = c.name\ninner join `tabSubscription Plan Detail` spd on spd.parent = s.name\nwhere spd.estado_plan = 'Activo' and c.estado_cliente = 'ACTIVO'\nand spd.cost>0\n and c.name not in \n (select customer from `tabSales Invoice` where month(posting_date)=month(%(FechaD)s) and year(posting_date)=year(%(FechaD)s) and docstatus=1) \n ;",
+ "ref_doctype": "Subscription",
+ "reference_report": "Subscription",
+ "report_name": "Clientes Pendientes de Facturar Meses",
+ "report_script": "",
+ "report_type": "Query Report",
+ "roles": [
+  {
+   "role": "System Manager"
+  },
+  {
+   "role": "Accounts User"
+  },
+  {
+   "role": "Accounts Manager"
+  },
+  {
+   "role": "Sales User"
+  },
+  {
+   "role": "Back Office"
+  }
+ ]
+}

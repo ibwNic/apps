@@ -1,0 +1,74 @@
+{
+ "actions": [],
+ "autoname": "C-.######",
+ "creation": "2023-09-20 18:51:00.079596",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "fecha",
+  "numero_de_recibo_actual",
+  "colector",
+  "column_break_4",
+  "inicio",
+  "fin"
+ ],
+ "fields": [
+  {
+   "fieldname": "fecha",
+   "fieldtype": "Date",
+   "label": "Fecha"
+  },
+  {
+   "fieldname": "numero_de_recibo_actual",
+   "fieldtype": "Data",
+   "label": "Numero de Recibo Actual"
+  },
+  {
+   "fieldname": "colector",
+   "fieldtype": "Link",
+   "label": "Colector",
+   "options": "Colectores"
+  },
+  {
+   "fieldname": "column_break_4",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "inicio",
+   "fieldtype": "Data",
+   "label": "Inicio"
+  },
+  {
+   "fieldname": "fin",
+   "fieldtype": "Data",
+   "label": "Fin"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-09-20 18:51:29.618334",
+ "modified_by": "Administrator",
+ "module": "CRM",
+ "name": "Talonario Colectores",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

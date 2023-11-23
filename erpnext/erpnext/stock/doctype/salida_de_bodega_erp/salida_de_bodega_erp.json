@@ -1,0 +1,78 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "SALIDA-BODEGA-.#####",
+ "creation": "2023-04-26 14:09:03.915451",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "fecha_desde",
+  "column_break_2",
+  "fecha_hasta",
+  "section_break_4",
+  "materiales_liquidados",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "fecha_desde",
+   "fieldtype": "Date",
+   "label": "fecha desde"
+  },
+  {
+   "fieldname": "fecha_hasta",
+   "fieldtype": "Date",
+   "label": "fecha hasta"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Salida de Bodega ERP",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_4",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "materiales_liquidados",
+   "fieldtype": "Table",
+   "label": "Materiales Liquidados",
+   "options": "Materiales Liquidados"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2023-04-26 14:22:41.059873",
+ "modified_by": "Administrator",
+ "module": "Stock",
+ "name": "Salida de Bodega ERP",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

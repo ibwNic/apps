@@ -1,0 +1,22 @@
+{
+ "creation": "2023-07-07 17:02:48.358523",
+ "docstatus": 0,
+ "doctype": "Number Card",
+ "filters_json": "{\"tecnico\":\"Erika Garay\"}",
+ "function": "Count",
+ "idx": 0,
+ "is_public": 0,
+ "is_standard": 1,
+ "label": "Cantidad en Stock",
+ "modified": "2023-07-07 17:02:48.415067",
+ "modified_by": "Administrator",
+ "module": "Stock",
+ "name": "Cantidad en Stock",
+ "owner": "Administrator",
+ "report_field": "cantidad",
+ "report_function": "Sum",
+ "report_name": "Balance de Inventario por T\u00e9cnico",
+ "show_percentage_stats": 1,
+ "stats_time_interval": "Daily",
+ "type": "Report"
+}

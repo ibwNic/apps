@@ -1,0 +1,43 @@
+{
+ "actions": [],
+ "creation": "2023-02-23 09:51:04.388710",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "tecnico",
+  "fecha_asignacion"
+ ],
+ "fields": [
+  {
+   "fieldname": "tecnico",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Tecnico",
+   "options": "Tecnico"
+  },
+  {
+   "fieldname": "fecha_asignacion",
+   "fieldtype": "Datetime",
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Fecha Asignacion"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2023-09-18 15:39:47.955662",
+ "modified_by": "Administrator",
+ "module": "Support",
+ "name": "Tecnicos Service Order",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

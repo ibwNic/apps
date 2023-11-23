@@ -1,0 +1,110 @@
+{
+ "actions": [],
+ "autoname": "autoincrement",
+ "creation": "2023-09-05 16:09:47.588157",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "regnumber",
+  "no_recibo",
+  "monto_cordoba",
+  "monto_dolar",
+  "cheque",
+  "no_cheque",
+  "colector",
+  "factura",
+  "numero_de_cheque",
+  "fecha_de_referencia",
+  "nombre_del_banco"
+ ],
+ "fields": [
+  {
+   "fieldname": "regnumber",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Regnumber",
+   "options": "Customer"
+  },
+  {
+   "fieldname": "no_recibo",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "No Recibo"
+  },
+  {
+   "fieldname": "monto_cordoba",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Monto Cordoba"
+  },
+  {
+   "fieldname": "monto_dolar",
+   "fieldtype": "Float",
+   "label": "Monto Dolar"
+  },
+  {
+   "default": "0",
+   "fieldname": "cheque",
+   "fieldtype": "Check",
+   "label": "Cheque"
+  },
+  {
+   "fieldname": "no_cheque",
+   "fieldtype": "Data",
+   "label": "No Cheque"
+  },
+  {
+   "fieldname": "colector",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Colector",
+   "options": "Colectores"
+  },
+  {
+   "fieldname": "factura",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Factura",
+   "options": "Sales Invoice"
+  },
+  {
+   "fieldname": "numero_de_cheque",
+   "fieldtype": "Data",
+   "label": "Numero de Cheque"
+  },
+  {
+   "fieldname": "fecha_de_referencia",
+   "fieldtype": "Data",
+   "label": "Fecha de Referencia"
+  },
+  {
+   "fieldname": "nombre_del_banco",
+   "fieldtype": "Data",
+   "label": "Nombre del Banco"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2023-09-06 10:10:06.583314",
+ "modified_by": "Administrator",
+ "module": "Accounts",
+ "name": "Detalle Cargos",
+ "naming_rule": "Autoincrement",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

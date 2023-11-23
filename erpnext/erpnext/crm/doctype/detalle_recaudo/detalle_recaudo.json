@@ -1,0 +1,159 @@
+{
+ "actions": [],
+ "autoname": "autoincrement",
+ "creation": "2023-09-08 14:21:35.820031",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "fecha",
+  "regnumber",
+  "no_recibo",
+  "monto_cordoba",
+  "monto_dolar",
+  "colector",
+  "factura",
+  "nombre_del_cliente",
+  "journal_entry",
+  "cheque",
+  "numero_de_cheque",
+  "nombre_del_banco",
+  "reversion"
+ ],
+ "fields": [
+  {
+   "fieldname": "fecha",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Fecha",
+   "read_only": 1
+  },
+  {
+   "fieldname": "regnumber",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Regnumber",
+   "options": "Customer",
+   "read_only": 1
+  },
+  {
+   "fieldname": "no_recibo",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "No Recibo",
+   "read_only": 1
+  },
+  {
+   "fieldname": "monto_cordoba",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "C$",
+   "precision": "2",
+   "read_only": 1
+  },
+  {
+   "fieldname": "monto_dolar",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "$",
+   "read_only": 1
+  },
+  {
+   "fieldname": "colector",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Colector",
+   "options": "Colectores",
+   "read_only": 1
+  },
+  {
+   "fieldname": "factura",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Factura",
+   "options": "Sales Invoice",
+   "read_only": 1
+  },
+  {
+   "fieldname": "journal_entry",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Journal Entry",
+   "options": "Journal Entry",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "cheque",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Cheque",
+   "read_only": 1
+  },
+  {
+   "fieldname": "numero_de_cheque",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Numero de Cheque",
+   "read_only": 1
+  },
+  {
+   "fieldname": "nombre_del_banco",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Nombre del Banco",
+   "read_only": 1
+  },
+  {
+   "fieldname": "reversion",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "reversion",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "factura.customer_name",
+   "fieldname": "nombre_del_cliente",
+   "fieldtype": "Data",
+   "label": "Nombre del Cliente",
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2023-10-25 22:30:24.540946",
+ "modified_by": "Administrator",
+ "module": "CRM",
+ "name": "Detalle Recaudo",
+ "naming_rule": "Autoincrement",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

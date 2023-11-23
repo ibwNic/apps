@@ -1,0 +1,46 @@
+{
+ "add_total_row": 0,
+ "columns": [],
+ "creation": "2023-07-28 10:32:20.195439",
+ "disable_prepared_report": 0,
+ "disabled": 0,
+ "docstatus": 0,
+ "doctype": "Report",
+ "filters": [
+  {
+   "fieldname": "FechaD",
+   "fieldtype": "Date",
+   "label": "Fecha Desde",
+   "mandatory": 1,
+   "wildcard_filter": 0
+  },
+  {
+   "fieldname": "FechaH",
+   "fieldtype": "Date",
+   "label": "Fecha Hasta",
+   "mandatory": 1,
+   "wildcard_filter": 0
+  }
+ ],
+ "idx": 0,
+ "is_standard": "Yes",
+ "modified": "2023-07-28 10:50:36.751321",
+ "modified_by": "Administrator",
+ "module": "Accounts",
+ "name": "Detalle Facturacion Recurrente Mensual",
+ "owner": "Administrator",
+ "prepared_report": 0,
+ "query": "select c.name as Regnumber, c.customer_name as Nombre, c.company_name as Company, c.territory as Departamento, c.municipio, c.barrio, c.address_line1 as direccion,\nsi.name as Factura, si.posting_date as Fecha_Factura, si.currency as moneda, si.grand_total, c.item_group as portafolio, si.docstatus,\n(select ruta from `tabDetalle Ciclo Facturacion` where sales_invoice=si.name) as ruta\nfrom `tabCustomer` c inner join `tabSales Invoice` si on c.name=si.customer\nwhere si.posting_date>=%(FechaD)s\nand si.posting_date<=%(FechaH)s\nand si.naming_series='A-'\nand si.docstatus=1\norder by si.name",
+ "ref_doctype": "Sales Invoice",
+ "report_name": "Detalle Facturacion Recurrente Mensual",
+ "report_script": "",
+ "report_type": "Query Report",
+ "roles": [
+  {
+   "role": "System Manager"
+  },
+  {
+   "role": "Cobranza"
+  }
+ ]
+}

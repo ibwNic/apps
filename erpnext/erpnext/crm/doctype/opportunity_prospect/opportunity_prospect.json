@@ -1,0 +1,136 @@
+{
+ "actions": [],
+ "creation": "2022-11-17 09:18:25.512467",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "item_code",
+  "portafolio",
+  "proveedor_section",
+  "nombre_proveedor",
+  "tipo_servicio",
+  "uom",
+  "qty",
+  "compresion",
+  "departamento",
+  "tasa",
+  "description_section",
+  "description",
+  "service_order",
+  "planid"
+ ],
+ "fields": [
+  {
+   "fieldname": "item_code",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_preview": 1,
+   "label": "Item Code",
+   "options": "Item",
+   "reqd": 1
+  },
+  {
+   "default": "Internet",
+   "fieldname": "tipo_servicio",
+   "fieldtype": "Select",
+   "label": "Tipo Servicio",
+   "options": "Datos\nInternet\nEquipo\nCoubicacion"
+  },
+  {
+   "fieldname": "uom",
+   "fieldtype": "Link",
+   "label": "UOM",
+   "options": "UOM",
+   "read_only": 1
+  },
+  {
+   "default": "1",
+   "fieldname": "qty",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "in_preview": 1,
+   "label": "Qty",
+   "read_only": 1
+  },
+  {
+   "fieldname": "compresion",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_preview": 1,
+   "label": "Compresion",
+   "options": "0:0\n1:1\n2:1\n4:1\n5:1\n6:1\n7:1\n8:1\n9:1\n10:1"
+  },
+  {
+   "default": "Managua",
+   "fieldname": "departamento",
+   "fieldtype": "Select",
+   "label": "Departamento",
+   "options": "Managua\nDepartamentos"
+  },
+  {
+   "default": "1.8",
+   "fieldname": "tasa",
+   "fieldtype": "Select",
+   "label": "Tasa",
+   "options": "1.8\n2.8"
+  },
+  {
+   "fieldname": "description_section",
+   "fieldtype": "Section Break",
+   "label": "Description"
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Small Text",
+   "label": "Description",
+   "reqd": 1
+  },
+  {
+   "default": "IBW",
+   "fieldname": "proveedor_section",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_preview": 1,
+   "label": "Proveedor",
+   "options": "IBW\nTercero"
+  },
+  {
+   "fieldname": "service_order",
+   "fieldtype": "Link",
+   "label": "Service Order",
+   "options": "Service Order"
+  },
+  {
+   "fieldname": "portafolio",
+   "fieldtype": "Link",
+   "label": "Portafolio",
+   "options": "Item Group",
+   "read_only": 1
+  },
+  {
+   "fieldname": "nombre_proveedor",
+   "fieldtype": "Link",
+   "label": "Nombre Proveedor",
+   "options": "Supplier"
+  },
+  {
+   "fieldname": "planid",
+   "fieldtype": "Data",
+   "label": "PlanID",
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2023-11-09 10:05:07.363199",
+ "modified_by": "Administrator",
+ "module": "CRM",
+ "name": "Opportunity Prospect",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

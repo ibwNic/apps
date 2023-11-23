@@ -1,0 +1,51 @@
+{
+ "actions": [],
+ "autoname": "autoincrement",
+ "creation": "2023-05-19 09:43:14.466329",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "tema",
+  "column_break_2",
+  "acuerdo"
+ ],
+ "fields": [
+  {
+   "fieldname": "tema",
+   "fieldtype": "Small Text",
+   "in_filter": 1,
+   "in_global_search": 1,
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Tema"
+  },
+  {
+   "fieldname": "acuerdo",
+   "fieldtype": "Small Text",
+   "in_filter": 1,
+   "in_global_search": 1,
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Acuerdo"
+  },
+  {
+   "fieldname": "column_break_2",
+   "fieldtype": "Column Break"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2023-05-19 09:43:32.380770",
+ "modified_by": "Administrator",
+ "module": "Desk",
+ "name": "Desarrollo de Reunion",
+ "naming_rule": "Autoincrement",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

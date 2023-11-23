@@ -1,0 +1,33 @@
+{
+ "chart_name": "precio frente a vendedor",
+ "chart_type": "Report",
+ "creation": "2023-06-26 08:58:08.058170",
+ "custom_options": "{\"x_field\": \"vendedor\", \"chart_type\": \"Donut\", \"y_axis_fields\": [{\"idx\": 1, \"__islocal\": true, \"name\": \"row 1\", \"y_field\": \"precio\", \"color\": \"#8ded18\"}], \"y_fields\": [\"precio\"], \"colors\": [\"#8ded18\"]}",
+ "docstatus": 0,
+ "doctype": "Dashboard Chart",
+ "filters_json": "{}",
+ "group_by_type": "Count",
+ "idx": 0,
+ "is_public": 0,
+ "is_standard": 1,
+ "modified": "2023-06-26 08:58:08.134508",
+ "modified_by": "Administrator",
+ "module": "Accounts",
+ "name": "precio frente a vendedor",
+ "number_of_groups": 0,
+ "owner": "Administrator",
+ "report_name": "Historial de planes",
+ "roles": [],
+ "time_interval": "Yearly",
+ "timeseries": 0,
+ "timespan": "Last Year",
+ "type": "Donut",
+ "use_report_chart": 0,
+ "x_field": "vendedor",
+ "y_axis": [
+  {
+   "color": "#8ded18",
+   "y_field": "precio"
+  }
+ ]
+}

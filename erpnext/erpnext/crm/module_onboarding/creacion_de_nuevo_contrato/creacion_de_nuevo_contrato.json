@@ -1,0 +1,38 @@
+{
+ "allow_roles": [
+  {
+   "role": "SAC"
+  },
+  {
+   "role": "Back Office"
+  },
+  {
+   "role": "Administrator"
+  }
+ ],
+ "creation": "2023-08-02 09:31:29.857594",
+ "docstatus": 0,
+ "doctype": "Module Onboarding",
+ "documentation_url": "https://ibwni-crm.ibw.com/app/subscription",
+ "idx": 0,
+ "is_complete": 0,
+ "modified": "2023-08-09 12:45:16.608403",
+ "modified_by": "Administrator",
+ "module": "CRM",
+ "name": "Creacion de Nuevo Contrato",
+ "owner": "Administrator",
+ "steps": [
+  {
+   "step": "Crear Iniciativa"
+  },
+  {
+   "step": "Crear Cliente"
+  },
+  {
+   "step": "Crear Suscripcion"
+  }
+ ],
+ "subtitle": "Para clientes regulares",
+ "success_message": "El cliente ha sido creado",
+ "title": "Creacion de Nuevo Contrato"
+}

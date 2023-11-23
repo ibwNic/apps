@@ -1,0 +1,57 @@
+{
+ "add_total_row": 0,
+ "columns": [],
+ "creation": "2023-06-13 11:31:36.113199",
+ "disable_prepared_report": 0,
+ "disabled": 0,
+ "docstatus": 0,
+ "doctype": "Report",
+ "filters": [
+  {
+   "fieldname": "serie",
+   "fieldtype": "Select",
+   "label": "Serie",
+   "mandatory": 1,
+   "options": "A-\nB-",
+   "wildcard_filter": 0
+  },
+  {
+   "fieldname": "FechaD",
+   "fieldtype": "Datetime",
+   "label": "Fecha Desde",
+   "mandatory": 1,
+   "wildcard_filter": 0
+  },
+  {
+   "fieldname": "FechaH",
+   "fieldtype": "Datetime",
+   "label": "Fecha Hasta",
+   "mandatory": 1,
+   "wildcard_filter": 0
+  }
+ ],
+ "idx": 0,
+ "is_standard": "Yes",
+ "modified": "2023-06-29 16:47:25.681839",
+ "modified_by": "Administrator",
+ "module": "Accounts",
+ "name": "Facturas Cobranza",
+ "owner": "Administrator",
+ "prepared_report": 0,
+ "query": "select si.name as factura, si.creation as fecha_creacion, si.posting_date as fecha_factura, c.name as cliente, c.customer_name as nombre, c.company_name as company, c.customer_group as tipo_cliente, c.item_group as portafolio_mas_factura,\n\t\tc.territory as departamento, c.municipio, c.barrio, c.address_line1, si.tipo_factura, si.currency, si.grand_total as total, si.outstanding_amount as saldo, si.owner as creado_por \nfrom `tabCustomer` c inner join `tabSales Invoice` si on c.name = si.customer\nwhere si.naming_series=%(serie)s and si.docstatus=1 \nand si.creation>=%(FechaD)s\nand si.creation<=%(FechaH)s",
+ "ref_doctype": "Sales Invoice",
+ "report_name": "Facturas Cobranza",
+ "report_script": "",
+ "report_type": "Query Report",
+ "roles": [
+  {
+   "role": "System Manager"
+  },
+  {
+   "role": "Back Office"
+  },
+  {
+   "role": "Cobranza"
+  }
+ ]
+}

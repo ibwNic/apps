@@ -1,0 +1,20 @@
+{
+ "action": "Create Entry",
+ "creation": "2023-08-02 09:28:39.273742",
+ "description": "Agregar informaci\u00f3n del prospecto, direcciones y contacto. Esperar la aprobaci\u00f3n del lead.",
+ "docstatus": 0,
+ "doctype": "Onboarding Step",
+ "idx": 0,
+ "is_complete": 0,
+ "is_single": 0,
+ "is_skipped": 0,
+ "modified": "2023-08-08 11:31:21.260496",
+ "modified_by": "Administrator",
+ "name": "Crear Iniciativa",
+ "owner": "Administrator",
+ "reference_document": "Lead",
+ "show_form_tour": 0,
+ "show_full_form": 0,
+ "title": "Crear Iniciativa",
+ "validate_action": 1
+}

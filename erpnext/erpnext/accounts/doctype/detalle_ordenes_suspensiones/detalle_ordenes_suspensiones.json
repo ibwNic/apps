@@ -1,0 +1,39 @@
+{
+ "actions": [],
+ "autoname": "autoincrement",
+ "creation": "2023-06-13 11:56:29.822768",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "orden",
+  "portafolio"
+ ],
+ "fields": [
+  {
+   "fieldname": "orden",
+   "fieldtype": "Link",
+   "label": "Orden",
+   "options": "Service Order"
+  },
+  {
+   "fieldname": "portafolio",
+   "fieldtype": "Link",
+   "label": "Portafolio",
+   "options": "Item Group"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2023-06-13 11:56:29.822768",
+ "modified_by": "Administrator",
+ "module": "Accounts",
+ "name": "Detalle Ordenes Suspensiones",
+ "naming_rule": "Autoincrement",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

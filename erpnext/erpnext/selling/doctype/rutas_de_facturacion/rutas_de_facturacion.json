@@ -1,0 +1,83 @@
+{
+ "actions": [],
+ "autoname": "field:nombre",
+ "creation": "2022-10-11 14:16:39.531263",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "nombre",
+  "barrios",
+  "collector"
+ ],
+ "fields": [
+  {
+   "fieldname": "nombre",
+   "fieldtype": "Data",
+   "label": "Nombre",
+   "unique": 1
+  },
+  {
+   "allow_bulk_edit": 1,
+   "fieldname": "barrios",
+   "fieldtype": "Table",
+   "label": "Barrios",
+   "options": "Barrios y Rutas"
+  },
+  {
+   "fieldname": "collector",
+   "fieldtype": "Link",
+   "label": "collector",
+   "options": "Colectores"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-06-26 17:23:26.719671",
+ "modified_by": "Administrator",
+ "module": "Selling",
+ "name": "Rutas de Facturacion",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Cobranza",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Back Office",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

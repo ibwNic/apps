@@ -1,0 +1,198 @@
+{
+ "actions": [],
+ "autoname": "AP-.######",
+ "creation": "2023-04-21 15:23:51.086384",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "regnumber",
+  "nombre",
+  "tipo_de_cliente",
+  "portafolio",
+  "cantidad_de_facturas",
+  "saldo_total",
+  "column_break_4",
+  "fecha",
+  "tipo_de_arreglo",
+  "requiere_nota_de_credito",
+  "nota_de_credito",
+  "intervalos_de_pago",
+  "intervalo",
+  "seleccione_factura",
+  "fecha_de_vencimiento",
+  "cuotas_section",
+  "cuotas",
+  "detalle_aplicacion_section",
+  "detalle",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "regnumber",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Regnumber",
+   "options": "Customer"
+  },
+  {
+   "fetch_from": "regnumber.customer_name",
+   "fieldname": "nombre",
+   "fieldtype": "Data",
+   "label": "Nombre"
+  },
+  {
+   "fetch_from": "regnumber.customer_type",
+   "fieldname": "tipo_de_cliente",
+   "fieldtype": "Data",
+   "label": "Tipo de Cliente"
+  },
+  {
+   "fieldname": "column_break_4",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "now",
+   "fieldname": "fecha",
+   "fieldtype": "Date",
+   "label": "Fecha"
+  },
+  {
+   "fieldname": "saldo_total",
+   "fieldtype": "Float",
+   "label": "Saldo Total"
+  },
+  {
+   "default": "RECUPERACION",
+   "fieldname": "tipo_de_arreglo",
+   "fieldtype": "Select",
+   "label": "Tipo de Arreglo",
+   "options": "RECUPERACION\nPAGO PARCIAL\nPRORROGA"
+  },
+  {
+   "fieldname": "intervalos_de_pago",
+   "fieldtype": "Select",
+   "label": "Intervalos de Pago",
+   "options": "Mes\nDias"
+  },
+  {
+   "default": "1",
+   "fieldname": "intervalo",
+   "fieldtype": "Int",
+   "label": "Cuotas"
+  },
+  {
+   "fieldname": "cantidad_de_facturas",
+   "fieldtype": "Int",
+   "label": "Cantidad de Facturas"
+  },
+  {
+   "fieldname": "cuotas_section",
+   "fieldtype": "Section Break",
+   "label": "Detalle de Cuotas"
+  },
+  {
+   "fieldname": "cuotas",
+   "fieldtype": "Table",
+   "label": "Cuotas",
+   "options": "Arreglo de Pago Cuotas"
+  },
+  {
+   "fieldname": "detalle_aplicacion_section",
+   "fieldtype": "Section Break",
+   "label": "Detalle Aplicacion de Cuotas"
+  },
+  {
+   "fieldname": "detalle",
+   "fieldtype": "Table",
+   "label": "detalle",
+   "options": "Arreglo de Pago Cuota Detalle"
+  },
+  {
+   "fetch_from": "regnumber.item_group",
+   "fieldname": "portafolio",
+   "fieldtype": "Data",
+   "label": "Portafolio"
+  },
+  {
+   "default": "0",
+   "fieldname": "requiere_nota_de_credito",
+   "fieldtype": "Check",
+   "label": "Requiere Nota de Credito"
+  },
+  {
+   "fieldname": "nota_de_credito",
+   "fieldtype": "Link",
+   "label": "Nota de Credito",
+   "options": "Nota de Credito",
+   "read_only": 1
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Arreglo de Pago",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "seleccione_factura",
+   "fieldtype": "Link",
+   "label": "Seleccione Factura",
+   "options": "Sales Invoice"
+  },
+  {
+   "fieldname": "fecha_de_vencimiento",
+   "fieldtype": "Date",
+   "label": "Fecha de vencimiento",
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2023-08-21 16:18:35.634314",
+ "modified_by": "Administrator",
+ "module": "CRM",
+ "name": "Arreglo de Pago",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "cancel": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Cobranza",
+   "select": 1,
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1,
+ "track_seen": 1,
+ "track_views": 1
+}

@@ -1,0 +1,27 @@
+{
+ "add_total_row": 0,
+ "columns": [],
+ "creation": "2023-11-09 16:42:17.915144",
+ "disable_prepared_report": 0,
+ "disabled": 0,
+ "docstatus": 0,
+ "doctype": "Report",
+ "filters": [],
+ "idx": 0,
+ "is_standard": "Yes",
+ "modified": "2023-11-09 16:42:17.915144",
+ "modified_by": "Administrator",
+ "module": "CRM",
+ "name": "Reporte de Barrios",
+ "owner": "Administrator",
+ "prepared_report": 0,
+ "query": "select t.name as barrio, t.parent_territory as municipio,\n        (select t1.parent_territory from `tabTerritory` t1 where t1.name=t.parent_territory) as departamento,\n        t.tipo_territorio, br.parent as ruta\nfrom `tabTerritory` t left join `tabBarrios y Rutas` br on t.name=br.barrios\nwhere t.tipo_territorio='Barrio'",
+ "ref_doctype": "Territory",
+ "report_name": "Reporte de Barrios",
+ "report_type": "Query Report",
+ "roles": [
+  {
+   "role": "Cobranza"
+  }
+ ]
+}

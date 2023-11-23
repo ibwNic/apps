@@ -1,0 +1,64 @@
+{
+ "actions": [],
+ "autoname": "autoincrement",
+ "creation": "2022-12-23 11:50:02.538686",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "documento",
+  "fecha",
+  "currency",
+  "tasa_de_cambio",
+  "monto",
+  "factura"
+ ],
+ "fields": [
+  {
+   "fieldname": "documento",
+   "fieldtype": "Link",
+   "label": "Documento",
+   "options": "Journal Entry"
+  },
+  {
+   "fieldname": "fecha",
+   "fieldtype": "Data",
+   "label": "fecha"
+  },
+  {
+   "fieldname": "currency",
+   "fieldtype": "Data",
+   "label": "currency"
+  },
+  {
+   "fieldname": "tasa_de_cambio",
+   "fieldtype": "Float",
+   "label": "tasa de cambio"
+  },
+  {
+   "fieldname": "monto",
+   "fieldtype": "Currency",
+   "label": "monto",
+   "options": "currency"
+  },
+  {
+   "fieldname": "factura",
+   "fieldtype": "Link",
+   "label": "Factura",
+   "options": "Sales Invoice"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2023-03-07 11:06:19.335809",
+ "modified_by": "Administrator",
+ "module": "Accounts",
+ "name": "Deposito en Garantia Aplicado",
+ "naming_rule": "Autoincrement",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

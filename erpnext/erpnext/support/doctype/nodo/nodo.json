@@ -1,0 +1,180 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:nombre_nodo",
+ "creation": "2022-10-25 11:49:37.694450",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "idnodo",
+  "nombre_nodo",
+  "departamento",
+  "municipio",
+  "barrio",
+  "direccion_completa",
+  "section_break_7",
+  "longitud",
+  "column_break_8",
+  "latitud",
+  "section_break_10",
+  "es_wirelss",
+  "es_interno",
+  "portafolio",
+  "ocupacion",
+  "tab_break_16",
+  "table_17"
+ ],
+ "fields": [
+  {
+   "fieldname": "nombre_nodo",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Nombre Nodo",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "departamento",
+   "fieldtype": "Link",
+   "label": "Departamento",
+   "options": "Territory"
+  },
+  {
+   "fieldname": "municipio",
+   "fieldtype": "Link",
+   "label": "Municipio",
+   "options": "Territory"
+  },
+  {
+   "fieldname": "barrio",
+   "fieldtype": "Link",
+   "label": "Barrio",
+   "options": "Territory"
+  },
+  {
+   "fieldname": "direccion_completa",
+   "fieldtype": "Small Text",
+   "label": "Direccion Completa"
+  },
+  {
+   "fieldname": "longitud",
+   "fieldtype": "Float",
+   "label": "Longitud"
+  },
+  {
+   "fieldname": "latitud",
+   "fieldtype": "Float",
+   "label": "Latitud"
+  },
+  {
+   "default": "0",
+   "fieldname": "es_wirelss",
+   "fieldtype": "Check",
+   "label": "Es wirelss"
+  },
+  {
+   "default": "0",
+   "fieldname": "es_interno",
+   "fieldtype": "Check",
+   "label": "Es interno"
+  },
+  {
+   "fieldname": "ocupacion",
+   "fieldtype": "Table",
+   "label": "Ocupacion",
+   "options": "Ocupacion"
+  },
+  {
+   "fieldname": "idnodo",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "idNodo"
+  },
+  {
+   "fieldname": "column_break_8",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_10",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "section_break_7",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "portafolio",
+   "fieldtype": "Table",
+   "label": "Portafolio",
+   "options": "Portafolio Vinculado"
+  },
+  {
+   "fieldname": "tab_break_16",
+   "fieldtype": "Tab Break",
+   "label": "Materiales"
+  },
+  {
+   "fieldname": "table_17",
+   "fieldtype": "Table",
+   "options": "Materiales de Plan"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-11-22 08:34:42.527281",
+ "modified_by": "Administrator",
+ "module": "Support",
+ "name": "Nodo",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "select": 1,
+   "share": 1,
+   "write": 1
+  },
+  {
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "Back Office",
+   "select": 1,
+   "share": 1
+  },
+  {
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "Support Team",
+   "select": 1,
+   "share": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Ingenieria OYM",
+   "select": 1,
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

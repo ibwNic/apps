@@ -1,0 +1,95 @@
+{
+ "actions": [],
+ "autoname": "CA-.########",
+ "creation": "2023-03-01 15:07:43.359522",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "fecha",
+  "tasa_de_cambio",
+  "column_break_3",
+  "no_recibo",
+  "detalle_section",
+  "detalle",
+  "rechazados",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "tasa_de_cambio",
+   "fieldtype": "Float",
+   "label": "Tasa de Cambio",
+   "read_only": 1
+  },
+  {
+   "fieldname": "detalle_section",
+   "fieldtype": "Section Break",
+   "label": "Detalle"
+  },
+  {
+   "fieldname": "fecha",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Fecha",
+   "reqd": 1
+  },
+  {
+   "fieldname": "detalle",
+   "fieldtype": "Table",
+   "label": "Detalle",
+   "options": "Detalle Cargos"
+  },
+  {
+   "fieldname": "rechazados",
+   "fieldtype": "Table",
+   "label": "Rechazados",
+   "options": "Detalle Rechazados"
+  },
+  {
+   "fieldname": "column_break_3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "no_recibo",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "No Recibo"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Cargos Automaticos",
+   "print_hide": 1,
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2023-11-02 08:54:03.149810",
+ "modified_by": "Administrator",
+ "module": "Accounts",
+ "name": "Cargos Automaticos",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

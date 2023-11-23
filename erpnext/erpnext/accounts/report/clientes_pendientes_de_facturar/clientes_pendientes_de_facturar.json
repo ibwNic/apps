@@ -1,0 +1,105 @@
+{
+ "add_total_row": 1,
+ "columns": [
+  {
+   "fieldname": "Cliente",
+   "fieldtype": "Link",
+   "label": "cliente",
+   "options": "Customer",
+   "width": 0
+  },
+  {
+   "fieldname": "service_start",
+   "fieldtype": "Date",
+   "label": "service_start",
+   "width": 0
+  },
+  {
+   "fieldname": "Nombre Cliente",
+   "fieldtype": "Data",
+   "label": "nombre",
+   "width": 0
+  },
+  {
+   "fieldname": "Contrato",
+   "fieldtype": "Link",
+   "label": "contrato",
+   "options": "Subscription",
+   "width": 0
+  },
+  {
+   "fieldname": "Equipo",
+   "fieldtype": "Data",
+   "label": "equipo",
+   "width": 0
+  },
+  {
+   "fieldname": "Plan",
+   "fieldtype": "Data",
+   "label": "plan",
+   "width": 0
+  },
+  {
+   "fieldname": "Portafolio",
+   "fieldtype": "Data",
+   "label": "portafolio",
+   "width": 0
+  },
+  {
+   "fieldname": "Departamento",
+   "fieldtype": "Data",
+   "label": "departamento",
+   "width": 0
+  },
+  {
+   "fieldname": "Municipio",
+   "fieldtype": "Data",
+   "label": "municipio",
+   "width": 0
+  },
+  {
+   "fieldname": "Barrio",
+   "fieldtype": "Data",
+   "label": "barrio",
+   "width": 0
+  }
+ ],
+ "creation": "2023-02-27 11:36:57.304659",
+ "disable_prepared_report": 0,
+ "disabled": 0,
+ "docstatus": 0,
+ "doctype": "Report",
+ "filters": [],
+ "idx": 0,
+ "is_standard": "Yes",
+ "json": "{}",
+ "modified": "2023-11-01 14:28:41.930498",
+ "modified_by": "Administrator",
+ "module": "Accounts",
+ "name": "Clientes Pendientes de Facturar",
+ "owner": "Administrator",
+ "prepared_report": 0,
+ "query": "select \nc.name as 'cliente',\nspd.service_start,\nc.customer_name as  'nombre',\ns.name as 'contrato',\ncase when (select count(*) from `tabSubscription Plan Equipos` where parent = s.name and plan = spd.name) > 0 then 'con equipo' else 'sin equipo' end as 'equipo',\nspd.plan as 'plan',\nsp.item_group as 'portafolio',\nad.departamento,\nad.municipio,\nad.barrio\n from `tabSubscription` s \ninner join `tabCustomer` c on s.party = c.name\ninner join `tabSubscription Plan Detail` spd on spd.parent = s.name\ninner join `tabSubscription Plan` sp on sp.name = spd.plan \ninner join `tabAddress` ad on ad.name = spd.direccion\nwhere s.workflow_state = 'Instalado' and c.estado_cliente = 'ACTIVO'\nand c.name not in ('CUST-910000592','CUST-910001632','CUST-910001712','CUST-910001713','CUST-910001714',\n'CUST-910001715','CUST-910001716','CUST-910001717','SCI-710002504','CUST-910001711')\nand s.name not in (select parent from `tabSubscription Plan Detail` where estado_Plan='Inactivo')\n",
+ "ref_doctype": "Subscription",
+ "reference_report": "Subscription",
+ "report_name": "Clientes Pendientes de Facturar",
+ "report_script": "",
+ "report_type": "Query Report",
+ "roles": [
+  {
+   "role": "System Manager"
+  },
+  {
+   "role": "Accounts User"
+  },
+  {
+   "role": "Accounts Manager"
+  },
+  {
+   "role": "Sales User"
+  },
+  {
+   "role": "Back Office"
+  }
+ ]
+}

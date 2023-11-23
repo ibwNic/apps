@@ -1,0 +1,54 @@
+{
+ "actions": [],
+ "creation": "2015-01-05 14:17:53.101432",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "company",
+  "default_account",
+  "moneda_de_la_cuenta",
+  "usuario"
+ ],
+ "fields": [
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Company",
+   "options": "Company"
+  },
+  {
+   "description": "Default account will be automatically updated in POS Invoice when this mode is selected.",
+   "fieldname": "default_account",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Default Account",
+   "options": "Account"
+  },
+  {
+   "fieldname": "moneda_de_la_cuenta",
+   "fieldtype": "Data",
+   "in_preview": 1,
+   "label": "Moneda de la Cuenta"
+  },
+  {
+   "fieldname": "usuario",
+   "fieldtype": "Link",
+   "in_preview": 1,
+   "label": "Usuario",
+   "options": "User"
+  }
+ ],
+ "istable": 1,
+ "links": [],
+ "modified": "2022-11-14 16:57:58.785040",
+ "modified_by": "Administrator",
+ "module": "Accounts",
+ "name": "Mode of Payment Account",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

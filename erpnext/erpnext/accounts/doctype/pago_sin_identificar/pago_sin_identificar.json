@@ -1,0 +1,170 @@
+{
+ "actions": [],
+ "autoname": "Pago-ZZ-.#######",
+ "creation": "2023-02-01 15:45:22.705699",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "numero_de_referencia",
+  "fecha_deposito",
+  "cliente",
+  "aplicado",
+  "cuentas",
+  "column_break_3",
+  "tasa_de_cambio",
+  "moneda",
+  "banco",
+  "monto",
+  "saldo",
+  "section_break_15",
+  "referencia",
+  "section_break_6",
+  "detalles",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "numero_de_referencia",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Numero de Referencia",
+   "reqd": 1
+  },
+  {
+   "fieldname": "tasa_de_cambio",
+   "fieldtype": "Float",
+   "label": "Tasa de Cambio",
+   "precision": "4",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "moneda",
+   "fieldtype": "Select",
+   "label": "Moneda",
+   "options": "USD\nNIO",
+   "reqd": 1
+  },
+  {
+   "fieldname": "monto",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Monto",
+   "options": "moneda",
+   "precision": "2",
+   "reqd": 1
+  },
+  {
+   "fieldname": "cliente",
+   "fieldtype": "Link",
+   "label": "Cliente",
+   "options": "Customer",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "aplicado",
+   "fieldtype": "Check",
+   "label": "Aplicado",
+   "read_only": 1
+  },
+  {
+   "fieldname": "detalles",
+   "fieldtype": "Table",
+   "label": "Detalles",
+   "options": "Pago Sin Identificar Detalles"
+  },
+  {
+   "fieldname": "column_break_3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_6",
+   "fieldtype": "Section Break",
+   "label": "Aplicado"
+  },
+  {
+   "fieldname": "banco",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Banco",
+   "options": "\nBancentro\nBAC\nBanpro\nBDF",
+   "reqd": 1
+  },
+  {
+   "fieldname": "cuentas",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Cuenta",
+   "options": "Account",
+   "read_only": 1
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Pago Sin Identificar",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "fecha_deposito",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Fecha Deposito",
+   "reqd": 1
+  },
+  {
+   "fieldname": "saldo",
+   "fieldtype": "Currency",
+   "label": "Saldo",
+   "options": "moneda",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_15",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "referencia",
+   "fieldtype": "Small Text",
+   "label": "Referencia"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2023-05-09 18:42:40.550035",
+ "modified_by": "Administrator",
+ "module": "Accounts",
+ "name": "Pago Sin Identificar",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

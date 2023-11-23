@@ -1,0 +1,31 @@
+{
+ "chart_name": "Warehouse wise Stock Value",
+ "chart_type": "Custom",
+ "color": "#f07171",
+ "creation": "2022-09-13 10:43:55.413126",
+ "docstatus": 0,
+ "doctype": "Dashboard Chart",
+ "filters_json": "{}",
+ "idx": 0,
+ "is_public": 1,
+ "is_standard": 1,
+ "last_synced_on": "2023-07-26 09:33:04.787174",
+ "modified": "2023-07-26 09:34:55.474850",
+ "modified_by": "Administrator",
+ "module": "Stock",
+ "name": "Warehouse wise Stock Value",
+ "number_of_groups": 0,
+ "owner": "luis.olivares@ibw.com",
+ "roles": [
+  {
+   "role": "All"
+  }
+ ],
+ "source": "Warehouse wise Stock Value",
+ "time_interval": "Daily",
+ "timeseries": 0,
+ "timespan": "Last Week",
+ "type": "Bar",
+ "use_report_chart": 0,
+ "y_axis": []
+}

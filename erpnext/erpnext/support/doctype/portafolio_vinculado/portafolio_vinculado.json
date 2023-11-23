@@ -1,0 +1,37 @@
+{
+ "actions": [],
+ "creation": "2022-10-25 10:55:43.500709",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "portafolio",
+  "nodo_activo"
+ ],
+ "fields": [
+  {
+   "fieldname": "portafolio",
+   "fieldtype": "Link",
+   "label": "Portafolio",
+   "options": "Item Group"
+  },
+  {
+   "default": "0",
+   "fieldname": "nodo_activo",
+   "fieldtype": "Check",
+   "label": "Nodo activo"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2022-10-28 16:57:35.472067",
+ "modified_by": "Administrator",
+ "module": "Support",
+ "name": "Portafolio Vinculado",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

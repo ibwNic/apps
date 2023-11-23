@@ -1,0 +1,106 @@
+{
+ "add_total_row": 1,
+ "columns": [
+  {
+   "fieldname": "cliente",
+   "fieldtype": "Link",
+   "label": "cliente",
+   "options": "Customer",
+   "width": 0
+  },
+  {
+   "fieldname": "nombre",
+   "fieldtype": "Data",
+   "label": "nombre",
+   "width": 0
+  },
+  {
+   "fieldname": "vendedor",
+   "fieldtype": "Data",
+   "label": "vendedor",
+   "width": 0
+  },
+  {
+   "fieldname": "id_plan",
+   "fieldtype": "Link",
+   "label": "id_plan",
+   "options": "Bitacora de Planes",
+   "width": 0
+  },
+  {
+   "fieldname": "plan",
+   "fieldtype": "Link",
+   "label": "plan",
+   "options": "Subscription Plan",
+   "width": 0
+  },
+  {
+   "fieldname": "contrato",
+   "fieldtype": "Link",
+   "label": "contrato",
+   "options": "Subscription",
+   "width": 0
+  },
+  {
+   "fieldname": "estado_plan",
+   "fieldtype": "Data",
+   "label": "estado_plan",
+   "width": 0
+  },
+  {
+   "fieldname": "moneda",
+   "fieldtype": "Data",
+   "label": "moneda",
+   "width": 0
+  },
+  {
+   "fieldname": "precio",
+   "fieldtype": "Float",
+   "label": "precio",
+   "width": 0
+  },
+  {
+   "fieldname": "service_start",
+   "fieldtype": "Datetime",
+   "label": "service_start",
+   "width": 0
+  },
+  {
+   "fieldname": "service_end",
+   "fieldtype": "Datetime",
+   "label": "service_end",
+   "width": 0
+  },
+  {
+   "fieldname": "direccion",
+   "fieldtype": "Data",
+   "label": "direccion",
+   "width": 0
+  },
+  {
+   "fieldname": "descripcion",
+   "fieldtype": "Data",
+   "label": "descripcion",
+   "width": 0
+  }
+ ],
+ "creation": "2023-06-22 16:10:43.757955",
+ "disable_prepared_report": 0,
+ "disabled": 1,
+ "docstatus": 0,
+ "doctype": "Report",
+ "filters": [],
+ "idx": 0,
+ "is_standard": "Yes",
+ "modified": "2023-08-11 12:05:47.383200",
+ "modified_by": "Administrator",
+ "module": "Accounts",
+ "name": "Historial de planes",
+ "owner": "Administrator",
+ "prepared_report": 0,
+ "query": "Select s.party as cliente, s.nombre_del_cliente, s.vendedor, spd.name as id_plan, spd.plan, \nspd.parent as contrato, spd.estado_plan, spd.currency as moneda ,spd.cost as precio, spd.service_start,\nspd.service_end, spd.address_line, spd.descripcion as descripcion_plan from `tabSubscription Plan Detail` spd inner join `tabSubscription` s\non spd.parent = s.name order by s.party desc",
+ "ref_doctype": "Subscription",
+ "report_name": "Historial de planes",
+ "report_type": "Query Report",
+ "roles": []
+}

@@ -1,0 +1,56 @@
+{
+ "actions": [],
+ "autoname": "field:idclase",
+ "creation": "2023-06-16 11:20:05.549873",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "idclase",
+  "velocidad",
+  "cmts"
+ ],
+ "fields": [
+  {
+   "fieldname": "idclase",
+   "fieldtype": "Data",
+   "label": "ID Clase",
+   "unique": 1
+  },
+  {
+   "fieldname": "velocidad",
+   "fieldtype": "Data",
+   "label": "Velocidad"
+  },
+  {
+   "fieldname": "cmts",
+   "fieldtype": "Data",
+   "label": "CMTS"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-06-16 11:20:05.549873",
+ "modified_by": "Administrator",
+ "module": "Custom",
+ "name": "Velocidades HFC",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

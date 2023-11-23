@@ -1,0 +1,28 @@
+{
+ "add_total_row": 0,
+ "columns": [],
+ "creation": "2023-03-25 09:26:36.139979",
+ "disable_prepared_report": 0,
+ "disabled": 0,
+ "docstatus": 0,
+ "doctype": "Report",
+ "filters": [],
+ "idx": 0,
+ "is_standard": "Yes",
+ "json": "{}",
+ "modified": "2023-05-16 08:50:54.539606",
+ "modified_by": "Administrator",
+ "module": "CRM",
+ "name": "OSS",
+ "owner": "Administrator",
+ "prepared_report": 0,
+ "query": "SELECT `vw_saldos720_mas_portafolio_colector`.`Regnumber`,\n    `vw_saldos720_mas_portafolio_colector`.`customer_name`,\n    `vw_saldos720_mas_portafolio_colector`.`company`,\n    `vw_saldos720_mas_portafolio_colector`.`departamento`,\n    `vw_saldos720_mas_portafolio_colector`.`municipio`,\n    `vw_saldos720_mas_portafolio_colector`.`portafolio`,\n    `vw_saldos720_mas_portafolio_colector`.`estado_cliente`,\n    `vw_saldos720_mas_portafolio_colector`.`tipo_de_cliente`,\n    `vw_saldos720_mas_portafolio_colector`.`barrio`,\n    `vw_saldos720_mas_portafolio_colector`.`direccion`,\n    `vw_saldos720_mas_portafolio_colector`.`saldo`,\n    `vw_saldos720_mas_portafolio_colector`.`0_30`,\n    `vw_saldos720_mas_portafolio_colector`.`30_60`,\n    `vw_saldos720_mas_portafolio_colector`.`60_90`,\n    `vw_saldos720_mas_portafolio_colector`.`90_120`,\n    `vw_saldos720_mas_portafolio_colector`.`120_150`,\n    `vw_saldos720_mas_portafolio_colector`.`150_180`,\n    `vw_saldos720_mas_portafolio_colector`.`180_210`,\n    `vw_saldos720_mas_portafolio_colector`.`210_240`,\n    `vw_saldos720_mas_portafolio_colector`.`240_270`,\n    `vw_saldos720_mas_portafolio_colector`.`270_300`,\n    `vw_saldos720_mas_portafolio_colector`.`300_330`,\n    `vw_saldos720_mas_portafolio_colector`.`330_360`,\n    `vw_saldos720_mas_portafolio_colector`.`360_390`,\n    `vw_saldos720_mas_portafolio_colector`.`390_420`,\n    `vw_saldos720_mas_portafolio_colector`.`420_450`,\n    `vw_saldos720_mas_portafolio_colector`.`450_480`,\n    `vw_saldos720_mas_portafolio_colector`.`480_510`,\n    `vw_saldos720_mas_portafolio_colector`.`510_540`,\n    `vw_saldos720_mas_portafolio_colector`.`540_570`,\n    `vw_saldos720_mas_portafolio_colector`.`570_600`,\n    `vw_saldos720_mas_portafolio_colector`.`600_630`,\n    `vw_saldos720_mas_portafolio_colector`.`630_660`,\n    `vw_saldos720_mas_portafolio_colector`.`660_690`,\n    `vw_saldos720_mas_portafolio_colector`.`690_720`,\n    `vw_saldos720_mas_portafolio_colector`.`720_MAS`\nFROM `_d3e85a4448e8e751`.`vw_saldos720_mas_portafolio_colector`;",
+ "ref_doctype": "Customer",
+ "report_name": "OSS",
+ "report_type": "Query Report",
+ "roles": [
+  {
+   "role": "Cobranza"
+  }
+ ]
+}

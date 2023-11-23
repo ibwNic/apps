@@ -1,0 +1,99 @@
+{
+ "actions": [],
+ "creation": "2023-05-19 09:26:20.005302",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "iniciales",
+  "usuario",
+  "convocados",
+  "cargo",
+  "asistencia",
+  "motivo"
+ ],
+ "fields": [
+  {
+   "columns": 1,
+   "fieldname": "iniciales",
+   "fieldtype": "Data",
+   "in_filter": 1,
+   "in_global_search": 1,
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Iniciales"
+  },
+  {
+   "columns": 2,
+   "fetch_from": "usuario.full_name",
+   "fieldname": "convocados",
+   "fieldtype": "Data",
+   "in_filter": 1,
+   "in_global_search": 1,
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Convocados"
+  },
+  {
+   "columns": 2,
+   "fieldname": "usuario",
+   "fieldtype": "Link",
+   "in_filter": 1,
+   "in_global_search": 1,
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Usuario",
+   "options": "User"
+  },
+  {
+   "columns": 2,
+   "fieldname": "cargo",
+   "fieldtype": "Data",
+   "in_filter": 1,
+   "in_global_search": 1,
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Cargo"
+  },
+  {
+   "columns": 1,
+   "default": "0",
+   "fieldname": "asistencia",
+   "fieldtype": "Check",
+   "in_filter": 1,
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Asistencia"
+  },
+  {
+   "columns": 2,
+   "depends_on": "asistencia === true",
+   "description": "Si no estuvo en la reuni\u00f3n exprese motivo.",
+   "fieldname": "motivo",
+   "fieldtype": "Data",
+   "in_filter": 1,
+   "in_global_search": 1,
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Motivo"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2023-05-19 09:49:17.560540",
+ "modified_by": "Administrator",
+ "module": "Desk",
+ "name": "Asistentes",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

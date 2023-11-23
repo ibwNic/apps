@@ -1,0 +1,220 @@
+{
+ "actions": [],
+ "autoname": "Camp-.#########",
+ "creation": "2023-03-17 14:31:48.499497",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "descripcion",
+  "tipo_sms",
+  "preview_sms",
+  "preset_sms",
+  "column_break_4",
+  "fecha",
+  "total_sms",
+  "limite_envio_sms",
+  "filtros_section",
+  "estado_de_cliente",
+  "tipo_de_cliente",
+  "departamento",
+  "municipio",
+  "barrio",
+  "deuda",
+  "monto_minimo",
+  "column_break_13",
+  "saldo_a_cobrar",
+  "portafolios",
+  "numeros_section",
+  "numeros",
+  "exclusiones_section",
+  "exclusiones",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "tipo_sms",
+   "fieldtype": "Link",
+   "label": "Tipo SMS",
+   "options": "Formato SMS"
+  },
+  {
+   "fieldname": "preview_sms",
+   "fieldtype": "Long Text",
+   "label": "Preview SMS"
+  },
+  {
+   "default": "Campa\u00f1a de ....",
+   "fieldname": "descripcion",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_preview": 1,
+   "label": "Descripcion"
+  },
+  {
+   "default": "Verificando...",
+   "fieldname": "total_sms",
+   "fieldtype": "Data",
+   "label": "Total SMS"
+  },
+  {
+   "fieldname": "column_break_4",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "saldo_a_cobrar",
+   "fieldtype": "Select",
+   "label": "Saldo a Cobrar",
+   "options": "Factura del Mes\n0-30\n30-60\n60-90\n90-mas\nSaldo Total"
+  },
+  {
+   "fieldname": "numeros_section",
+   "fieldtype": "Section Break",
+   "label": "Numeros"
+  },
+  {
+   "allow_bulk_edit": 1,
+   "fieldname": "numeros",
+   "fieldtype": "Table",
+   "label": "Numeros",
+   "options": "Numeros SMS"
+  },
+  {
+   "fieldname": "preset_sms",
+   "fieldtype": "Long Text",
+   "hidden": 1,
+   "label": "Preset SMS"
+  },
+  {
+   "fieldname": "filtros_section",
+   "fieldtype": "Section Break",
+   "label": "Filtros"
+  },
+  {
+   "fieldname": "tipo_de_cliente",
+   "fieldtype": "Select",
+   "label": "Tipo de Cliente",
+   "options": "Company\nGubernamental\nIndividual\nPyme\nSin fines de lucro\nTodas las categor\u00edas de clientes"
+  },
+  {
+   "fieldname": "departamento",
+   "fieldtype": "Link",
+   "label": "Departamento",
+   "options": "Territory"
+  },
+  {
+   "fieldname": "municipio",
+   "fieldtype": "Link",
+   "label": "Municipio",
+   "options": "Territory"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Envio SMS",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_13",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "portafolios",
+   "fieldtype": "Table",
+   "label": "Portafolios",
+   "options": "SMS Portafolios"
+  },
+  {
+   "fieldname": "deuda",
+   "fieldtype": "Select",
+   "label": "Saldo a Filtrar",
+   "options": "Factura del Mes\n0-30\n30-60\n60-90\n90-mas\nSaldo Total"
+  },
+  {
+   "default": "1",
+   "fieldname": "monto_minimo",
+   "fieldtype": "Float",
+   "label": "Monto Minimo"
+  },
+  {
+   "fieldname": "exclusiones_section",
+   "fieldtype": "Section Break",
+   "label": "Exclusiones"
+  },
+  {
+   "fieldname": "exclusiones",
+   "fieldtype": "Table",
+   "label": "Exclusiones",
+   "options": "Excepciones SMS"
+  },
+  {
+   "fieldname": "estado_de_cliente",
+   "fieldtype": "Select",
+   "label": "Estado de Cliente",
+   "options": "NUEVO\nACTIVO\nSUSPENDIDO\nSUSPENDIDO (Manual)\nSUSPENDIDO (Temporal)\nTERMINADO"
+  },
+  {
+   "default": "now",
+   "fieldname": "fecha",
+   "fieldtype": "Datetime",
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Fecha"
+  },
+  {
+   "fieldname": "barrio",
+   "fieldtype": "Link",
+   "label": "Barrio",
+   "options": "Territory"
+  },
+  {
+   "default": "0",
+   "fieldname": "limite_envio_sms",
+   "fieldtype": "Int",
+   "label": "Limite SMS"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2023-09-01 07:36:48.813890",
+ "modified_by": "Administrator",
+ "module": "CRM",
+ "name": "Envio SMS",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Cobranza",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

@@ -1,0 +1,67 @@
+{
+ "add_total_row": 1,
+ "columns": [],
+ "creation": "2023-02-27 15:05:44.543243",
+ "disable_prepared_report": 0,
+ "disabled": 0,
+ "docstatus": 0,
+ "doctype": "Report",
+ "filters": [
+  {
+   "fieldname": "FechaD",
+   "fieldtype": "Date",
+   "label": "Fecha Desde",
+   "mandatory": 1,
+   "wildcard_filter": 0
+  },
+  {
+   "fieldname": "FechaH",
+   "fieldtype": "Date",
+   "label": "Fecha Hasta",
+   "mandatory": 1,
+   "wildcard_filter": 0
+  }
+ ],
+ "idx": 0,
+ "is_standard": "Yes",
+ "modified": "2023-11-14 16:27:18.747546",
+ "modified_by": "Administrator",
+ "module": "Accounts",
+ "name": "Altas del mes",
+ "owner": "Administrator",
+ "prepared_report": 0,
+ "query": "\r\nselect\r\ns.party as cliente,\r\ns.nombre_del_cliente as nombre,\r\ncu.company_name as Compania,\r\nad.departamento,\r\ncu.customer_group as Tipo_Cliente,\r\nspd.name as plan_id,\r\nsp.compresion as compresion,\r\n(case when sp.compresion='1:1' then 'Corporativo' when sp.compresion='7:1' then 'Residencial'  else 'Pyme' end ) Tipo_Servicio,\r\nspd.estado_plan as estado,\r\nspd.plan,\r\n(select i.stock_uom from `tabItem` i where i.name=sp.item ) as Velocidad,\r\nspd.currency as Moneda,\r\nspd.cost as precio,\r\n        CASE\r\n            WHEN `spd`.`currency` = 'USD' THEN `spd`.`cost`\r\n            WHEN `spd`.`currency` = 'NIO' THEN `sp`.`cost` / `sp`.`tipocambio`\r\n        END AS `precio_dolar`,\r\nsp.item_group as portafolio,\r\nspd.service_start,\r\ns.vendedor,\r\n(select op.name from `tabCustomer` cus inner join `tabOpportunity` op on  op.customer = cus.name where op.customer = (cu.name) limit 1)as Payback,\r\n(select sales.parent_sales_person from `tabSales Person` sales where sales.name = (select sales.parent_sales_person from `tabSubscription` sub inner join `tabSales Person` sales on sales.name = sub.vendedor where sales.name = (s.vendedor)limit 1)) as Canal,\r\n(select canal_general from `tabSales Person` where name = (select sales.parent_sales_person from `tabSales Person` sales where sales.name = (select sales.parent_sales_person from `tabSubscription` sub inner join `tabSales Person` sales on sales.name = sub.vendedor where sales.name = (s.vendedor) limit 1)limit 1) limit 1) as Canal_General,\r\n(select GROUP_CONCAT(CONCAT('\"', equipo, '\"')) AS N_Serie from `tabSubscription Plan Equipos` t1 inner join `tabSubscription` t2 on t1.parent = t2.name where t1.parent = (s.name) limit 1) as Mac,\r\n(select IF(usuario = 'emilio.jimenez@ibw.com', (select parent_sales_person from `tabSales Person` where name = (s.vendedor)),(replace(usuario, '@ibw.com', ''))) as  Coodinador from `tabSales Person` where name = (select sales.parent_sales_person from `tabSales Person` sales where sales.name = (select sales.parent_sales_person from `tabSubscription` sub inner join `tabSales Person` sales on sales.name = sub.vendedor where sales.name = (s.vendedor) limit 1) limit 1)) as Coordinador,\r\nad.municipio,\r\nad.barrio,\r\ncu.mobile_no as N_Celular,\r\ns.campana,\r\ns.name as contrato,\r\ns.no_contrato as no_contrato,\r\nspd.nodo,\r\nspd.latitud,\r\nspd.longitud,\r\nday(spd.service_start) as dia,\r\nmonth(spd.service_start) as mes,\r\nyear(spd.service_start) as a\u00f1o,\r\nspd.address_line as Direccion\r\n\r\nfrom `tabSubscription Plan Detail` spd\r\ninner join   `tabSubscription` s on spd.parent = s.name\r\ninner join  `tabSubscription Plan` sp on sp.name = spd.plan\r\ninner join `tabAddress` ad on ad.name = spd.direccion\r\ninner join `tabCustomer` cu on  cu.name = s.party\r\nwhere spd.old_plan is null  and  spd.service_start >='2023-05-06'\r\nand DATE(spd.service_start) >= %(FechaD)s and DATE(spd.service_start) <=  %(FechaH)s\r\nand spd.estado_plan<>'Inactivo' and s.tipo_contrato != 'TEMPORAL'",
+ "ref_doctype": "Subscription",
+ "report_name": "Altas del mes",
+ "report_script": "frappe.query_reports['Altas del mes'] = {\r\n\t\"filters\": [\r\n\t\t\t{\r\n\t\t\t\"fieldname\":\"customer\",\r\n\t\t\t\"label\": __(\"Customer\"),\r\n\t\t\t\"fieldtype\": \"Link\",\r\n\t\t\t\"options\": \"Customer\"\r\n\t\t    }\r\n\t]\r\n}",
+ "report_type": "Query Report",
+ "roles": [
+  {
+   "role": "System Manager"
+  },
+  {
+   "role": "Accounts User"
+  },
+  {
+   "role": "Accounts Manager"
+  },
+  {
+   "role": "Sales User"
+  },
+  {
+   "role": "Back Office"
+  },
+  {
+   "role": "Vendedor Corporativo"
+  },
+  {
+   "role": "Gerencia General"
+  },
+  {
+   "role": "Gerente de Ventas Corporativas"
+  },
+  {
+   "role": "Cobranza"
+  }
+ ]
+}

@@ -1,0 +1,37 @@
+{
+ "charts": [],
+ "content": "[{\"type\":\"header\",\"data\":{\"text\":\"<span style=\\\"font-size: 18px;\\\">Centeno y Asociados</span>\",\"col\":12}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Clientes\",\"col\":3}}]",
+ "creation": "2023-09-21 09:43:16.340982",
+ "docstatus": 0,
+ "doctype": "Workspace",
+ "for_user": "",
+ "hide_custom": 0,
+ "icon": "share",
+ "idx": 0,
+ "label": "Centeno",
+ "links": [],
+ "modified": "2023-09-21 10:04:11.672202",
+ "modified_by": "Administrator",
+ "module": "Centeno",
+ "name": "Centeno",
+ "owner": "Administrator",
+ "parent_page": "",
+ "public": 1,
+ "quick_lists": [],
+ "roles": [
+  {
+   "role": "Centeno"
+  }
+ ],
+ "sequence_id": 36.0,
+ "shortcuts": [
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Clientes",
+   "link_to": "Customer",
+   "type": "DocType"
+  }
+ ],
+ "title": "Centeno"
+}

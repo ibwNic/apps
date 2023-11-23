@@ -1,0 +1,94 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "CRS-.#######",
+ "creation": "2023-01-10 08:16:08.848432",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "cliente",
+  "fecha_de_inicio_de_contrato",
+  "duracion_de_contrato",
+  "column_break_2",
+  "nuevo_cliente",
+  "section_break_4",
+  "cambiar_planes"
+ ],
+ "fields": [
+  {
+   "fieldname": "cliente",
+   "fieldtype": "Link",
+   "label": "Cliente",
+   "options": "Customer"
+  },
+  {
+   "fieldname": "nuevo_cliente",
+   "fieldtype": "Link",
+   "label": "Nuevo Cliente",
+   "options": "Customer"
+  },
+  {
+   "fieldname": "cambiar_planes",
+   "fieldtype": "Table",
+   "label": "Cambiar Planes",
+   "options": "Detalle Cambio de Razon Social"
+  },
+  {
+   "fieldname": "column_break_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_4",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "fecha_de_inicio_de_contrato",
+   "fieldtype": "Date",
+   "label": "Fecha de Inicio de Contrato"
+  },
+  {
+   "default": "12",
+   "fieldname": "duracion_de_contrato",
+   "fieldtype": "Int",
+   "label": "Duracion de contrato"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-02-08 10:39:32.664112",
+ "modified_by": "Administrator",
+ "module": "Accounts",
+ "name": "Cambio de Razon Social",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Back Office",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

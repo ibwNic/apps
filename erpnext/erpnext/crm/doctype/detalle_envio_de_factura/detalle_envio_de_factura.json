@@ -1,0 +1,58 @@
+{
+ "actions": [],
+ "autoname": "autoincrement",
+ "creation": "2023-06-07 21:54:27.687830",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "regnumber",
+  "nombre",
+  "factura",
+  "correo",
+  "envio"
+ ],
+ "fields": [
+  {
+   "fieldname": "regnumber",
+   "fieldtype": "Link",
+   "label": "Regnumber",
+   "options": "Customer"
+  },
+  {
+   "fieldname": "factura",
+   "fieldtype": "Link",
+   "label": "Factura",
+   "options": "Sales Invoice"
+  },
+  {
+   "fieldname": "correo",
+   "fieldtype": "Data",
+   "label": "Correo"
+  },
+  {
+   "fieldname": "envio",
+   "fieldtype": "Link",
+   "label": "Envio",
+   "options": "Communication"
+  },
+  {
+   "fieldname": "nombre",
+   "fieldtype": "Data",
+   "label": "Nombre"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2023-06-13 13:06:15.303265",
+ "modified_by": "Administrator",
+ "module": "CRM",
+ "name": "Detalle Envio de Factura",
+ "naming_rule": "Autoincrement",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

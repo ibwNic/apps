@@ -1,0 +1,107 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2022-10-04 12:10:55.057388",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "tipo_servicio",
+  "idaveria",
+  "idsubaveria",
+  "ibwsoluciones",
+  "anulado"
+ ],
+ "fields": [
+  {
+   "fieldname": "tipo_servicio",
+   "fieldtype": "Data",
+   "label": "tipo_servicio"
+  },
+  {
+   "fieldname": "idaveria",
+   "fieldtype": "Data",
+   "label": "IdAveria"
+  },
+  {
+   "fieldname": "idsubaveria",
+   "fieldtype": "Data",
+   "label": "IdSubAveria"
+  },
+  {
+   "fieldname": "ibwsoluciones",
+   "fieldtype": "Data",
+   "label": "IbwSoluciones"
+  },
+  {
+   "fieldname": "anulado",
+   "fieldtype": "Data",
+   "label": "Anulado"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-03-30 11:44:54.322886",
+ "modified_by": "Administrator",
+ "module": "Support",
+ "name": "Soluciones de Averias",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Support Team",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "SAC",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "O&M",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Ingenieria OYM",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "quick_entry": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

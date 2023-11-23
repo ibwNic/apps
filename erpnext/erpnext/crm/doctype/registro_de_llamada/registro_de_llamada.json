@@ -1,0 +1,105 @@
+{
+ "actions": [],
+ "autoname": "Bitacora-.#######",
+ "creation": "2023-03-25 12:13:44.480537",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "tipo_de_llamada",
+  "fecha",
+  "cliente",
+  "motivo",
+  "column_break_5",
+  "gestion",
+  "tipo",
+  "numero",
+  "observaciones"
+ ],
+ "fields": [
+  {
+   "fieldname": "tipo_de_llamada",
+   "fieldtype": "Select",
+   "label": "Tipo de llamada",
+   "options": "Entrante\nSaliente\nWhatsApp"
+  },
+  {
+   "fieldname": "fecha",
+   "fieldtype": "Datetime",
+   "label": "Fecha"
+  },
+  {
+   "fieldname": "cliente",
+   "fieldtype": "Link",
+   "label": "Cliente",
+   "options": "Customer"
+  },
+  {
+   "fieldname": "motivo",
+   "fieldtype": "Data",
+   "label": "Motivo"
+  },
+  {
+   "fieldname": "gestion",
+   "fieldtype": "Data",
+   "label": "Gestion"
+  },
+  {
+   "fieldname": "tipo",
+   "fieldtype": "Data",
+   "label": "Tipo"
+  },
+  {
+   "fieldname": "numero",
+   "fieldtype": "Data",
+   "label": "Numero"
+  },
+  {
+   "fieldname": "observaciones",
+   "fieldtype": "Long Text",
+   "label": "Observaciones"
+  },
+  {
+   "fieldname": "column_break_5",
+   "fieldtype": "Column Break"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-03-31 09:25:23.310759",
+ "modified_by": "Administrator",
+ "module": "CRM",
+ "name": "Registro de llamada",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Cobranza",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}
