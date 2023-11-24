@@ -3,6 +3,7 @@
 
 import frappe
 from frappe.model.document import Document
+from frappe import _, msgprint, throw
 
 class PagoSinIdentificar(Document):
 	def on_update(self):
@@ -38,17 +39,28 @@ class PagoSinIdentificar(Document):
 						msg='Lo sentimos no se encuentra registrado una cuenta de dolares!',
 						exc=FileNotFoundError
 					)
-					# frappe.msgprint('Lo sentimos no se encuentra registrado una cuenta de dolares!')
-					# frappe.db.rollback()
-					# frappe.m
-				# if self.moneda == 'USD':
-				# 	frappe.db.set_value('Pago_sin_identificar', self.name, 'cuentas', '1.01.001.002.002.002-BANPRO DOLARES - NI')
 			self.reload()
 
-	# def on_submit(self):
-	# 	if (frm.doc.docstatus === 0){
-    #     //     frm.add_custom_button('Aplicar Deposito', function(){
-    #     //         cur_frm.cscript.AplicarDepostos(frm);
-    #     //     });
-    #     // }
-	
+		if self.workflow_state == "Por aplicar" and self.docstatus == 0:
+			sum = 0
+			for monto in self.get("facturaporaplicar"):
+				sum = sum + monto.monto
+			
+			if sum > 0:
+				if sum > self.monto:
+					# raise Exception("Debe de cerrar caja antes de empezar hacer transacciones")
+					frappe.msgprint(_("La suma de los montos no puede ser mayor a lo registrado!"))
+					frappe.db.set_value('Pago Sin Identificar', self.name, 'workflow_state', 'Pendiente')
+					self.reload()
+					return
+				
+		user = frappe.get_doc("User", frappe.session.user)
+
+		if user:
+			for rol in user.get('roles'):
+				if rol.role == 'Cobranza':
+					if not self.get("facturaporaplicar"):
+						frappe.msgprint(_("Debe de registrar al menos una factura!"))
+						frappe.db.set_value('Pago Sin Identificar', self.name, 'workflow_state', 'Pendiente')
+						self.reload()
+						return

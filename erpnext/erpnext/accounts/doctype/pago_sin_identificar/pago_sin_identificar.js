@@ -3,28 +3,13 @@
 
 frappe.ui.form.on('Pago Sin Identificar', {
 	refresh: function(frm) {
-		// if (frm.doc.saldo === 0){
-		// 	frappe.db.set_value('Pago Sin Identificar', frm.doc.name, {
-		// 		'docstatus': 1,
-		// 		'aplicado': 1
-		// 	})
-		// 	// frm.set_value('aplicado',1);
-		// }
-
-		
+	
 		cur_frm.cscript.AplicarDepostos = function(frm){
 			// console.log(frm.doc.cliente);
-			function Crear_Deposito(pm_args,values){
-				[
-					['customer','regnumber'],
-					['sales_invoice', 'factura'],
-					['conversion_rate', 'tc'],
-					['posting_date', 'fecha']
-				].forEach(function(pair){
-					var v = values[pair[0]];
-					if (v) pm_args[pair[1]] = v;
-				});
+			function Crear_Deposito(pm_args){
 
+				pm_args.regnumber = frm.doc.cliente;
+				pm_args.tc = frm.doc.tasa_de_cambio
 				pm_args.observacion = frm.doc.referencia;
 				console.log(Object.keys(pm_args).map(function(k) { return k + ': ' + JSON.stringify(pm_args[k]) }).join('\n'));
 					// AQUI
@@ -43,13 +28,114 @@ frappe.ui.form.on('Pago Sin Identificar', {
 				
 			}
 
+			var d,
+			factura,		
+			payments = [],			
+			deudas = [],
+			pm_args = {};
+
+			factura = [];
+		    var tbl = frm.doc.facturaporaplicar;
+			
+			if (tbl.length > 0){
+				tbl.forEach(function(f) { 
+					deudas.push(
+						{'link_doctype': "Sales Invoice",
+						 'link_name': f.factura
+						});
+					payments.push({
+						"Factura": f.factura,
+						"moneda": frm.doc.moneda,
+						"monto": f.monto
+					});
+				});
+
+				pm_args.deudas = deudas;
+				pm_args.pagos = payments;
+				pm_args.ID_pago_ZZ = frm.doc.name; 
+				pm_args['cuentaBanco'] = frm.doc.cuentas;
+				pm_args.numero_de_recibo = frm.doc.numero_de_referencia;
+				pm_args.posting_date = frm.doc.fecha_deposito;
+			
+				// var values = d.get_values();
+				Crear_Deposito(pm_args);
+
+			}
+			else {
+				frappe.msgprint({
+					title: __('Advertencia'),
+					indicator: 'red',
+					message: __('No tiene facturas seleccionadas!')
+				});
+			}
+			
+
+			// frm.add_child('facturaporaplicar', {
+			// 	factura: f.factura,
+			// 	monto: f.monto
+			// });
+
+			// pm_args[dc].push({'link_doctype': $(this).data('doctype'), 'link_name': $(this).val()});
+			// d.set_value('cuenta',frm.doc.cuentas)
+			
+
+		}
+
+		frappe.call({
+			"method": "erpnext.crm.doctype.opportunity.opportunity.consultar_rol",
+		}).then(r =>{
+				console.log(r.message)
+				// rol = r.message;
+				if((r.message.includes("Administrador Caja")) && frm.doc.workflow_state === 'Por aplicar'){
+					if (frm.doc.docstatus === 0){
+						frm.add_custom_button('Aplicar Deposito', function(){
+							cur_frm.cscript.AplicarDepostos(frm);
+						});
+					}
+				}				
+			}
+		);
+
+		cur_frm.cscript.AgragarFactura1 = function(frm){
+			// console.log(frm.doc.cliente);
+			function Crear_NotaCredito(pm_args,values){
+				[
+					['customer', 'regnumber'],
+					['sales_invoice', 'factura'],
+					['conversion_rate', 'tc'],
+					['posting_date', 'fecha']
+				].forEach(function(pair){
+					var v = values[pair[0]];
+					if (v) pm_args[pair[1]] = v;
+				});
+				console.log(Object.keys(pm_args).map(function(k) { return k + ': ' + JSON.stringify(pm_args[k]) }).join('\n'));
+				console.log(pm_args.pagos)
+					// AQUI
+
+				tbl.forEach(function(monto) {
+					sum = sum + monto.monto;
+				})
+								
+				
+				pm_args.pagos.forEach(function(f) { 
+				
+					frm.add_child('facturaporaplicar', {
+						factura: f.factura,
+						monto: f.monto
+					});
+				})
+
+				cur_frm.refresh_fields()
+				
+			}
+		
 			function toggle_action(fields, wrapper){
 				fields.forEach(function(df){
 					df.$input.on('change', function(){
 						if (!wrapper.find("#action").hasClass("hidden")){
 							wrapper.find('#action').addClass('hidden');
 						}
-
+		
 						for(var i = 0, l = fields.length; i<l; i++){
 							if (!fields[i].get_value()) return;
 						}
@@ -57,7 +143,7 @@ frappe.ui.form.on('Pago Sin Identificar', {
 					});
 				});
 			}
-
+		
 			var d,
 			factura,
 				ignore_event = false,
@@ -65,6 +151,7 @@ frappe.ui.form.on('Pago Sin Identificar', {
 				TotalesNIO = 0,
 				montosC$ = [],
 				montosUSD = [],
+				FacturaYMonto = [],
 				montos = [],
 				payments = [],
 				facturaSelect = [],
@@ -76,7 +163,7 @@ frappe.ui.form.on('Pago Sin Identificar', {
 				series = {
 					"leyda.calderon@ibw.com": "F-",
 					"hegarcia@ibw.com": "I-"
-                },
+				},
 				pm_args = {},
 				tmp_dc_table = `<table class="table table-condensed table-bordered">
 			   <thead>
@@ -96,7 +183,7 @@ frappe.ui.form.on('Pago Sin Identificar', {
 			   <tbody>
 				 {% for (var row of data[dc]) { %}
 				 <tr>
-					 <td><input type="checkbox" class="link_name" value="{{row.name}}" data-doctype="{{ row.doctype }}" /></td>
+					 <td><input type="checkbox" class="link_name" value="{{row.name}}" data-doctype="{{ row.doctype }}" data-deudaUSD="{{ row.deuda.usd }}"  data-deudaNIO="{{ row.deuda.nio }}" data-deudaActualNIO="{{ row.actual.nio }}"/></td>
 					 <td><a href="#Form/{{ row.doctype }}/{{ row.name }}" target="_newtab">{{ row.name }}</a></td>
 					 <td>{{ frappe.datetime.str_to_user(row.fecha) }}</td>
 					 <td class="text-right">{{ format_currency(row.deuda.usd, "USD", 2) }}</td>
@@ -138,7 +225,7 @@ frappe.ui.form.on('Pago Sin Identificar', {
 				   <td class="text-right">{{ format_currency(row.moneda === "USD" ? flt(row.monto) : flt(row.monto) / flt(tc,2), "USD", 2) }}</th>
 				   <td class="text-right">{{ format_currency(row.moneda === "USD" ? flt(row.monto) * flt(tc) : flt(row.monto), "NIO", 2) }}</th>
 				   <td><button class="btn btn-danger btn-xs remove" data-idx="{{ i }}"><span class="icon icon-remove">
-				 	<svg class="icon icon-sm" style>
+					 <svg class="icon icon-sm" style>
 						<use class href="#icon-delete"></use>
 					</svg>
 				   </span></button>
@@ -157,23 +244,23 @@ frappe.ui.form.on('Pago Sin Identificar', {
 				 </tr>
 			   </tbody>
 			</table>`;
-
-
-
+		
+		
+		
 			function set_sum_Totales_Anticipos(data){
 				console.log(data['total_FacturaUSD']);
 				var amounts = {'TotalNIO': 0.0, 'TotalUSD': 0.0};
-
+		
 				amounts.TotalNIO += data['Total_FacturaNIO'];
 				amounts.TotalUSD += data['total_FacturaUSD'] ;
-
+		
 				montos.push(amounts.TotalNIO);
 				montos.push(amounts.TotalUSD);
 				console.log(montos);
 				// render_totals_table();
 				// SumaFormaPagos();
 			}
-
+		
 			// Aqui para asignar el otro Js
 			function render_totals_table(){
 				// totals.length = 0;
@@ -188,24 +275,24 @@ frappe.ui.form.on('Pago Sin Identificar', {
 				// 		amount_nioF: norm(d.fields_dict.debits_wrapper.$wrapper.find('#total_nio').text()),
 				// 	});
 				// } else {
-                //     totals.push({
+				//     totals.push({
 				// 		symbol: '-',
 				// 		description: 'Deuda',
 				// 		amount_usd: 0.0,
 				// 		amount_nioF:0.0,
 				// 		amount_nio: 0.0,
-
-                //     });
+		
+				//     });
 				// }
 				// pm_args.pagos = payments
 				// d.fields_dict.totals_wrapper.$wrapper.find("#totals_wrapper").html(frappe.render(tmp_pm_table));
 			}
-
-
+		
+		
 			function TituloName(name){
 				d.fields_dict.TituloName.$wrapper.find("#Nombre").text(name);
 			}
-
+		
 			function SumaFormaPagos() {
 				var sumaMonto1 = 0,sumaMonto2 = 0;
 				console.log(payments);
@@ -227,7 +314,7 @@ frappe.ui.form.on('Pago Sin Identificar', {
 				// TotalesUSD = flt(sumaMonto2 + sumaMonto1 / tc[0],2);
 				TotalesNIO = flt(sumaMonto1);
 				TotalesUSD = flt(sumaMonto2);
-
+		
 				totals.push({
 					MontoUSD: TotalesUSD,
 					MontoNIO: TotalesNIO
@@ -237,7 +324,7 @@ frappe.ui.form.on('Pago Sin Identificar', {
 				pm_args.pagos = payments;
 				// console.log(tc[0]);
 			}
-
+		
 				function set_sum_on_check(wrapper, dc, datas){
 					wrapper.find('input[type="checkbox"]').on('change', function(){
 						var amounts = {'usd': 0.0, 'nio': 0.0, 'actual_nio': 0.0, 'diff': 0.0};
@@ -245,9 +332,13 @@ frappe.ui.form.on('Pago Sin Identificar', {
 						// var montos = [];
 						pm_args[dc] = [];
 						factura = [];
+						// FacturaYMonto['FacturaYMonto'] = [];
 						wrapper.find('input[type="checkbox"]:checked').each(function(){
 							pm_args[dc].push({'link_doctype': $(this).data('doctype'), 'link_name': $(this).val()});
 							factura.push($(this).val());
+							// Agregando los montos de validacion
+							FacturaYMonto.push({'link_name': $(this).val(),'MontoUSD':$(this).data('deudausd'),'MontoNIO':$(this).data('deudanio'),'MontoActualNio':$(this).data('deudaactualnio')});
+							
 							frappe.utils.filter_dict(datas, {'name': $(this).val()}).forEach(function(d){
 								amounts.usd += d.deuda.usd;
 								amounts.nio += d.deuda.nio;
@@ -264,6 +355,8 @@ frappe.ui.form.on('Pago Sin Identificar', {
 						// montosC$.push(amounts.actual_nio);
 						// montosC$.push(amounts.nio);
 						console.log(amounts);
+						
+						
 						d.fields_dict.debits_wrapper.$wrapper.find("#total_usd").text(format_currency(amounts.usd, 'USD', 2));
 						d.fields_dict.debits_wrapper.$wrapper.find("#total_nio").text(format_currency(amounts.nio, 'NIO', 2));
 						d.fields_dict.debits_wrapper.$wrapper.find("#total_actual_nio").text(format_currency(amounts.actual_nio, 'NIO', 2));
@@ -273,6 +366,8 @@ frappe.ui.form.on('Pago Sin Identificar', {
 						// wrapper.find('#total_actual_nio').text(format_currency(amounts.actual_nio, 'NIO', 2));
 						// wrapper.find('#total_diff').text(amounts.diff.toFixed(2));
 
+						// console.log(FacturaYMonto);
+
 						// selectMonto(montos);
 						// render_totals_table();
 						var data = factura;
@@ -280,13 +375,13 @@ frappe.ui.form.on('Pago Sin Identificar', {
 						// SumaFormaPagos();
 					});
 				}
-
+		
 				function get_outstanding_details(){
 					if (ignore_event) return;
 					var df = $(this).data('df'), args = {};
 					// console.log($(this))
 					// if (!df.get_value()) return;
-
+		
 					var a =[
 						['customer', 'name'],
 						['sales_invoice', 'factura'],
@@ -296,17 +391,17 @@ frappe.ui.form.on('Pago Sin Identificar', {
 						var v = d.get_value(pair[0]);
 						if (v) args[pair[1]] = v;
 					});
-
-
+		
+		
 					if (!d.get_value("customer")) {
 						d.fields_dict.customer.df.description = '';
 						d.fields_dict.customer.set_description();
 						return;
 					}
-
+		
 					d.fields_dict.debits_wrapper.$wrapper.empty();
 					// d.fields_dict.credits_wrapper.$wrapper.empty();
-
+		
 					console.log('Requisición Consulta Deuda');
 					console.log(Object.keys(args).map(function(k) { return k + ': '+ JSON.stringify(args[k]) }).join('\n'));
 					// console.log(args);
@@ -317,16 +412,6 @@ frappe.ui.form.on('Pago Sin Identificar', {
 						'freeze_message': 'Buscando informaciones!',
 						callback: function(res){
 							console.log(res.message.deudas);
-							if(res.message.error){
-								let error = res.message.error
-								frappe.msgprint({
-									title: __('Advertencia'),
-									indicator: 'green',
-									message: __(error)
-								});
-								d.set_value("customer",null);
-							}
-							
 							if(res.message.deudas.length == 0){
 								frappe.msgprint({
 									title: __('Advertencia'),
@@ -358,15 +443,15 @@ frappe.ui.form.on('Pago Sin Identificar', {
 								// d.fields_dict.customer.set_description();
 								// // minimal_credit_amount = res.message.monto_minimo_credito;
 								setTimeout(function(){ ignore_event = false; }, 500);
-
+		
 								// Mandarle la data al texbox
 								// create_payments_area(res.message);
 							}
 						}
 					});
 				}
-
-
+		
+		
 				// function mostrarFactura(MotoAnticipo){
 				// 	// if (d.fields_dict.FormasDePagos_wrapper.$wrapper.find("#action").hasClass("hidden")) return;
 				// 	payments.length = 0;
@@ -395,12 +480,12 @@ frappe.ui.form.on('Pago Sin Identificar', {
 				// 	// currency_field.$input.val(null).trigger("change");
 				// 	// amount_field.$input.val(null).trigger("change");
 				// }
-
+		
 				function assign_df_to_input(df){
 					df.refresh();
 					df.$input.data('df', df);
 				}
-
+		
 				function get_exchange() {
 					frappe.call({
 						'method': 'erpnext.accounts.doctype.journal_entry.journal_entry.get_divisa',
@@ -415,11 +500,11 @@ frappe.ui.form.on('Pago Sin Identificar', {
 						}
 					})
 				}
-
+		
 				function create_payments_area(data){
 					// const filteredUsers = Object.keys(data);
 					// console.log(filteredUsers);
-					// console.log(data);
+					console.log(data);
 					var mode_of_payment_field = frappe.ui.form.make_control({
 						df: {
 							fieldtype: 'Select',
@@ -437,7 +522,7 @@ frappe.ui.form.on('Pago Sin Identificar', {
 					});
 					mode_of_payment_field.make_input();
 					fields.mode_of_payment = mode_of_payment_field;
-
+		
 					// Haciendo filtro
 					// var MontoSelect = frappe.ui.form.make_control({
 					// 	df: {
@@ -456,8 +541,8 @@ frappe.ui.form.on('Pago Sin Identificar', {
 					// });
 					// mode_of_payment_field.make_input();
 					// fields.mode_of_payment = mode_of_payment_field;
-
-
+		
+		
 					// var currency_field = frappe.ui.form.make_control({
 					// 	df: {
 					// 		fieldtype: 'Select',
@@ -475,7 +560,7 @@ frappe.ui.form.on('Pago Sin Identificar', {
 					// });
 					// currency_field.make_input();
 					// fields.currency = currency_field;
-
+		
 					// Personalizado
 					// var amount_field = frappe.ui.form.make_control({
 					// 	df: {
@@ -496,7 +581,7 @@ frappe.ui.form.on('Pago Sin Identificar', {
 					// });
 					// amount_field.make_input();
 					// fields.amount = amount_field;
-
+		
 					var amount_field = frappe.ui.form.make_control({
 						df: {
 							fieldtype: 'Float',
@@ -514,10 +599,10 @@ frappe.ui.form.on('Pago Sin Identificar', {
 					});
 					amount_field.make_input();
 					fields.amount = amount_field;
-
-
+		
+		
 					///////////////////////////////////////////////////////////////////
-
+		
 					// var CambioNIO = frappe.ui.form.make_control({
 					// 	df: {
 					// 		fieldtype: 'Float',
@@ -537,10 +622,10 @@ frappe.ui.form.on('Pago Sin Identificar', {
 					// CambioNIO.$input.on('change', function(){
 					// 	// render_totals_table();
 					// 	// pm_args.cambios = [];
-
+		
 					// 	if (CambioNIO.get_value()) {
 					// 		// frappe.msgprint("OK");
-
+		
 					// 		var sumNIO = 0;
 					// 		var res = 0;
 					// 		var HaytipoPagoEfectivo = false;
@@ -581,14 +666,14 @@ frappe.ui.form.on('Pago Sin Identificar', {
 					// 			});
 					// 			CambioNIO.$input.val(null).trigger("change");
 					// 		}
-
+		
 					// 	}
 					// 	// if (change_nio_field.get_value()) {
 					// 	// 	pm_args.cambios.push({'monto': flt(change_nio_field.get_value()), 'moneda': 'nio'});
 					// 	// }
 					// });
 					// fields.montoNIO = CambioNIO;
-
+		
 					// var ResultCambioNIO = frappe.ui.form.make_control({
 					// 	df: {
 					// 		fieldtype: 'Float',
@@ -604,13 +689,13 @@ frappe.ui.form.on('Pago Sin Identificar', {
 					// 	doctype: frm.doctype,
 					// 	docname: frm.docname,
 					// 	only_input: true,
-
+		
 					// });
 					// ResultCambioNIO.make_input();
 					// fields.ResultNIO = ResultCambioNIO;
-
-					// //////////////////////////////////////////////////////////////////
-
+		
+					//////////////////////////////////////////////////////////////////
+		
 					// var CambioUSD = frappe.ui.form.make_control({
 					// 	df: {
 					// 			fieldtype: 'Float',
@@ -646,12 +731,12 @@ frappe.ui.form.on('Pago Sin Identificar', {
 					// 					// }
 					// 				}
 					// 			}
-
+		
 					// 			if(sumUSD > 0){
 					// 				// converNIO = sumUSD *  d.get_value("conversion_rate");
 					// 				tc = ObtenerTCBanco();
 					// 				converNIO = sumUSD *  tc;
-
+		
 					// 				// converUSD = CambioUSD.get_value() *  d.get_value("conversion_rate");
 					// 				converUSD = CambioUSD.get_value() * tc;
 					// 				res = flt((-1)* (converNIO - converUSD),2);
@@ -683,112 +768,163 @@ frappe.ui.form.on('Pago Sin Identificar', {
 					// 		}
 					// 	});
 					// 	fields.montoUSD = CambioUSD;
-
-					// 	var ResultCambioUSD = frappe.ui.form.make_control({
-					// 		df: {
-					// 			fieldtype: 'Float',
-					// 			precision: 2,
-					// 			fieldname: 'ResultUSD',
-					// 			label: 'USD',
-					// 			placeholder: 'Vuelto C$',
-					// 			read_only: 1
-					// 		},
-					// 		parent: d.fields_dict.totals_wrapper.$wrapper.find("#change_nio_wrapper").empty(),
-					// 		frm: frm,
-					// 		doctype: frm.doctype,
-					// 		docname: frm.docname,
-					// 		only_input: true
-					// 	});
-					// 	ResultCambioUSD.make_input();
-					// 	fields.ResultUSD = ResultCambioUSD;
-
-					// 	var ResultCambioUSD_USD = frappe.ui.form.make_control({
-					// 		df: {
-					// 			fieldtype: 'Float',
-					// 			precision: 2,
-					// 			fieldname: 'ResultCambioUSD_USD',
-					// 			label: 'USD',
-					// 			placeholder: 'Vuelto $',
-					// 			read_only: 1
-					// 		},
-					// 		parent: d.fields_dict.totals_wrapper.$wrapper.find("#change_usd_usd_wrapper").empty(),
-					// 		frm: frm,
-					// 		doctype: frm.doctype,
-					// 		docname: frm.docname,
-					// 		only_input: true
-					// 	});
-					// 	ResultCambioUSD_USD.make_input();
-					// 	fields.ResultUSD_USD = ResultCambioUSD_USD;
-
-
-
+		
+						// var ResultCambioUSD = frappe.ui.form.make_control({
+						// 	df: {
+						// 		fieldtype: 'Float',
+						// 		precision: 2,
+						// 		fieldname: 'ResultUSD',
+						// 		label: 'USD',
+						// 		placeholder: 'Vuelto C$',
+						// 		read_only: 1
+						// 	},
+						// 	parent: d.fields_dict.totals_wrapper.$wrapper.find("#change_nio_wrapper").empty(),
+						// 	frm: frm,
+						// 	doctype: frm.doctype,
+						// 	docname: frm.docname,
+						// 	only_input: true
+						// });
+						// ResultCambioUSD.make_input();
+						// fields.ResultUSD = ResultCambioUSD;
+		
+						// var ResultCambioUSD_USD = frappe.ui.form.make_control({
+						// 	df: {
+						// 		fieldtype: 'Float',
+						// 		precision: 2,
+						// 		fieldname: 'ResultCambioUSD_USD',
+						// 		label: 'USD',
+						// 		placeholder: 'Vuelto $',
+						// 		read_only: 1
+						// 	},
+						// 	parent: d.fields_dict.totals_wrapper.$wrapper.find("#change_usd_usd_wrapper").empty(),
+						// 	frm: frm,
+						// 	doctype: frm.doctype,
+						// 	docname: frm.docname,
+						// 	only_input: true
+						// });
+						// ResultCambioUSD_USD.make_input();
+						// fields.ResultUSD_USD = ResultCambioUSD_USD;
+		
+		
+		
 					toggle_action([mode_of_payment_field, amount_field],
 						d.fields_dict.totals_wrapper.$wrapper);
-
-
-
+		
+		
+		
 						// console.log(amount_field.get_value());
 					//AQUI
 					d.fields_dict.totals_wrapper.$wrapper.find("#action").off("click").on("click", function(){
 						if (d.fields_dict.totals_wrapper.$wrapper.find("#action").hasClass("hidden")) return;
+						// FacturaYMonto
+						if (amount_field.get_value() <= frm.doc.monto){
+							// console.log(FacturaYMonto)
+							// console.log(FacturaYMonto['FacturaYMonto'][0])
+							var pass=true;
+							for (let i=0;i < FacturaYMonto.length; i++){
+								if (FacturaYMonto[i].link_name === mode_of_payment_field.get_value()){
+									if(frm.doc.moneda === 'USD'){
+										if (amount_field.get_value() > FacturaYMonto[i].MontoUSD){
+											frappe.msgprint({
+												title: __('Error'),
+												indicator: 'red',
+												message: __('El monto digitado no puede ser menor al monto de la nota de credito!')
+											});
+											pass=false;
+											break;
+										}
+										
+									}
+									if(frm.doc.moneda === 'NIO'){
+										if (amount_field.get_value() > FacturaYMonto[i].MontoNIO || amount_field.get_value() > FacturaYMonto[i].MontoActualNio) {
+											frappe.msgprint({
+												title: __('Error'),
+												indicator: 'red',
+												message: __('El monto digitado no puede ser menor al monto de la nota de credito!')
+											});
+											pass=false;
+											break;
+										}
+										
+									}
+								}
+							}
 
-						payments.push({
-							"Factura": mode_of_payment_field.get_value(),
-							"moneda": frm.doc.moneda,
-							"monto": amount_field.get_value()
-						});
-						facturaSelect.push(mode_of_payment_field.get_value());
-						// console.log(facturaSelect);
-						// if ()
-						let resultToReturn = false;
-						resultToReturn = facturaSelect.some((element, index) => {
-							return facturaSelect.indexOf(element) !== index
-						});
-
-						if (resultToReturn) {
+							if (pass){
+								payments.push({
+									"factura": mode_of_payment_field.get_value(),
+									"moneda": frm.doc.moneda,
+									"monto": amount_field.get_value()
+								});
+								facturaSelect.push(mode_of_payment_field.get_value());
+								// console.log(facturaSelect);
+								// if ()
+								let resultToReturn = false;
+								resultToReturn = facturaSelect.some((element, index) => {
+									return facturaSelect.indexOf(element) !== index
+								});
+				
+								if (resultToReturn) {
+									frappe.msgprint({
+										title: __('Error'),
+										indicator: 'red',
+										message: __('Factura ingresada!')
+									});
+									payments.pop();
+									facturaSelect.pop()
+									
+									
+									mode_of_payment_field.$input.val(null).trigger("change");
+									// currency_field.$input.val(null).trigger("change");
+									amount_field.$input.val(null).trigger("change");
+									
+								}
+								else {
+										// console.log('No hay elementos duplicados ');
+										SumaFormaPagos();
+										function render_payments(){
+											d.fields_dict.totals_wrapper.$wrapper.find("#payments_wrapper").html(
+												frappe.render(tmp_pm_table, {"data": payments, "tc": flt(d.get_value("conversion_rate")) || 1.0})
+											).find("button.remove").off('click').on('click', function(){
+												var idx = cint($(this).data('idx'));
+												payments.splice(idx,1);
+												facturaSelect.splice(idx,1);
+												render_payments();
+												SumaFormaPagos();
+												// render_totals_table();
+											});
+										};
+										render_payments();
+				
+										// render_totals_table();
+										mode_of_payment_field.$input.val(null).trigger("change");
+										// currency_field.$input.val(null).trigger("change");
+										amount_field.$input.val(null).trigger("change");
+								}
+							}else{
+								mode_of_payment_field.$input.val(null).trigger("change");
+									// currency_field.$input.val(null).trigger("change");
+								amount_field.$input.val(null).trigger("change");
+							}
+							
+	
+							
+							// render_payments();
+						}else{
 							frappe.msgprint({
 								title: __('Error'),
 								indicator: 'red',
-								message: __('Factura ingresada!')
+								message: __('El monto que digito es mayor  al monto de la nota de credito g!')
 							});
-							payments.pop();
-							facturaSelect.pop()
-							
-							
 							mode_of_payment_field.$input.val(null).trigger("change");
-							// currency_field.$input.val(null).trigger("change");
+									// currency_field.$input.val(null).trigger("change");
 							amount_field.$input.val(null).trigger("change");
-							
 						}
-						else {
-								// console.log('No hay elementos duplicados ');
-								SumaFormaPagos();
-								function render_payments(){
-									d.fields_dict.totals_wrapper.$wrapper.find("#payments_wrapper").html(
-										frappe.render(tmp_pm_table, {"data": payments, "tc": flt(d.get_value("conversion_rate")) || 1.0})
-									).find("button.remove").off('click').on('click', function(){
-										var idx = cint($(this).data('idx'));
-										payments.splice(idx,1);
-										facturaSelect.splice(idx,1);
-										render_payments();
-										SumaFormaPagos();
-										// render_totals_table();
-									});
-								};
-								render_payments();
-
-								// render_totals_table();
-								mode_of_payment_field.$input.val(null).trigger("change");
-								// currency_field.$input.val(null).trigger("change");
-								amount_field.$input.val(null).trigger("change");
-						}
-						// render_payments();
-
 					});
 					// Validacion de boton limpiar
 					// toggle_actionCambio([CambioNIO, ResultCambioUSD_USD, ResultCambioUSD,CambioUSD,ResultCambioNIO],
 					// 	d.fields_dict.totals_wrapper.$wrapper);
-
+		
 					// d.fields_dict.totals_wrapper.$wrapper.find("#actionLimpiarText").off("click").on("click", function(){
 					// 	if (d.fields_dict.totals_wrapper.$wrapper.find("#actionLimpiarText").hasClass("hidden")) return;
 					// 	CambioNIO.$input.val(null).trigger("change");
@@ -799,8 +935,24 @@ frappe.ui.form.on('Pago Sin Identificar', {
 					// });
 				}
 
+				// function validacion_aplicacion_de_nota(frm){
+				// 	frappe.call({
+				// 		'method': 'erpnext.api.Validar_Aplicacion_de_Anticipos',
+				// 		'args': {'customer': frm.doc.regnumber},
+				// 		'callback': function(res){
+				// 			console.log(res.message);
+				// 			if (res.message) {
+				// 				if (res.message.length){
+				// 					let message = res.message;
+				// 					frappe.msgprint(message.join("<br/>"));
+				// 				}
+				// 			}
+				// 		}
+				// 	});
+				// }
+		
 				d = new frappe.ui.Dialog({
-					title: __("Aplicar Depositos"),
+					title: __("Registrar Factura"),
 					fields: [
 						{
 							fieldtype: "HTML",
@@ -823,6 +975,7 @@ frappe.ui.form.on('Pago Sin Identificar', {
 							change:  function(){
 									if(d.get_value('customer')){
 										get_outstanding_details();
+										// validacion_aplicacion_de_nota(frm);
 										// TituloName(res.message.cliente.nombre);
 										frappe.db.get_value('Customer', d.get_value('customer'), 'customer_name').then(r => {
 											let values = r.message;
@@ -833,23 +986,23 @@ frappe.ui.form.on('Pago Sin Identificar', {
 							// on_make: d.get_value('customer').refresh(),
 							// change: get_outstanding_details
 						},
-						{
-							fieldtype: "Column Break"
-						},
-						{
-							fieldtype: "Link",
-							label: "Factura",
-							options: "Sales Invoice",
-							fieldname: "sales_invoice",
-							on_make: assign_df_to_input,
-							change:  function(){
-									frappe.db.get_value("Sales Invoice", {"name": d.get_value("sales_invoice")},"customer",function(res){
-										res.customer;
-										console.log(res.customer);
-										d.set_value("customer", res.customer);
-									})
-							}
-						},
+						// {
+						// 	fieldtype: "Column Break"
+						// },
+						// {
+						// 	fieldtype: "Link",
+						// 	label: "Factura",
+						// 	options: "Sales Invoice",
+						// 	fieldname: "sales_invoice",
+						// 	on_make: assign_df_to_input,
+						// 	change:  function(){
+						// 			frappe.db.get_value("Sales Invoice", {"name": d.get_value("sales_invoice")},"customer",function(res){
+						// 				res.customer;
+						// 				console.log(res.customer);
+						// 				d.set_value("customer", res.customer);
+						// 			})
+						// 	}
+						// },
 						{
 							fieldtype: "Column Break"
 						},
@@ -862,20 +1015,20 @@ frappe.ui.form.on('Pago Sin Identificar', {
 							read_only: 1,
 							// change: function () {
 							// 	if(d.get_value('customer')){
-
+		
 							// 	}
 							// }
 						},
-						{
-							fieldtype: "Section Break",
-						},
-						{
-							fieldtype: "Link",
-							label: "Cuenta",
-							options: 'Account',
-							fieldname: "cuenta",
-							read_only: 1
-						},
+						// {
+						// 	fieldtype: "Section Break",
+						// },
+						// {
+						// 	fieldtype: "Link",
+						// 	label: "Cuenta",
+						// 	options: 'Account',
+						// 	fieldname: "cuenta",
+						// 	read_only: 1
+						// },
 						// {
 						// 	fieldtype: "Select",
 						// 	label: "Banco",
@@ -883,17 +1036,18 @@ frappe.ui.form.on('Pago Sin Identificar', {
 						// 	fieldname: "Banco",
 						// 	reqd: 1
 						// },
-						{
-							fieldtype: "Column Break"
-						},
-						{
-							fieldtype: "Data",
-							label: "Banco",
-							// precision: 2,
-							// options: "Customer",
-							fieldname: "Banco",
-							read_only: 1,
-						},
+						// {
+						// 	fieldtype: "Column Break"
+						// },
+						// {
+						// 	fieldtype: "Data",
+						// 	label: "Banco",
+						// 	// precision: 2,
+						// 	// options: "Customer",
+						// 	fieldname: "Banco",
+						// 	on_make: assign_df_to_input,
+						// 	read_only: 1,
+						// },
 						{
 							fieldtype: "Column Break"
 							// fieldtype: "Section Break",
@@ -905,7 +1059,8 @@ frappe.ui.form.on('Pago Sin Identificar', {
 							options: ['USD','NIO'],
 							fieldname: "moneda",
 							reqd: 1,
-							read_only: 1
+							read_only: 1,
+							on_make: assign_df_to_input,
 						},
 						{
 							fieldtype: "Section Break",
@@ -916,7 +1071,7 @@ frappe.ui.form.on('Pago Sin Identificar', {
 							precision: 4,
 							label: "TC",
 							read_only: 1,
-							// on_make: assign_df_to_input,
+							on_make: assign_df_to_input,
 							// change: get_outstanding_details
 						},
 						{
@@ -927,10 +1082,10 @@ frappe.ui.form.on('Pago Sin Identificar', {
 						{
 							fieldtype: "Date",
 							label: "Fecha",
-							// default: frappe.datetime.get_today(),
+							default: frappe.datetime.get_today(),
 							fieldname: "posting_date",
-							// read_only: 1
-							// on_make: assign_df_to_input,
+							read_only: 1,
+							on_make: assign_df_to_input
 							// change: get_outstanding_details
 						},
 						{
@@ -960,12 +1115,12 @@ frappe.ui.form.on('Pago Sin Identificar', {
 					   <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6">
 						<div class="row">
 							<div class="col-sm-4 col-md-4 col-lg-4 col-xl-4 style="padding-left: 0px;""> Tipo de pago</div>
-
+		
 						</div>
-
+		
 					   <div class="row">
 								<div class="col-sm-12 col-md-4 col-lg-4 col-xl-4" id="mode_of_payment_wrapper" style="padding-left: 0px;"></div>
-
+		
 								<div class="col-sm-4 col-md-3 col-lg-3  col-xl-3" id="amount_wrapper" style="padding-left: 0px;"></div>
 								<div class="col-sm-2 col-md-2 col-lg-2 col-xl-2" id="action_wrapper" style="padding-left: 0px;">
 									<button class="btn btn-primary hidden" role="button" id="action">Agregar</button>
@@ -973,46 +1128,86 @@ frappe.ui.form.on('Pago Sin Identificar', {
 							</div>
 							<br>
 							<div class="row" id="payments_wrapper"></div>
-													  
+							
+						 
 					   </div>
-					   		<div class="col-sm-12 col-md-6 col-lg-6 col-xl-6" style="padding-right: 0px;" id="totals_wrapper"></div>
-				   		</div>`
+							   <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6" style="padding-right: 0px;" id="totals_wrapper"></div>
+						   </div>`
 						},
 					],
-					primary_action_label: 'Aplicar Anticipo',
+					primary_action_label: 'Aplicar Nota de Credito',
 					primary_action(values) {
-						console.log(values);
+						// console.log(values);
 						d.hide();
 					},
 					secondary_action_label: "Cancel"
 				});
+		
+			// // Para hacer filtros
+			// d.get_field("sales_invoice").get_query = function(){
+			// 	var customer = d.get_value("customer"), filters = {'docstatus': 1, 'outstanding_amount': ['!=', 0]};
+			// 	if (customer){ filters['customer'] = customer; };
+			// 	return {'filters': filters};
+			// };
+				
+			// if (frm.doc.tipo_de_nota === 'Canje Comercial'){
+			// 	d.set_value('cuenta','1.01.003.003.001.007-Cuenta por Cobrar Canjes - NI')
+			// }else if(frm.doc.tipo_de_nota === 'Deduccion de Planilla'){
+			// 	d.set_value('cuenta','1.01.001.001.001.003-Caja General - Cuenta Puente - NI')
+			// }
+			// else {
 
-			// Para hacer filtros
-			d.get_field("sales_invoice").get_query = function(){
-				var customer = d.get_value("customer"), filters = {'docstatus': 1, 'outstanding_amount': ['!=', 0]};
-				if (customer){ filters['customer'] = customer; };
-				return {'filters': filters};
-			};
+			// 	if(frm.doc.portafolio === 'HFC 3.0'){
+			// 		d.set_value('cuenta','4.01.010-DEVOLUCIONES INTERNET RESIDENCIAL - NI')
+			// 	}else if (frm.doc.portafolio === 'INET') {
+			// 		d.set_value('cuenta','4.01.010-DEVOLUCIONES INTERNET RESIDENCIAL - NI')
+			// 	} else if (frm.doc.portafolio === 'FIBRA OPTICA') {
+			// 		// d.set_value('cuenta','4.02.012-Descuento y Devoluciones FO - NI')
+			// 		d.set_value('cuenta','4.02.012-Descuento y Devoluciones  FO - NI')// no esta 4.02.012-Descuento y Devoluciones  FO - NI
+			// 	}else if (frm.doc.portafolio === 'PUNTO A PUNTO') {
+			// 		// d.set_value('cuenta','4.02.013-Descuento y Devoluciones WLL')
+			// 		d.set_value('cuenta','4.02.013-Descuento y Devoluciones  WLL - NI')// no esta 4.02.013-Descuento y Devoluciones  WLL - NI
+			// 	}else if (frm.doc.portafolio === 'PUNTO A MULTIPUNTO') {
+			// 		// d.set_value('cuenta','4.02.013-Descuento y Devoluciones WLL') 
+			// 		d.set_value('cuenta','4.02.013-Descuento y Devoluciones  WLL - NI') // no esta 4.02.013-Descuento y Devoluciones  WLL - NI
+			// 	}else if (frm.doc.portafolio === 'ITV') {
+			// 		d.set_value('cuenta','4.04.010-DEVOLUCIONES T.V. ANALOGO - NI')
+			// 	}else if (frm.doc.portafolio === 'IMOVIL') {
+			// 		d.set_value('cuenta','4.05.010-DEVOLUCIONES INTERNET WIMAX - NI')
+			// 	}else if (frm.doc.portafolio === 'LTE') {
+			// 		d.set_value('cuenta','4.06.010-DEVOLUCIONES INTERNET LTE - NI')
+			// 	}else {
+			// 		d.set_value('cuenta','4.07.010-DEVOLUCIONES INTERNET GPON - NI')
+			// 	};
+			// }
 
-
-			// d.set_value('customer',frm.doc.cliente)
+			
+		
+			d.set_value('customer',frm.doc.cliente)
 			d.set_value('Monto',frm.doc.monto)
 			d.set_value('moneda',frm.doc.moneda)
-			d.set_value('cuenta',frm.doc.cuentas)
+			// d.set_value('cuenta',frm.doc.cuentas)
 			// d.set_value('Banco',frm.doc.banco)
-			d.set_value('Banco',frm.doc.banco)
+			// d.set_value('Banco',frm.doc.banco)
 			d.set_value('conversion_rate',frm.doc.tasa_de_cambio)
-			// d.set_value('posting_date',frm.doc.fecha_deposito)
-
+		
+			// d.set_value('customer',frm.doc.cliente)
+			// d.set_value('Monto',frm.doc.monto)
+			// d.set_value('moneda',frm.doc.moneda)
+			// d.set_value('cuenta',frm.doc.cuentas)
+			// d.set_value('Banco',frm.doc.banco)
+			// d.set_value('Banco',frm.doc.banco)
+			// d.set_value('conversion_rate',frm.doc.tasa_de_cambio)
+		
 			d.show();
 			d.$wrapper.find(".modal-dialog").css({"width": "100%","left": "-10%","top": "10%"});
 			d.$wrapper.find(".modal-content").css({"width": "160%"});
 			// d.$wrapper.find(".modal-dialog").css({"top":"5%"});
 			// d.$wrapper.find(".modal-content").css({"width": "120%","left": "-10%"});
-
+		
 			//VALIDACION  DE DEPOSITOS DE BANCOS  DEL BOTON
-			d.get_primary_btn().text('Aplicar Deposito').off('click').on('click', function(){
-
+			d.get_primary_btn().text('Registrar Factura').off('click').on('click', function(){
+		
 				console.log(totals);
 				// pm_args.pagos = payments;
 				console.log(Object.keys(pm_args).length === 0);
@@ -1020,13 +1215,14 @@ frappe.ui.form.on('Pago Sin Identificar', {
 				// console.log(pm_args.deudas.length,pm_args.pagos.length);
 				// return 0
 				// console.log(pm_args.length);
+				// Validacion de seleccion
 				if (Object.keys(pm_args).length === 0){
 					frappe.msgprint({
 						title: __('Advertencia'),
 						indicator: 'red',
 						message: __('No ha seleccionado facturas!')
 					});
-
+		
 				}
 				// if (pm_args.deudas.length){
 				// 	frappe.msgprint({
@@ -1036,7 +1232,7 @@ frappe.ui.form.on('Pago Sin Identificar', {
 				// 	});
 				// 	return 0
 				// }
-
+		
 				// pm_args.pagos = payments;
 				console.log(pm_args.deudas.length,pm_args.pagos.length);
 				if (pm_args.deudas.length != pm_args.pagos.length){
@@ -1050,59 +1246,70 @@ frappe.ui.form.on('Pago Sin Identificar', {
 					if (frm.doc.moneda == 'USD'){
 						if( totals[0]['MontoUSD'] > 0 && totals[0]['MontoUSD'] <= frm.doc.monto){
 							pm_args.pagos = payments;
-							pm_args.ID_pago_ZZ = frm.doc.name; 
+							pm_args.codigo_nota_credito = frm.doc.name;
+							pm_args.numero_de_Recibido = frm.doc.no_recibo;
 							pm_args['cuentaBanco'] = d.get_value('cuenta');
-							pm_args.numero_de_recibo = frm.doc.numero_de_referencia;
-							pm_args.posting_date = frm.doc.fecha_deposito;
-							
 							var values = d.get_values();
-							Crear_Deposito(pm_args,values);
+							Crear_NotaCredito(pm_args,values);
 							d.hide();
 						}else{
 							frappe.msgprint({
 								title: __('Advertencia'),
 								indicator: 'red',
-								message: __('El monto TOTAL FACTURA, no puede ser mayor al monto depositado!')
+								message: __('El monto TOTAL FACTURA, no puede ser mayor al monto!')
 							});
 						}
 					}else if (frm.doc.moneda == 'NIO'){
 						if(totals[0]['MontoNIO'] <= frm.doc.monto){
-							console.log('Entra');
+							// console.log('Entra');
 							pm_args.pagos = payments;
-							pm_args.ID_pago_ZZ = frm.doc.name; 
+							pm_args.codigo_nota_credito = frm.doc.name;
+							pm_args.numero_de_Recibido = frm.doc.no_recibo;
 							pm_args['cuentaBanco'] = d.get_value('cuenta');
-							pm_args.numero_de_recibo = frm.doc.numero_de_referencia;
-							pm_args.posting_date = frm.doc.fecha_deposito;
-							
 							var values = d.get_values();
-							Crear_Deposito(pm_args,values);
+							Crear_NotaCredito(pm_args,values);
 							d.hide();
 						}else{
 							frappe.msgprint({
 								title: __('Advertencia'),
 								indicator: 'red',
-								message: __('El monto TOTAL FACTURA, no puede ser mayor al monto depositado!')
+								message: __('El monto TOTAL FACTURA, no puede ser mayor al monto!')
 							});
 						}
 					}else{
 						frappe.msgprint({
 							title: __('Error '),
 							indicator: 'red',
-							message: __('No ha registrado ningun un deposito')
+							message: __('No ha registrado ningun monto')
 						});
 					}
 				}
-
+		
 				
 				
 			});
 		}
 
-		if (frm.doc.docstatus === 0){
-            frm.add_custom_button('Aplicar Deposito', function(){
-                cur_frm.cscript.AplicarDepostos(frm);
-            });
-        }
+		frappe.call({
+			"method": "erpnext.crm.doctype.opportunity.opportunity.consultar_rol",
+		}).then(r =>{
+				if((r.message.includes("Cobranza")) && frm.doc.workflow_state === 'Pendiente'){
+					if (frm.doc.workflow_state === 'Pendiente'){
+						frm.add_custom_button('Agregar Factura', function(){
+							cur_frm.cscript.AgragarFactura1(frm);
+						});
+					}
+				}				
+			}
+		);
+
+		frm.fields_dict.facturaporaplicar.grid.get_field("factura").get_query = function(doc, cdt, cdn){
+			return {
+				filters: {		
+					customer: doc.cliente
+				}
+			}
+		}
 	}
 });
 

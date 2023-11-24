@@ -833,7 +833,10 @@ class DatabaseQuery:
 						if self.doctype=="Orden de Servicio Interno":
 							conditions = (f" tecnico='nt' ")
 						if self.doctype=="Stock Entry":			
-							conditions = (f" tecnico='nt' ")#	
+							conditions = (f" tecnico='nt' ")#
+				if 'Cobranza' in user_roles and frappe.session.user != "Administrator":
+					if self.doctype=="Pago Sin Identificar":			
+							conditions = (f" workflow_state='Pendiente'")	
 			except:
 				pass
 			return conditions

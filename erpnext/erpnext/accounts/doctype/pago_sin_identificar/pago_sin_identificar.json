@@ -9,6 +9,8 @@
   "numero_de_referencia",
   "fecha_deposito",
   "cliente",
+  "nombre_del_cliente",
+  "tipo_cliente",
   "aplicado",
   "cuentas",
   "column_break_3",
@@ -19,6 +21,8 @@
   "saldo",
   "section_break_15",
   "referencia",
+  "detalle_factura_por_aplicar_section",
+  "facturaporaplicar",
   "section_break_6",
   "detalles",
   "amended_from"
@@ -63,8 +67,7 @@
    "fieldname": "cliente",
    "fieldtype": "Link",
    "label": "Cliente",
-   "options": "Customer",
-   "read_only": 1
+   "options": "Customer"
   },
   {
    "default": "0",
@@ -139,12 +142,38 @@
    "fieldname": "referencia",
    "fieldtype": "Small Text",
    "label": "Referencia"
+  },
+  {
+   "fetch_from": "cliente.customer_name",
+   "fieldname": "nombre_del_cliente",
+   "fieldtype": "Data",
+   "label": "Nombre del Cliente",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "cliente.customer_group",
+   "fieldname": "tipo_cliente",
+   "fieldtype": "Data",
+   "label": "Tipo Cliente",
+   "read_only": 1
+  },
+  {
+   "fieldname": "detalle_factura_por_aplicar_section",
+   "fieldtype": "Section Break",
+   "label": "Detalle Factura por aplicar"
+  },
+  {
+   "fieldname": "facturaporaplicar",
+   "fieldtype": "Table",
+   "label": "FacturaPorAplicar",
+   "options": "DetalleFacturaPorAplicar",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-05-09 18:42:40.550035",
+ "modified": "2023-11-24 15:04:34.985212",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Pago Sin Identificar",
