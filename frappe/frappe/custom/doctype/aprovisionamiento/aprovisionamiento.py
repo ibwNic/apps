@@ -228,46 +228,27 @@ def vlan_masivo(equipo):
 @frappe.whitelist()
 def obtener_script(Vlan=None,Velocidad=None,id=None,mac=None):
 
-	# # Definir los parámetros del comando SSH y del programa Python en el servidor remoto
-	# usuario = "tu_usuario_ssh"
-	# servidor_remoto = "tu_servidor_remoto"
-	# ruta_programa_remoto = "/ruta/del/programa.py"
+# Ruta al script de Expect
+	script_expect = '/data/ibw14/apps/frappe/frappe/custom/doctype/aprovisionamiento/conexion_ssh'
 
-	# # Comando SSH para ejecutar el programa Python en el servidor remoto
-	# comando_ssh = f"ssh it_access@192.168.150.196  python3 prueba_ssh.py"
+	# Comando para llamar a Expect desde subprocess
+	comando = ['expect', script_expect, "holaaaaa","mundo"]
 
-	# # Ejecutar el comando SSH utilizando subprocess
-	# try:
-	# 	resultado = subprocess.run(comando_ssh, shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-	# 	print("Salida estándar:", resultado.stdout.decode())
-	# 	print("Error estándar:", resultado.stderr.decode())
-	# except subprocess.CalledProcessError as e:
-	# 	print(f"Error al ejecutar el comando SSH: {e}")
+	# Ejecutar el comando
+	proceso = subprocess.Popen(comando, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
+	# Capturar la salida estándar y de error
+	stdout, stderr = proceso.communicate()
 
-	# Ejecutar el script expect mediante subprocess
-	
+	# Imprimir la salida estándar
+	print("Salida estándar:")
+	print(stdout.decode('utf-8'))
 
-	# Parámetros it_access@192.168.150.196
-	usuario_remoto = "it_access"
-	servidor_remoto = "192.168.150.196"
-	numero_a_ingresar = "21"  # Puedes cambiar esto al número que desees
-	script_expect_path = "apps/frappe/frappe/custom/doctype/aprovisionamiento/conexion_ssh"
-	# Guarda el script Expect en un archivo temporal
-	with open(script_expect_path, "w") as script_file:
-		script_file.write(f"#!/usr/bin/expect\n\nset numero_a_ingresar {numero_a_ingresar}\n\nspawn python3 programa.py\nexpect \"Ingresa un número:\"\nsend \"$numero_a_ingresar\\n\"\nexpect eof")
+	# Imprimir la salida de error si la hay
+	if stderr:
+		print("Error:")
+		print(stderr.decode('utf-8'))
 
-	# Comando SSH para ejecutar el script Expect en el servidor remoto
-	comando_ssh = f"ssh {usuario_remoto}@{servidor_remoto} 'expect {script_expect_path} {numero_a_ingresar}'"
-
-	# Ejecutar el comando SSH mediante subprocess
-	try:
-		resultado = subprocess.run(comando_ssh, shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-		print("Salida estándar:", resultado.stdout.decode())
-		print("Error estándar:", resultado.stderr.decode())
-	except subprocess.CalledProcessError as e:
-		print(f"Error al ejecutar el comando SSH: {e}")
-	
     # r=resultado
 	# modelo = frappe.db.get_value("Serial No",mac,"item_code")
 	# cur = miConexion.cursor()

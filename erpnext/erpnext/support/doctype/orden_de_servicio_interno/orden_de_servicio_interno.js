@@ -147,9 +147,18 @@ frappe.ui.form.on('Orden de Servicio Interno', {
 
 		if(frm.doc.tipo_de_orden == "GESTIÓN ADMINISTRATIVA")
 		{
-		  set_field_options("gestion", ["RETIRO DE MATERIALES/EQUIPOS","RETIRO DE ENCOMIENDAS","TRASLADO DE PERSONAL","Consumos del Taller",
-										"APOYO A INGENIERÍA","APOYO A VTA. DE EQUIPOS","APOYO AL TALLER","GESTION DE PAGO","GESTION DE VENTAS MASIVAS","Liquidacion Por Conciliacion de balance de Inventario"])
-		}
+
+			if(frappe.session.user == 'Administrator' || frappe.session.user == 'jennyfer.barberena@ibw.com' ){
+				set_field_options("gestion", ["RETIRO DE MATERIALES/EQUIPOS","RETIRO DE ENCOMIENDAS","TRASLADO DE PERSONAL","Consumos del Taller",
+				"APOYO A INGENIERÍA","APOYO A VTA. DE EQUIPOS","APOYO AL TALLER","GESTION DE PAGO","GESTION DE VENTAS MASIVAS","Liquidacion Por Conciliacion de balance de Inventario"])
+
+			}
+			else{
+				set_field_options("gestion", ["RETIRO DE MATERIALES/EQUIPOS","RETIRO DE ENCOMIENDAS","TRASLADO DE PERSONAL","Consumos del Taller",
+				"APOYO A INGENIERÍA","APOYO A VTA. DE EQUIPOS","APOYO AL TALLER","GESTION DE PAGO","GESTION DE VENTAS MASIVAS"])
+
+			}
+	}
 		else if(frm.doc.tipo_de_orden == "MANTENIMIENTO INTERNO")
 		{
 			set_field_options("gestion", ["AIRE ACONDICIONADO","PINTURA","SEGURIDAD","NOC","ELÉCTRICO","REPARACIÓN TECHO/PARED","LIMPIEZA"])
@@ -226,8 +235,16 @@ frappe.ui.form.on("Orden de Servicio Interno", "tipo_de_orden", function(frm) {
 	}
 	if(frm.doc.tipo_de_orden == "GESTIÓN ADMINISTRATIVA")
 	{
-	  set_field_options("gestion", ["RETIRO DE MATERIALES/EQUIPOS","RETIRO DE ENCOMIENDAS","TRASLADO DE PERSONAL","Consumos del Taller",
-									"APOYO A INGENIERÍA","APOYO A VTA. DE EQUIPOS","APOYO AL TALLER","GESTION DE PAGO","GESTION DE VENTAS MASIVAS","Liquidacion Por Conciliacion de balance de Inventario"])
+		if(frappe.session.user == 'Administrator' || frappe.session.user == 'jennyfer.barberena@ibw.com' ){
+			set_field_options("gestion", ["RETIRO DE MATERIALES/EQUIPOS","RETIRO DE ENCOMIENDAS","TRASLADO DE PERSONAL","Consumos del Taller",
+			"APOYO A INGENIERÍA","APOYO A VTA. DE EQUIPOS","APOYO AL TALLER","GESTION DE PAGO","GESTION DE VENTAS MASIVAS","Liquidacion Por Conciliacion de balance de Inventario"])
+
+		}
+		else{
+			set_field_options("gestion", ["RETIRO DE MATERIALES/EQUIPOS","RETIRO DE ENCOMIENDAS","TRASLADO DE PERSONAL","Consumos del Taller",
+			"APOYO A INGENIERÍA","APOYO A VTA. DE EQUIPOS","APOYO AL TALLER","GESTION DE PAGO","GESTION DE VENTAS MASIVAS"])
+
+		}
 	}
 	else if(frm.doc.tipo_de_orden == "MANTENIMIENTO INTERNO")
 	{

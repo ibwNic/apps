@@ -1,12 +1,26 @@
-#!/usr/bin/expect -f
-
-
 #!/usr/bin/expect
 
-set numero_a_ingresar [lindex $argv 0]
+set variable [lindex $argv 0];
+set variable2 [lindex $argv 1];
 
-spawn python3 prueba_ssh.py
-expect "dame un numero:"
-send "$numero_a_ingresar\n"
-expect eof
+spawn ssh it_access@192.168.150.196
 
+expect '$ '
+
+send "python3 prueba_ssh.py\r"
+
+expect 'dame una palabra:'
+
+send "$variable\r"
+
+expect 'dame otra palabra:'
+
+send "$variable2\r"
+
+expect "$variable$variable2"
+
+expect '$ '
+
+send "exit\r"
+
+expect EOF
