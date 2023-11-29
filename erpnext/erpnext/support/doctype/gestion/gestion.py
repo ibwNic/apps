@@ -700,7 +700,7 @@ def programar_cancelaciones():
 				# 	}
 				# )
 				frappe.db.sql(""" update `tabSubscription Plan Detail` set estado_plan =  'Plan Cerrado', service_end = %(service_end)s, motivo_finalizado = %(motivo)s,
-									detalle_finalizado = CONCAT('Plan cerrado por cancelación programada. Motivo: ', %(motivo)s) +  where name = %(name)s;""", {"service_end": now(),"name":p[0], "motivo":g[2]})
+									detalle_finalizado = CONCAT('Plan cerrado por cancelación programada. Motivo: ', %(motivo)s)  where name = %(name)s;""", {"service_end": now(),"name":p[0], "motivo":g[2]})
 				#spd.save()
 				# frappe.db.commit()
 				p_cerrados = 0

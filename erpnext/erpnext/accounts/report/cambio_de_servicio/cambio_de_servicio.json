@@ -24,7 +24,7 @@
  ],
  "idx": 0,
  "is_standard": "Yes",
- "modified": "2023-11-06 15:13:30.083713",
+ "modified": "2023-11-24 21:32:28.768270",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Cambio de Servicio",
@@ -34,39 +34,5 @@
  "ref_doctype": "Subscription",
  "report_name": "Cambio de Servicio",
  "report_type": "Query Report",
- "roles": [
-  {
-   "role": "System Manager"
-  },
-  {
-   "role": "Accounts User"
-  },
-  {
-   "role": "Accounts Manager"
-  },
-  {
-   "role": "Sales User"
-  },
-  {
-   "role": "Back Office"
-  },
-  {
-   "role": "Cobranza"
-  },
-  {
-   "role": "Support Team"
-  },
-  {
-   "role": "CSC"
-  },
-  {
-   "role": "Administrador Caja"
-  },
-  {
-   "role": "Vendedor Corporativo"
-  },
-  {
-   "role": "NOC"
-  }
- ]
+ "roles": []
 }

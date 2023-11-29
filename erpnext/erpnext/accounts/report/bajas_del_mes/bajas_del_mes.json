@@ -24,7 +24,7 @@
  ],
  "idx": 0,
  "is_standard": "Yes",
- "modified": "2023-09-04 11:19:10.243812",
+ "modified": "2023-11-24 21:32:10.598891",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Bajas del mes",
@@ -35,24 +35,5 @@
  "report_name": "Bajas del mes",
  "report_script": "",
  "report_type": "Query Report",
- "roles": [
-  {
-   "role": "System Manager"
-  },
-  {
-   "role": "Accounts Manager"
-  },
-  {
-   "role": "Accounts User"
-  },
-  {
-   "role": "Sales User"
-  },
-  {
-   "role": "Back Office"
-  },
-  {
-   "role": "Administrador Caja"
-  }
- ]
+ "roles": []
 }

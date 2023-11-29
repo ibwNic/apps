@@ -1,27 +1,40 @@
 {
  "actions": [],
- "allow_import": 1,
- "allow_rename": 1,
- "autoname": "Prompt",
- "creation": "2017-10-06 12:53:34.714153",
+ "autoname": "field:tipo",
+ "creation": "2023-11-27 11:36:09.827565",
  "doctype": "DocType",
- "document_type": "Setup",
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
   "tipo",
-  "description",
+  "descripcion",
+  "portafolio",
   "lft",
   "rgt",
   "is_group",
   "old_parent",
-  "parent_issue_type"
+  "parent_tipo_de_incidencia"
  ],
  "fields": [
   {
-   "fieldname": "description",
-   "fieldtype": "Small Text",
-   "label": "Description"
+   "fieldname": "tipo",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Tipo",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "descripcion",
+   "fieldtype": "Data",
+   "label": "Descripcion"
+  },
+  {
+   "fieldname": "portafolio",
+   "fieldtype": "Link",
+   "label": "Portafolio",
+   "options": "Item Group",
+   "reqd": 1
   },
   {
    "fieldname": "lft",
@@ -49,31 +62,24 @@
    "fieldname": "old_parent",
    "fieldtype": "Link",
    "label": "Old Parent",
-   "options": "Issue Type"
+   "options": "Tipo de Incidencia"
   },
   {
-   "fieldname": "parent_issue_type",
+   "fieldname": "parent_tipo_de_incidencia",
    "fieldtype": "Link",
-   "label": "Parent Issue Type",
-   "options": "Issue Type"
-  },
-  {
-   "fieldname": "tipo",
-   "fieldtype": "Data",
-   "in_list_view": 1,
-   "label": "Tipo",
-   "reqd": 1
+   "label": "Parent Tipo de Incidencia",
+   "options": "Tipo de Incidencia"
   }
  ],
+ "index_web_pages_for_search": 1,
  "is_tree": 1,
  "links": [],
- "modified": "2023-11-27 11:45:17.052659",
+ "modified": "2023-11-27 12:13:14.146753",
  "modified_by": "Administrator",
  "module": "Support",
- "name": "Issue Type",
- "name_case": "Title Case",
- "naming_rule": "Set by user",
- "nsm_parent_field": "parent_issue_type",
+ "name": "Tipo de Incidencia",
+ "naming_rule": "By fieldname",
+ "nsm_parent_field": "parent_tipo_de_incidencia",
  "owner": "Administrator",
  "permissions": [
   {

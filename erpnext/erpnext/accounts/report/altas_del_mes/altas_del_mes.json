@@ -24,7 +24,7 @@
  ],
  "idx": 0,
  "is_standard": "Yes",
- "modified": "2023-11-14 16:27:18.747546",
+ "modified": "2023-11-28 16:18:20.714378",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Altas del mes",
@@ -37,31 +37,13 @@
  "report_type": "Query Report",
  "roles": [
   {
-   "role": "System Manager"
+   "role": "Sales Manager"
   },
   {
-   "role": "Accounts User"
-  },
-  {
-   "role": "Accounts Manager"
+   "role": "Coordinador de Ventas"
   },
   {
    "role": "Sales User"
-  },
-  {
-   "role": "Back Office"
-  },
-  {
-   "role": "Vendedor Corporativo"
-  },
-  {
-   "role": "Gerencia General"
-  },
-  {
-   "role": "Gerente de Ventas Corporativas"
-  },
-  {
-   "role": "Cobranza"
   }
  ]
 }

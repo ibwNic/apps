@@ -29,6 +29,7 @@ def get_data(filters):
 def obtener_materiales_liquidados(filters):
 	# aqui va tu query
 	query = """ select * from vw_liquidaciones_oym where tipo_de_orden <> 'DESINSTALACION'  """
+	conditions = ""
 	
 	if filters.from_date:
 		query = query + " and  fecha_liquidado >= " + "'" + filters.from_date + "' COLLATE utf8mb4_general_ci " 
@@ -50,6 +51,12 @@ def obtener_materiales_liquidados(filters):
 
 	if filters.Tecnico_principal:
 		query = query + " and Tecnico_principal = " + "'" + filters.Tecnico_principal + "'"
+
+	if filters.macs:
+		macs_sep = filters.macs
+		macs_sep = macs_sep.split(" ")
+		macs_sep = str(macs_sep).replace("]",")").replace("[","(")
+		query = query + " and serial_no in " + macs_sep
 
 
 	query = query + " order by fecha_liquidado desc "
@@ -138,6 +145,11 @@ def get_columns():
 			"fieldtype": "Data",
 			"label": _("Clasificacion"),	
 		},
+		{
+			"fieldname": "inventario",
+			"fieldtype": "Data",
+			"label": _("Inventario"),	
+		}
 		
 		
 	]

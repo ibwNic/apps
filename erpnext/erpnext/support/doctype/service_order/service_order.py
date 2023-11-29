@@ -416,7 +416,8 @@ class ServiceOrder(Document):
 					'proveedor':self.proveedor,
 					'tipo_de_servicio': self.tipo_de_servicio,
 					'tipo_cliente':self.tipo_cliente,
-					'informacion_de_contacto':self.informacion_de_contacto
+					'informacion_de_contacto':self.informacion_de_contacto,
+					'vendedor':self.vendedor
 				})	
 				od.insert(ignore_permissions=True)
 				frappe.msgprint(frappe._('Nueva orden de {0} con ID {1}').format(frappe._(od.tipo_de_orden), od.name))

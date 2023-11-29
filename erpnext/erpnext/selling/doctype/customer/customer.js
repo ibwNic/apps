@@ -110,8 +110,48 @@ frappe.ui.form.on("Customer", {
 				"name": frm.doc.name,
 				   },
 				callback: function(r){
-					console.log(r.message)
-					const data = document.querySelector("#lista");
+					var userRoles = frappe.boot.user.roles;
+
+					if(((userRoles.includes("Cobranza") || userRoles.includes("Back Office") || frm.doc.customer_group == 'Individual') && !userRoles.includes("Departamentos") ) ||  frappe.session.user == 'Administrator'  ){
+						
+						const data = document.querySelector("#lista");
+						var tmp_tt_table = `<table class="table table-striped">
+						<thead>
+						  <tr>
+						  <th scope="col">PlanID</th>
+							<th scope="col">Planes</th>
+							<th scope="col">Estado</th>
+							<th scope="col">Contrato</th>
+							<th scope="col">Direccion</th>
+							<th scope="col">Precio</th>
+							<th scope="col">Service Start</th>
+							<th scope="col">Bitácora</th>
+						  </tr>
+						</thead>
+						<tbody>
+						{% for(var i = 0; i < data.length; i++){ %}
+						{%var row = data[i]%}
+						{% if row[1] == 'Activo'%} <tr class="bg-success">{%endif%}
+						{% if row[1] == 'Inactivo'%}<tr class="bg-secondary">{%endif%}
+						{% if row[1] == 'Plan Cerrado'%}<tr class="bg-danger">{%endif%}
+						{% if row[1] == 'SUSPENDIDO: Manual'%}<tr class="bg-warning">{%endif%}
+						{% if row[1] == 'SUSPENDIDO: Temporal'%}<tr class="bg-warning">{%endif%}	
+						<td>{{row[7]}}</td>			
+							<th scope="row">{{row[0]}}</th>
+							<td>{{row[1]}}</td>
+							<td><a style="color:white; text-decoration: underline;" href="https://ibwni-crm.ibw.com/app/subscription/{{row[2]}}"><b>{{row[2]}}</b></a></td>
+							<td>{{row[3]}}</td>
+							<td>{% if row[6] == 'USD'%}$ {%else%}C$ {%endif%} {{row[4]}}</td>		
+							<td>{{row[5]}}</td>	
+							<td><a style="color:white; text-decoration: underline;" href="https://ibwni-crm.ibw.com/app/bitacora-de-planes/{{row[7]}}"><b>Ver detalles</b></a></td>				
+						  </tr>
+						  {% } %}
+						</tbody>
+					  </table>`;
+						data.innerHTML = frappe.render(tmp_tt_table, {"data": r.message});
+					}
+					else{
+						const data = document.querySelector("#lista");
 					var tmp_tt_table = `<table class="table table-striped">
 					<thead>
 					  <tr>
@@ -120,8 +160,7 @@ frappe.ui.form.on("Customer", {
 						<th scope="col">Estado</th>
 						<th scope="col">Contrato</th>
 						<th scope="col">Direccion</th>
-						<th scope="col">Precio</th>
-						<th scope="col">Service Start</th>
+						
 						<th scope="col">Bitácora</th>
 					  </tr>
 					</thead>
@@ -138,14 +177,15 @@ frappe.ui.form.on("Customer", {
 						<td>{{row[1]}}</td>
 						<td><a style="color:white; text-decoration: underline;" href="https://ibwni-crm.ibw.com/app/subscription/{{row[2]}}"><b>{{row[2]}}</b></a></td>
 						<td>{{row[3]}}</td>
-						<td>{% if row[6] == 'USD'%}$ {%else%}C$ {%endif%} {{row[4]}}</td>		
-						<td>{{row[5]}}</td>	
+							
 						<td><a style="color:white; text-decoration: underline;" href="https://ibwni-crm.ibw.com/app/bitacora-de-planes/{{row[7]}}"><b>Ver detalles</b></a></td>				
 					  </tr>
 					  {% } %}
 					</tbody>
 				  </table>`;
 					data.innerHTML = frappe.render(tmp_tt_table, {"data": r.message});
+					}
+					
 			   }
 			});
 
@@ -301,7 +341,12 @@ frappe.ui.form.on("Customer", {
 						data.innerHTML = frappe.render(tmp_tt_table, {"data": r.message});
 					}
 				});
+				
+	var userRoles = frappe.boot.user.roles;
+		if(userRoles.includes("Cobranza") || userRoles.includes("Back Office") || frm.doc.customer_group == 'Individual'){
 			
+				
+				
 				frappe.call({
 					"method": "erpnext.selling.doctype.customer.customer.obtener_estado_de_cuenta",
 					"args": {
@@ -397,6 +442,7 @@ frappe.ui.form.on("Customer", {
 							data.innerHTML = frappe.render(tmp_tt_table, {"data": r.message});
 						}
 				});
+			}
 
 		if(frappe.defaults.get_default("cust_master_name")!="Naming Series") {
 			frm.toggle_display("naming_series", false);

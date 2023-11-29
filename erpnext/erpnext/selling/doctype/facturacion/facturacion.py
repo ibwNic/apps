@@ -292,18 +292,18 @@ def get_items_from_customer(self,customer, currency_invoice,prorate=0):
 					if plan_equipo.cuotas_pendientes==0:
 						pass
 					else:
-						#rate_ip=(float(plan_equipo.precio_de_venta)-float(plan_equipo.primer_pago))/float(plan_equipo.cuotas_pendientes)
-						rate_ip=(float(plan_equipo.precio_de_venta)-float(plan_equipo.deposito))/float(plan_equipo.numero_de_cuotas)
+						if plan_equipo.numero_de_cuotas > 0:	
+							#rate_ip=(float(plan_equipo.precio_de_venta)-float(plan_equipo.primer_pago))/float(plan_equipo.cuotas_pendientes)
+							rate_ip=(float(plan_equipo.precio_de_venta)-float(plan_equipo.deposito))/float(plan_equipo.numero_de_cuotas)
 
-
-						item2 = {
-						"item_code": "Activacion por OTC",
-						"qty": 1,
-						"rate":float(rate_ip),
-						"cost_center": plan_doc.cost_center,
-						"plan_detail":plan[7],
-						}	
-						frappe.db.set_value("Subscription Plan Equipos",{"plan": plan[7]},"cuotas_pendientes",int(plan_equipo.cuotas_pendientes)-1)			
+							item2 = {
+							"item_code": "Activacion por OTC",
+							"qty": 1,
+							"rate":float(rate_ip),
+							"cost_center": plan_doc.cost_center,
+							"plan_detail":plan[7],
+							}	
+							frappe.db.set_value("Subscription Plan Equipos",{"plan": plan[7]},"cuotas_pendientes",int(plan_equipo.cuotas_pendientes)-1)			
 
 
 
@@ -474,7 +474,7 @@ def process_de_Facturacion(name):
 	nio='%NIO%'
 
 	Customers_f = frappe.db.sql(
-	"""select cliente from	`tabDetalle Ciclo Facturacion`  where parent=%(pt)s and sales_invoice is null  order by ruta desc limit 3000""",
+	"""select cliente from	`tabDetalle Ciclo Facturacion`  where parent=%(pt)s and sales_invoice is null  order by ruta desc limit 4000""",
 	{"pt": name},
 	)
 	
@@ -515,7 +515,7 @@ def process_de_Vistaprevia(name):
 	"""select distinct t3.party from `tabSubscription Plan` t1 
 	inner join `tabSubscription Plan Detail`  t2 on  t1.name = t2.plan
 	inner join `tabSubscription`  t3 on  t2.parent =t3.name  
-	where t2.estado_plan='Activo' and t3.current_invoice_start =%(cis)s  and t2.cost>0 and t3.party not in ('SCI-710001837')  limit 20000""",
+	where t2.estado_plan='Activo' and t3.current_invoice_start =%(cis)s  and t2.cost>0 and t3.party not in ('SCI-310076001')  limit 20000""",
 	{"cis": fact.current_invoice_start},
 	)
 

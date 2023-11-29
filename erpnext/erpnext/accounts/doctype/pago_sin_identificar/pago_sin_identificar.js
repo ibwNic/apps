@@ -39,15 +39,18 @@ frappe.ui.form.on('Pago Sin Identificar', {
 			
 			if (tbl.length > 0){
 				tbl.forEach(function(f) { 
-					deudas.push(
-						{'link_doctype': "Sales Invoice",
-						 'link_name': f.factura
+					console.log(f.aplicado)
+					if (f.aplicado === 0){
+						deudas.push(
+							{'link_doctype': "Sales Invoice",
+							 'link_name': f.factura
+							});
+						payments.push({
+							"Factura": f.factura,
+							"moneda": frm.doc.moneda,
+							"monto": f.monto
 						});
-					payments.push({
-						"Factura": f.factura,
-						"moneda": frm.doc.moneda,
-						"monto": f.monto
-					});
+					}	
 				});
 
 				pm_args.deudas = deudas;
@@ -112,6 +115,7 @@ frappe.ui.form.on('Pago Sin Identificar', {
 				console.log(pm_args.pagos)
 					// AQUI
 
+				var tbl = frm.doc.facturaporaplicar;
 				tbl.forEach(function(monto) {
 					sum = sum + monto.monto;
 				})
@@ -126,6 +130,7 @@ frappe.ui.form.on('Pago Sin Identificar', {
 				})
 
 				cur_frm.refresh_fields()
+				frm.save()
 				
 			}
 		
@@ -176,7 +181,6 @@ frappe.ui.form.on('Pago Sin Identificar', {
 					   <th class="text-right">TC</th>
 					   <th class="text-right">Deuda C$</th>
 					   <th class="text-right">C$ Segun  TC {{ data.saldo.tc }}</th>
-					   <th class="text-right">Dif. Cambiario</th>
 				   </tr>
 				 </tr>
 			   </thead>
@@ -190,7 +194,6 @@ frappe.ui.form.on('Pago Sin Identificar', {
 					 <td class="text-right">{{ row.deuda.tc }}</td>
 					 <td class="text-right">{{ format_currency(row.deuda.nio, "NIO", 2) }}</td>
 					 <td class="text-right">{{ format_currency(row.actual.nio, "NIO", 2) }}</td>
-					 <td class="text-right">{{ row.actual.diferencial }}</td>
 				 </tr>
 				 {% } %}
 			   </tbody>
@@ -201,7 +204,6 @@ frappe.ui.form.on('Pago Sin Identificar', {
 					<th>&nbsp;</th>
 					<th id="total_nio" class="text-right"></th>
 					<th id="total_actual_nio" class="text-right"></th>
-					<th id="total_diff" class="text-right"></th>
 				  <tr>
 			   </tbody>
 			</table>`,
@@ -817,8 +819,8 @@ frappe.ui.form.on('Pago Sin Identificar', {
 					d.fields_dict.totals_wrapper.$wrapper.find("#action").off("click").on("click", function(){
 						if (d.fields_dict.totals_wrapper.$wrapper.find("#action").hasClass("hidden")) return;
 						// FacturaYMonto
+						
 						if (amount_field.get_value() <= frm.doc.monto){
-							// console.log(FacturaYMonto)
 							// console.log(FacturaYMonto['FacturaYMonto'][0])
 							var pass=true;
 							for (let i=0;i < FacturaYMonto.length; i++){
@@ -836,7 +838,8 @@ frappe.ui.form.on('Pago Sin Identificar', {
 										
 									}
 									if(frm.doc.moneda === 'NIO'){
-										if (amount_field.get_value() > FacturaYMonto[i].MontoNIO || amount_field.get_value() > FacturaYMonto[i].MontoActualNio) {
+										console.log(amount_field.get_value(),FacturaYMonto[i].MontoNIO)
+										if (amount_field.get_value() > FacturaYMonto[i].MontoNIO && amount_field.get_value() > FacturaYMonto[i].MontoActualNio) {
 											frappe.msgprint({
 												title: __('Error'),
 												indicator: 'red',
@@ -914,7 +917,7 @@ frappe.ui.form.on('Pago Sin Identificar', {
 							frappe.msgprint({
 								title: __('Error'),
 								indicator: 'red',
-								message: __('El monto que digito es mayor  al monto de la nota de credito g!')
+								message: __('El monto que digito es mayor  al monto de la nota de credito!')
 							});
 							mode_of_payment_field.$input.val(null).trigger("change");
 									// currency_field.$input.val(null).trigger("change");

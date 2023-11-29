@@ -7,7 +7,8 @@
  "engine": "InnoDB",
  "field_order": [
   "factura",
-  "monto"
+  "monto",
+  "aplicado"
  ],
  "fields": [
   {
@@ -27,12 +28,19 @@
    "in_standard_filter": 1,
    "label": "Monto",
    "precision": "2"
+  },
+  {
+   "default": "0",
+   "fieldname": "aplicado",
+   "fieldtype": "Check",
+   "label": "Aplicado",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-11-24 14:53:05.591072",
+ "modified": "2023-11-28 15:27:22.109699",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "DetalleFacturaPorAplicar",

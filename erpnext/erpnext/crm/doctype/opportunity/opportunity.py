@@ -607,40 +607,72 @@ def crear_orden_servicio(name):
 
 					cambio = frappe.db.get_value("Currency Exchange",{"date":today()},"exchange_rate")	
 					if not frappe.db.exists("Opportunity Item",{"referencia":opportunity_prospect.name}):
-						spd = frappe.get_doc("Subscription Plan Detail",plan.planid)		
-						oi = frappe.get_doc({
-							'doctype': "Opportunity Item",
-							'referencia':opportunity_prospect.name,
-							'precio_tercero': 0.00,
-							'importe_ibw': 0.00,
-							'descuento_porcentaje':0,
-							'base_rate': rate * cambio,
-							'base_amount':rate * opportunity_prospect.qty * cambio,
-							'rate': rate,
-							'amount': rate * opportunity_prospect.qty,
-							'proveedor': opportunity_prospect.proveedor_section,
-							'nombre_proveedor': opportunity_prospect.nombre_proveedor,
-							'item_code': opportunity_prospect.item_code,
-							'item_name': item_name,
-							'uom':opportunity_prospect.uom,
-							'description': plan.description,
-							'descripcion_del_plan':plan.description if plan.tipo_servicio == 'Equipo' or not plan.requiere_site else '',
-							'departamento': opportunity_prospect.departamento,
-							'tipo_servicio': opportunity_prospect.tipo_servicio,
-							'qty':opportunity_prospect.qty,
-							'compresion':opportunity_prospect.compresion,
-							'tasa':opportunity_prospect.tasa,
-							'direccion':opportunity_prospect.direccion,
-							'contacto':opportunity_prospect.contacto,
-							'parent': opportunity_prospect.parent,
-							'parenttype' : opportunity_prospect.parenttype,
-							#'site_survey' : self.name,
-							'parentfield' : 'items',
-							"precio_del_plan": spd.cost if spd.currency == 'USD' else spd.cost / doc.conversion_rate,
-							"precio_plan_nio": spd.cost if spd.currency == 'NIO' else spd.cost * doc.conversion_rate,
-							"divisa_plan": spd.currency
-						})	
-						oi.insert(ignore_permissions=True)
+						try:
+							spd = frappe.get_doc("Subscription Plan Detail",plan.planid)		
+							oi = frappe.get_doc({
+								'doctype': "Opportunity Item",
+								'referencia':opportunity_prospect.name,
+								'precio_tercero': 0.00,
+								'importe_ibw': 0.00,
+								'descuento_porcentaje':0,
+								'base_rate': rate * cambio,
+								'base_amount':rate * opportunity_prospect.qty * cambio,
+								'rate': rate,
+								'amount': rate * opportunity_prospect.qty,
+								'proveedor': opportunity_prospect.proveedor_section,
+								'nombre_proveedor': opportunity_prospect.nombre_proveedor,
+								'item_code': opportunity_prospect.item_code,
+								'item_name': item_name,
+								'uom':opportunity_prospect.uom,
+								'description': plan.description,
+								'descripcion_del_plan':plan.description if plan.tipo_servicio == 'Equipo' or not plan.requiere_site else '',
+								'departamento': opportunity_prospect.departamento,
+								'tipo_servicio': opportunity_prospect.tipo_servicio,
+								'qty':opportunity_prospect.qty,
+								'compresion':opportunity_prospect.compresion,
+								'tasa':opportunity_prospect.tasa,
+								'direccion':opportunity_prospect.direccion,
+								'contacto':opportunity_prospect.contacto,
+								'parent': opportunity_prospect.parent,
+								'parenttype' : opportunity_prospect.parenttype,
+								#'site_survey' : self.name,
+								'parentfield' : 'items',
+								"precio_del_plan": spd.cost if spd.currency == 'USD' else spd.cost / doc.conversion_rate,
+								"precio_plan_nio": spd.cost if spd.currency == 'NIO' else spd.cost * doc.conversion_rate,
+								"divisa_plan": spd.currency
+							})	
+							oi.insert(ignore_permissions=True)
+						except:
+							oi = frappe.get_doc({
+								'doctype': "Opportunity Item",
+								'referencia':opportunity_prospect.name,
+								'precio_tercero': 0.00,
+								'importe_ibw': 0.00,
+								'descuento_porcentaje':0,
+								'base_rate': rate * cambio,
+								'base_amount':rate * opportunity_prospect.qty * cambio,
+								'rate': rate,
+								'amount': rate * opportunity_prospect.qty,
+								'proveedor': opportunity_prospect.proveedor_section,
+								'nombre_proveedor': opportunity_prospect.nombre_proveedor,
+								'item_code': opportunity_prospect.item_code,
+								'item_name': item_name,
+								'uom':opportunity_prospect.uom,
+								'description': plan.description,
+								'descripcion_del_plan':plan.description if plan.tipo_servicio == 'Equipo' or not plan.requiere_site else '',
+								'departamento': opportunity_prospect.departamento,
+								'tipo_servicio': opportunity_prospect.tipo_servicio,
+								'qty':opportunity_prospect.qty,
+								'compresion':opportunity_prospect.compresion,
+								'tasa':opportunity_prospect.tasa,
+								'direccion':opportunity_prospect.direccion,
+								'contacto':opportunity_prospect.contacto,
+								'parent': opportunity_prospect.parent,
+								'parenttype' : opportunity_prospect.parenttype,
+								#'site_survey' : self.name,
+								'parentfield' : 'items',
+							})	
+							oi.insert(ignore_permissions=True)
 			else:
 				continue
 		
@@ -709,7 +741,8 @@ def crear_sus_por_items(name):
 			'oportunidad':name,
 			'descripcion_plan': plan.descripcion_del_plan,
 			'site':plan.site_survey,
-			'proveedor':plan.nombre_proveedor
+			'proveedor':plan.nombre_proveedor,
+			'vendedor':frappe.db.get_value("Sales Person",{"usuario":opportunity.opportunity_owner},"name")
 			})	
 		sp.insert()
 

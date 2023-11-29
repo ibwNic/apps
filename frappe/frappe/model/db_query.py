@@ -787,7 +787,7 @@ class DatabaseQuery:
 			try:
 				user_roles = frappe.get_roles()
 				#frappe.msgprint(str(user_roles))
-				if "Vendedor Masivo" in user_roles and frappe.session.user != "Administrator":
+				if ("Vendedor Masivo" in user_roles or "Vendedor Corporativo" in user_roles) and frappe.session.user != "Administrator":
 					sales_person = frappe.db.get_value('Sales Person',{'usuario':frappe.session.user},'name')
 					if sales_person: 
 								
@@ -836,7 +836,7 @@ class DatabaseQuery:
 							conditions = (f" tecnico='nt' ")#
 				if 'Cobranza' in user_roles and frappe.session.user != "Administrator":
 					if self.doctype=="Pago Sin Identificar":			
-							conditions = (f" workflow_state='Pendiente'")	
+							conditions = (f" workflow_state !='Registrado'")
 			except:
 				pass
 			return conditions

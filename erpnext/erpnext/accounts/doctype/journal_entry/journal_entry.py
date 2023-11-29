@@ -547,6 +547,10 @@ class JournalEntry(AccountsController):
 					"factura": acc.reference_name
 					}
 					PagoSinIdentificar.append("detalles", detalles)
+
+					for ap in PagoSinIdentificar.get('facturaporaplicar'):
+						if ap.factura == acc.reference_name:
+							ap.aplicado = 1
 			
 			# for det in facturas:
 				
@@ -560,6 +564,8 @@ class JournalEntry(AccountsController):
 			PagoSinIdentificar.save()
 			if PagoSinIdentificar.saldo == 0:
 				PagoSinIdentificar.aplicado = 1
+				frappe.db.set_value('Pago Sin Identificar', self.codigo_deposito_zzz, 'workflow_state', 'Aplicado')
+				# frappe.db.commit()
 				PagoSinIdentificar.submit()
 		
 

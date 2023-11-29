@@ -22,6 +22,48 @@ frappe.ui.form.on('Subscription', {
 	
 	refresh: function(frm) {
 
+		var userRoles = frappe.boot.user.roles;
+		console.log(userRoles)
+		if(((!userRoles.includes("Cobranza") && !userRoles.includes("Back Office") ) || userRoles.includes("Departamentos")) && frappe.session.user != 'Administrator'){
+			
+
+			frappe.db.get_value("Customer", {"name": frm.doc.party},"customer_group",function(res){ 
+				res.customer_group; }).then(r =>{ var rest=r.message;
+					if (rest.customer_group=="Individual"){					
+						frm.toggle_display("start_date", true);
+						frm.toggle_display("end_date", true);
+						frm.toggle_display("duracion_de_contrato", true);
+						frm.toggle_display("invoices", true);
+						// mostrar u ocultar campo de tabla secundaria
+						frm.fields_dict.plans.grid.toggle_display("cost", true);
+						cur_frm.fields_dict["plans"].grid.set_column_disp("cost", true);
+						frm.fields_dict.equipos.grid.toggle_display("precio_de_venta", true);
+						cur_frm.fields_dict["equipos"].grid.set_column_disp("precio_de_venta", true);	
+						frm.fields_dict.equipos.grid.toggle_display("deposito", true);
+						cur_frm.fields_dict["equipos"].grid.set_column_disp("deposito", true);	
+						
+					}
+					else{				
+						frm.toggle_display("start_date", false);
+						frm.toggle_display("end_date", false);
+						frm.toggle_display("duracion_de_contrato", false);
+						frm.toggle_display("invoices", false);
+						// mostrar u ocultar campo de tabla secundaria
+						frm.fields_dict.plans.grid.toggle_display("cost", false);
+						cur_frm.fields_dict["plans"].grid.set_column_disp("cost", false);
+						frm.fields_dict.equipos.grid.toggle_display("precio_de_venta", false);
+						cur_frm.fields_dict["equipos"].grid.set_column_disp("precio_de_venta", false);	
+						frm.fields_dict.equipos.grid.toggle_display("deposito", false);
+						cur_frm.fields_dict["equipos"].grid.set_column_disp("deposito", false);	
+
+					}	
+				 })
+
+			
+		
+		}		
+		
+
 		frappe.call({
 			"method": "erpnext.accounts.doctype.subscription.subscription.get_work_orders",
 			"args": {

@@ -58,6 +58,11 @@ frappe.query_reports["Detalle Ordenes y Materiales Liquidados"] = {
 					filters: {activo: 1}
 				}
 			}
-		}
+		},
+		{
+			"fieldname": "macs",
+			"fieldtype": "Data",
+			"label": "Numero de serie (separados por espacio para filtrar mas de uno)",
+		},
 	 ]
 };
