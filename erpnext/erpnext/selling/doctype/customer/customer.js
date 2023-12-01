@@ -112,8 +112,17 @@ frappe.ui.form.on("Customer", {
 				callback: function(r){
 					var userRoles = frappe.boot.user.roles;
 
-					if(((userRoles.includes("Cobranza") || userRoles.includes("Back Office") || frm.doc.customer_group == 'Individual') && !userRoles.includes("Departamentos") ) ||  frappe.session.user == 'Administrator'  ){
+					let x = frappe.call({
+						"method": "erpnext.selling.doctype.customer.customer.mostrar_precio_vendedor",
+						"async": false, 
+						callback: function(r){		
+						}})
+					
+				
+					
+					if(((userRoles.includes("Cobranza") || userRoles.includes("Back Office") || frm.doc.customer_group == 'Individual') && !userRoles.includes("Departamentos") ) ||  frappe.session.user == 'Administrator' || frm.doc.sales_person == x.responseJSON.message  || (frm.doc.customer_group == 'Pyme' && userRoles.includes("Pyme")) ){
 						
+
 						const data = document.querySelector("#lista");
 						var tmp_tt_table = `<table class="table table-striped">
 						<thead>
@@ -132,6 +141,7 @@ frappe.ui.form.on("Customer", {
 						{% for(var i = 0; i < data.length; i++){ %}
 						{%var row = data[i]%}
 						{% if row[1] == 'Activo'%} <tr class="bg-success">{%endif%}
+						{% if row[1] == 'Activo: Temporal'%} <tr class="bg-info">{%endif%}
 						{% if row[1] == 'Inactivo'%}<tr class="bg-secondary">{%endif%}
 						{% if row[1] == 'Plan Cerrado'%}<tr class="bg-danger">{%endif%}
 						{% if row[1] == 'SUSPENDIDO: Manual'%}<tr class="bg-warning">{%endif%}
@@ -343,10 +353,113 @@ frappe.ui.form.on("Customer", {
 				});
 				
 	var userRoles = frappe.boot.user.roles;
-		if(userRoles.includes("Cobranza") || userRoles.includes("Back Office") || frm.doc.customer_group == 'Individual'){
+	
+	frappe.db.get_value("Sales Person", {"usuario": frappe.session.user},"name",function(res){ 
+		res.name; }).then(r =>{ var rest=r.message; 
+			console.log("user");
+			console.log(rest.name);
+		if(rest.name==frm.doc.sales_person){
+			frappe.call({
+				"method": "erpnext.selling.doctype.customer.customer.obtener_estado_de_cuenta",
+				"args": {
+					"name": frm.doc.name,
+					   },
+					callback: function(r){
+						//console.log(r.message)
+						const data = document.querySelector("#cuentas");
+						if(!frm.doc.factura_cordoba){
+							var tmp_tt_table = `
+						
+						<table class="table table-bordered">
+						<thead style="font-size:12px">
+						  <tr>
+							<th style="background-color:#FFE1D7; color:#000000;" scope="col">Fecha</th>
+							<th style="background-color:#FFE1D7; color:#000000;" scope="col">Documento</th>
+							<th style="background-color:#FFE1D7; color:#000000;" scope="col">Tipo</th>
+							<th style="background-color:#FFE1D7; color:#000000;" scope="col">Comentario</th>
+
+							<th style="background-color:#A6F8FF; color:#000000;" scope="col">Débito Dólares</th>
+							<th style="background-color:#A6F8FF; color:#000000;" scope="col">Crédito Dolares</th>
+							<th style="background-color:#FFF17B; color:#000000;" scope="col">Saldo Dólares</th>
+							<th style="background-color:#A0FA7F; color:#000000;" scope="col">Ver factura</th>
+
+							</tr>
+						</thead>
+						<tbody>
+						
+						{% for(var i = 0; i < data.length; i++){ %}
+						{%var row = data[i]%}
+						
+					   <tr style="font-size:10px">		
+							<td style="background-color:#FFF7F2; color:#000000;">{{row[1]}}</td>
+							<td style="background-color:#FFF7F2; color:#000000;"><a style="color:#24A860; text-decoration: underline;" {%if row[3] == 'Sales Invoice'%}href="https://ibwni-crm.ibw.com/app/sales-invoice/{%else%}href="https://ibwni-crm.ibw.com/app/journal-entry/{%endif%}{{row[4]}}"><b>{{row[4]}}</b></a></td>
+							<td style="background-color:#FFF7F2; color:#000000;">{{row[3]}}</td>
+							<td style="background-color:#FFF7F2; color:#000000;">{{row[5]}}</td>
+					
+							<td style="background-color:#C6F9FF; color:#000000;">$ {{ row[10] }}</td>
+							<td style="background-color:#C6F9FF; color:#000000;">$ {{row[11]}}</td>	
+							<td style="background-color:#FFE897; color:#000000;">$ {{row[12]}}</td>	
+							<td style="background-color:#C2FAB2; "> {%if row[3] == 'Sales Invoice'%}<a style="color:#000000;" href="https://ibwni-crm.ibw.com/api/method/frappe.utils.print_format.download_pdf?doctype=Sales%20Invoice&name={{row[4]}}&format=FORMATO%20FACTURA%20A&no_letterhead=1&letterhead=No%20Letterhead&settings=%7B%7D&_lang=es"><i style="font-size:16px" class="fa">&#xf02f;</i></a>{%endif%}</td>			
+						  </tr>
+						  {% } %}
+						</tbody>
+					  </table>
+					
+					  {%if data.length == 0%}<p class="text-center">No hay registros.</p> {%endif%}	
+					  `;
+						}
+					else{
+						var tmp_tt_table = `
+						
+						<table class="table table-bordered">
+						<thead style="font-size:12px">
+						  <tr>
+							<th style="background-color:#FFE1D7; color:#000000;" scope="col">Fecha</th>
+							<th style="background-color:#FFE1D7; color:#000000;" scope="col">Documento</th>
+							<th style="background-color:#FFE1D7; color:#000000;" scope="col">Tipo</th>
+							<th style="background-color:#FFE1D7; color:#000000;" scope="col">Comentario</th>
+
+							<th style="background-color:#A6F8FF; color:#000000;" scope="col">Débito Córdobas</th>
+							<th style="background-color:#A6F8FF; color:#000000;" scope="col">Crédito Córdobas</th>
+							<th style="background-color:#FFF17B; color:#000000;" scope="col">Saldo Dólares</th>
+							<th style="background-color:#A0FA7F; color:#000000;" scope="col">Ver factura</th>
+
+							</tr>
+						</thead>
+						<tbody>
+						
+						{% for(var i = 0; i < data.length; i++){ %}
+						{%var row = data[i]%}
+						
+					   <tr style="font-size:10px">		
+							<td style="background-color:#FFF7F2; color:#000000;">{{row[1]}}</td>
+							<td style="background-color:#FFF7F2; color:#000000;"><a style="color:#24A860; text-decoration: underline;" {%if row[3] == 'Sales Invoice'%}href="https://ibwni-crm.ibw.com/app/sales-invoice/{%else%}href="https://ibwni-crm.ibw.com/app/journal-entry/{%endif%}{{row[4]}}"><b>{{row[4]}}</b></a></td>
+							<td style="background-color:#FFF7F2; color:#000000;">{{row[3]}}</td>
+							<td style="background-color:#FFF7F2; color:#000000;">{{row[5]}}</td>
+					
+							<td style="background-color:#C6F9FF; color:#000000;">C$ {{ row[6] }}</td>
+							<td style="background-color:#C6F9FF; color:#000000;">C$ {{row[7]}}</td>	
+							<td style="background-color:#FFE897; color:#000000;">C$ {{row[8]}}</td>	
+							<td style="background-color:#C2FAB2; "> {%if row[3] == 'Sales Invoice'%}<a style="color:#000000;" href="https://ibwni-crm.ibw.com/api/method/frappe.utils.print_format.download_pdf?doctype=Sales%20Invoice&name={{row[4]}}&format=FORMATO%20FACTURA%20A&no_letterhead=1&letterhead=No%20Letterhead&settings=%7B%7D&_lang=es"><i style="font-size:16px" class="fa">&#xf02f;</i></a>{%endif%}</td>			
+						  </tr>
+						  {% } %}
+						</tbody>
+					  </table>
+					
+					  {%if data.length == 0%}<p class="text-center">No hay registros.</p> {%endif%}	
+					  `;
+					}
+						
+					  
+						data.innerHTML = frappe.render(tmp_tt_table, {"data": r.message});
+					}
+			});
+		}
+	})
+
+		if(userRoles.includes("Cobranza") || userRoles.includes("Back Office") || frm.doc.customer_group == 'Individual' ||  (frm.doc.customer_group == 'Pyme' && userRoles.includes("Pyme"))){
 			
-				
-				
+							
 				frappe.call({
 					"method": "erpnext.selling.doctype.customer.customer.obtener_estado_de_cuenta",
 					"args": {

@@ -148,7 +148,7 @@
  "idx": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-02-22 09:24:01.402764",
+ "modified": "2023-12-01 08:52:32.458427",
  "modified_by": "Administrator",
  "module": "Core",
  "name": "Role",
@@ -183,5 +183,7 @@
  "sort_order": "ASC",
  "states": [],
  "track_changes": 1,
+ "track_seen": 1,
+ "track_views": 1,
  "translated_doctype": 1
 }

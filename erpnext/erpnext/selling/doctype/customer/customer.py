@@ -839,6 +839,10 @@ def filtrar_clientes_vendedor_masivo():
 		return 
 
 @frappe.whitelist()
+def mostrar_precio_vendedor():
+	return frappe.db.get_value("Sales Person",{"usuario":frappe.session.user},"name")
+
+@frappe.whitelist()
 def actualizar_Portafolio():	
 	return 
 

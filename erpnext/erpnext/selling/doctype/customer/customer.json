@@ -182,6 +182,7 @@
    "oldfieldtype": "Link",
    "options": "Territory",
    "print_hide": 1,
+   "read_only": 1,
    "reqd": 1
   },
   {
@@ -518,7 +519,7 @@
    "link_fieldname": "party"
   }
  ],
- "modified": "2023-11-16 08:11:26.800448",
+ "modified": "2023-12-01 08:56:27.844792",
  "modified_by": "Administrator",
  "module": "Selling",
  "name": "Customer",
@@ -614,6 +615,20 @@
    "read": 1,
    "role": "Support Team",
    "share": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "import": 1,
+   "read": 1,
+   "report": 1,
+   "role": "SAC",
+   "select": 1,
+   "set_user_permissions": 1,
+   "share": 1,
+   "write": 1
   }
  ],
  "quick_entry": 1,

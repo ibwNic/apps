@@ -401,6 +401,10 @@ scheduler_events = {
 		# cada hora
 		"0 * * * * ":[
 			"frappe.custom.doctype.aprovisionamiento.aprovisionamiento.deshabilitar_activacion_forsoza"
+		],
+		# cada hora
+		"25 * * * * ":[
+			"erpnext.accounts.doctype.subscription.subscription.suspender_clientes_activos_temporales"
 		]
 	},
 	"all": [

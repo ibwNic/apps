@@ -797,14 +797,19 @@ class DatabaseQuery:
 							conditions = (f" sales_person is not null and sales_person='{sales_person}'")
 						if self.doctype=="Service Order":			
 							conditions = (f"vendedor='{sales_person}'")
+						if self.doctype=="Prospect":			
+							conditions = (f"prospect_owner='{frappe.session.user}'")
+						if self.doctype=="Opportunity":			
+							conditions = (f"opportunity_owner='{frappe.session.user}'")
 						
 					else:
 						if self.doctype=="Lead":
 							conditions = (f" sales_person='nt'")
-						if self.doctype=="Customer":			
+						if self.doctype=="Customer":		
 							conditions = (f"  sales_person='nt'")	
 						if self.doctype=="Service Order":			
 							conditions = (f"vendedor='nt'")
+						
 
 					if self.doctype=="Address":
 						conditions = (f"`tabAddress`.owner='{frappe.session.user}'")
@@ -825,6 +830,7 @@ class DatabaseQuery:
 							conditions = (f" tecnico in {tecnicos} or name in (select parent from `tabTecnicos Service Order` where tecnico  in {tecnicos})")#" sales_person='" + sales_person +"'"
 						if self.doctype=="Stock Entry":			
 							conditions = (f" tecnico in {tecnicos} ")
+						
 					else:
 						if self.doctype=="Service Order":
 							conditions = (f" tecnico='nt' ")
@@ -834,6 +840,8 @@ class DatabaseQuery:
 							conditions = (f" tecnico='nt' ")
 						if self.doctype=="Stock Entry":			
 							conditions = (f" tecnico='nt' ")#
+					if self.doctype=="Customer":		
+							conditions = (f"  sales_person='nt'")
 				if 'Cobranza' in user_roles and frappe.session.user != "Administrator":
 					if self.doctype=="Pago Sin Identificar":			
 							conditions = (f" workflow_state !='Registrado'")

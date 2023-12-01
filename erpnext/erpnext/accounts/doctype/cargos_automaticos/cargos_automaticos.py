@@ -40,11 +40,11 @@ def Mostrar_cargo_aplicar(name):
 				when debit_to = "Cuentas por Cobrar Moneda Extranjera - IBWNI - NI" then round((tc_facturas * outstanding_amount),2)
 				else round(outstanding_amount,2)
 				end as Monto_Cordobas
-				,round(outstanding_amount,2) as outstanding_amount from `tabSales Invoice` where customer  =  %(name)s and docstatus =1 and outstanding_amount > 0;"""
+				,round(outstanding_amount,2) as outstanding_amount from `tabSales Invoice` where customer  =  %(name)s and docstatus =1 and outstanding_amount > 0.01;"""
 				# ,round(outstanding_amount,2) as outstanding_amount from `tabSales Invoice` where customer in  %(name)s;"""
 		,{'name': regnumber},as_dict=1)
 
-		suma = 0
+		suma = 0.00
 		detalle = []
 		
 		for sum in factP:
@@ -52,10 +52,10 @@ def Mostrar_cargo_aplicar(name):
 
 		# return fac.MontoCordoba,suma
 			
-		if flt(fac.MontoCordoba) == flt(suma):
-			for f in factP:
-				detalle = dict(fecha = today(), regnumber = f.customer,no_recibo = '',monto_cordoba = f.Monto_Cordobas,monto_dolar = 0,cheque = None,no_cheque = None,colector = 'Cargos Automaticos',factura = f.name,numero_de_cheque = None,fecha_de_referencia = None,nombre_del_banco = None)
-				# detalle = dict(regnumber = f.customer)
+		# if flt(fac.MontoCordoba,2) == flt(suma,2):
+		for f in factP:
+			detalle = dict(fecha = today(), regnumber = f.customer,no_recibo = '',monto_cordoba = f.Monto_Cordobas,monto_dolar = 0,cheque = None,no_cheque = None,colector = 'Cargos Automaticos',factura = f.name,numero_de_cheque = None,fecha_de_referencia = None,nombre_del_banco = None)
+			# detalle = dict(regnumber = f.customer)
 
 			doc.append("detalle",detalle)
 				
@@ -105,15 +105,12 @@ def Redireccionar_pago(name):
 		docpP.fecha_de_carga = doc.fecha
 		docpP.tipo_pago = 'Pago Batch'
 		
-		for c in doc.detalle:
-			if doc.rechazados:
-				for r in doc.rechazados:
-					if c.regnumber != r.regnumber:
-						detalle = dict(fecha = doc.fecha, regnumber = c.regnumber,no_recibo = c.no_recibo,monto_cordoba = c.monto_cordoba,monto_dolar = 0,cheque = None,no_cheque = None,colector = c.colector,factura = c.factura,numero_de_cheque = None,fecha_de_referencia = None,nombre_del_banco = None)
-						
-						docpP.append("pagos_detalle",detalle)
-						doc.save()	
-			else:
+		factP = frappe.db.sql(
+					"""select regnumber,no_recibo,monto_cordoba,colector,factura from `tabDetalle Cargos` where parent = %(name)s and regnumber not in (select regnumber from `tabDetalle Rechazados` where parent = %(name)s);"""
+				# ,round(outstanding_amount,2) as outstanding_amount from `tabSales Invoice` where customer in  %(name)s;"""
+		,{'name': name},as_dict=1)
+
+		for c in factP:
 				detalle = dict(fecha = doc.fecha, regnumber = c.regnumber,no_recibo = c.no_recibo,monto_cordoba = c.monto_cordoba,monto_dolar = 0,cheque = None,no_cheque = None,colector = c.colector,factura = c.factura,numero_de_cheque = None,fecha_de_referencia = None,nombre_del_banco = None)		
 				docpP.append("pagos_detalle",detalle)
 				doc.save()

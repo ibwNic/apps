@@ -12,6 +12,7 @@ from frappe.utils import flt
 from frappe.utils.nestedset import get_descendants_of
 
 
+
 def execute(filters=None):
 	columns = get_columns()
 	data = get_data(filters)
@@ -30,6 +31,8 @@ def obtener_materiales_liquidados(filters):
 	# aqui va tu query
 	query = """ select * from vw_liquidaciones_oym where tipo_de_orden <> 'DESINSTALACION'  """
 	conditions = ""
+	from erpnext.crm.doctype.opportunity.opportunity import consultar_rol
+	roles =  consultar_rol()
 	
 	if filters.from_date:
 		query = query + " and  fecha_liquidado >= " + "'" + filters.from_date + "' COLLATE utf8mb4_general_ci " 
@@ -51,6 +54,10 @@ def obtener_materiales_liquidados(filters):
 
 	if filters.Tecnico_principal:
 		query = query + " and Tecnico_principal = " + "'" + filters.Tecnico_principal + "'"
+	if "Tecnico" in roles and "System Manager" not in roles:
+
+		usuarios = [u[0] for u in frappe.db.get_values("Tecnico",{"usuario":frappe.session.user},"name")]
+		query = query + " and Tecnico_principal in "  + str(usuarios).replace("[","(").replace("]",")") 
 
 	if filters.macs:
 		macs_sep = filters.macs

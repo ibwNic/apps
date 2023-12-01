@@ -925,7 +925,7 @@ class ServiceOrder(Document):
 					bitacora_plan.insert(ignore_permissions=True)	
 				
 				try:
-					frappe.db.sql("update `tabBitacora de Planes` set estado_plan = Activo where subscription_plan_detail = %(plan)s; ",{"plan":self.subscription_plan_detail})
+					frappe.db.sql("update `tabBitacora de Planes` set estado_plan = 'Activo' where name = %(plan)s; ",{"plan":self.subscription_plan_detail})
 				except:
 					pass
 				# bitacora_plan = frappe.get_doc("Bitacora de Planes", {"subscription_plan_detail": self.plan_de_subscripcion})			

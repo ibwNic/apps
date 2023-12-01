@@ -749,7 +749,7 @@ def crear_sus_por_items(name):
 		precio = plan.precio_del_plan if plan.divisa_plan == 'USD' else plan.precio_plan_nio
 		currency_spd = plan.divisa_plan
 		
-		planes.append([plan.item_code + ' - ' + ran,plan.qty,'Activo',plan.direccion,plan.site_survey,plan.contacto,plan.proveedor,precio,currency_spd])
+		planes.append([plan.item_code + ' - ' + ran,plan.qty,'Activo',plan.direccion,plan.site_survey,plan.contacto,plan.nombre_proveedor,precio,currency_spd])
 
 		if not frappe.db.exists("Dynamic Link", {"parent":plan.direccion, "link_doctype":"Customer"}) and plan.direccion:
 			dir = frappe.get_doc({

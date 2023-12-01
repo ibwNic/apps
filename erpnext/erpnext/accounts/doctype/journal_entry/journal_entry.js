@@ -1311,13 +1311,17 @@ frappe.ui.form.on("Journal Entry", {
 				// 	}
 				// }else{
 
-				// for(let i = 0; i < payments.length; i++){
-				// 	if (payments[i]['tipo_de_pago'] === "Cheque"){
-				// 		var values = d.get_values();
-				// 		ValidarCamposDigitados(pm_args,tipopago,monedaNIO,monedaUSD,values);
-				// 		break;
-				// 	}
-				// }
+				if (payments.length > 0){
+					console.log(payments)
+					payments.forEach(function(f) { 
+						// console.log(f.aplicado)
+						if (f.tipo_de_pago === 'Tarjetas de credito' && f.moneda === 'nio'){
+							Monto_DigitadoNIO === true
+						}	
+					});
+					
+				}
+
 				var telepago = false; 
 				for(let i = 0; i < payments.length; i++){
 					if (payments.length === 1){
@@ -1341,7 +1345,7 @@ frappe.ui.form.on("Journal Entry", {
 					var values = d.get_values();
 					ValidarCamposDigitados(pm_args,tipopago,monedaNIO,monedaUSD,values);
 				}else{
-					if (Monto_DigitadoNIO == true && Monto_DigitadoUSD == true){
+					if (Monto_DigitadoNIO  == true ){
 						// console.log(pm_args.pagos);
 						var values = d.get_values();
 						ValidarCamposDigitados(pm_args,tipopago,monedaNIO,monedaUSD,values);
@@ -1351,6 +1355,9 @@ frappe.ui.form.on("Journal Entry", {
 					}else if (Monto_DigitadoUSD == true){
 							var values = d.get_values();
 							ValidarCamposDigitados(pm_args,tipopago,monedaNIO,monedaUSD,values);
+					}else if (Monto_DigitadoNIO == true && Monto_DigitadoUSD == true){
+						var values = d.get_values();
+						ValidarCamposDigitados(pm_args,tipopago,monedaNIO,monedaUSD,values);
 					
 					
 					

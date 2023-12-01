@@ -3,80 +3,83 @@
 
 frappe.ui.form.on('Cargos Automaticos', {
 	refresh: function(frm) {
-		
-		if (frm.doc.detalle){
-			var det = frm.doc.detalle
-			console.log(det)
-			if (det.length > 0){
-				frm.add_custom_button('Redireccionar Pagos al Batch', function(){
-					if (frm.doc.no_recibo){
+		console.log(frm.doc.docstatus)
+		if (frm.doc.docstatus == 0){
+			if (frm.doc.detalle){
+				var det = frm.doc.detalle
+				console.log(det)
+				if (det.length > 0){
+					frm.add_custom_button('Redireccionar Pagos al Batch', function(){
+						if (frm.doc.no_recibo){
+							var pm_args = {};
+							pm_args.name = frm.doc.name
+				
+								// pm_args.Regnumber = frm.doc.name;
+								// LLama la funcion de habilitar cliente
+								frappe.call({
+									'method': "erpnext.accounts.doctype.cargos_automaticos.cargos_automaticos.Redireccionar_pago",
+									'args': pm_args
+								});
+						}else{
+							frappe.msgprint('Debe de ingresar primero el numero de recibo');
+						}
+						
+						
+						
+					});	
+					
+					frm.add_custom_button('Generar archivo BAC', function(){
+						console.log("OK")
 						var pm_args = {};
 						pm_args.name = frm.doc.name
-			
-							// pm_args.Regnumber = frm.doc.name;
-							// LLama la funcion de habilitar cliente
-							frappe.call({
-								'method': "erpnext.accounts.doctype.cargos_automaticos.cargos_automaticos.Redireccionar_pago",
-								'args': pm_args
-							});
-					}else{
-						frappe.msgprint('Debe de ingresar primero el numero de recibo');
-					}
-					
-					
-					
-				});
-
-				frm.add_custom_button('Generar archivo BAC', function(){
-					console.log("OK")
-					var pm_args = {};
-					pm_args.name = frm.doc.name
-					console.log(pm_args)
-					frappe.call({
-						'args': pm_args,
-						'method': "erpnext.accounts.doctype.cargos_automaticos.cargos_automaticos.Descargar_ArchivoBAC",
-						// "type": "GET",
-					// 	'callback': function(res){
-					// 		// console.log(res.message.tex);
-					// 		if(res){
+						console.log(pm_args)
+						frappe.call({
+							'args': pm_args,
+							'method': "erpnext.accounts.doctype.cargos_automaticos.cargos_automaticos.Descargar_ArchivoBAC",
+							// "type": "GET",
+						// 	'callback': function(res){
+						// 		// console.log(res.message.tex);
+						// 		if(res){
+									
+						// 		}
 								
-					// 		}
-							
-					//   }
-					});
-					window.location.href = "https://ibwni-crm.ibw.com/api/method/erpnext.accounts.doctype.cargos_automaticos.cargos_automaticos.Descargar_ArchivoBAC?name=" + frm.doc.name
-					// frm.reload_doc();
-					
-					
-				});
-			}
-		}
-				
-
-		frm.add_custom_button('Generar Pagos Automaticos', function(){
-			console.log("OK")
-			var pm_args = {};
-			pm_args.name = frm.doc.name
-			console.log(pm_args)
-			frappe.call({
-				'args': pm_args,
-				'method': "erpnext.accounts.doctype.cargos_automaticos.cargos_automaticos.Mostrar_cargo_aplicar",
-				// "type": "GET",
-			// 	'callback': function(res){
-			// 		// console.log(res.message.tex);
-			// 		if(res){
+						//   }
+						});
+						window.location.href = "https://ibwni-crm.ibw.com/api/method/erpnext.accounts.doctype.cargos_automaticos.cargos_automaticos.Descargar_ArchivoBAC?name=" + frm.doc.name
+						// frm.reload_doc();
 						
-			// 		}
-					
-			//   }
-			});
-			// window.location.href = "https://ibwni-crm.ibw.com/api/method/erpnext.accounts.doctype.cargos_automaticos.cargos_automaticos.Mostrar_cargo_aplicar?name=" + frm.doc.name
-			frm.reload_doc();
-			
-			
-		});
+						
+					});
+				}
 
-		
+				
+			}
+
+			
+
+			frm.add_custom_button('Generar Pagos Automaticos', function(){
+				console.log("OK")
+				var pm_args = {};
+				pm_args.name = frm.doc.name
+				console.log(pm_args)
+				frappe.call({
+					'args': pm_args,
+					'method': "erpnext.accounts.doctype.cargos_automaticos.cargos_automaticos.Mostrar_cargo_aplicar",
+					// "type": "GET",
+				// 	'callback': function(res){
+				// 		// console.log(res.message.tex);
+				// 		if(res){
+							
+				// 		}
+						
+				//   }
+				});
+				// window.location.href = "https://ibwni-crm.ibw.com/api/method/erpnext.accounts.doctype.cargos_automaticos.cargos_automaticos.Mostrar_cargo_aplicar?name=" + frm.doc.name
+				frm.reload_doc();
+				
+				
+			});
+		}
 		
 	},
 	

@@ -12,6 +12,7 @@ from frappe.utils import flt
 from frappe.utils.nestedset import get_descendants_of
 
 
+
 def execute(filters=None):
 	columns = get_columns()
 	data = get_data(filters)
@@ -27,11 +28,18 @@ def get_data(filters):
 
 
 def obtener_movimientos_de_inventario(filters):
+	from erpnext.crm.doctype.opportunity.opportunity import consultar_rol
+	roles =  consultar_rol()
 	# aqui va tu query
 	query = """   select * from movimientos_de_inventario where item_code is not null """
 
 	if filters.tecnico:
 		query = query + " and tecnico = " + "'" + filters.tecnico + "'" 
+	
+	if "Tecnico" in roles and "System Manager" not in roles:
+		usuarios = [u[0] for u in frappe.db.get_values("Tecnico",{"usuario":frappe.session.user},"name")]
+		query = query + " and tecnico in "  + str(usuarios).replace("[","(").replace("]",")") 
+
 
 	if filters.warehouse:
 		query = query + " and warehouse = " + "'" + filters.warehouse + "'" 

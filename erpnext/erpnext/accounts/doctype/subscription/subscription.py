@@ -2262,80 +2262,84 @@ def get_exchange_rate(from_currency, to_currency, date=None, alternative=True, t
 
 @frappe.whitelist()
 def reactivacion_plan(name, estado):
-	if estado == 'SUSPENDIDO: Manual' or estado == 'SUSPENDIDO: Temporal' :
-		if not frappe.db.sql(""" select so.workflow_state from `tabService Order` so
-			inner join  `tabSO Detalle Clientes Suspendidos` sd on sd.parent=so.name
-			where sd.subscription_plan_detail=%(name)s and so.workflow_state not in ('Cancelado','Finalizado')""",{"name": name}):
-			#try:
-			upd_spd = frappe.get_doc("Subscription Plan Detail", {"name": name})
+	from erpnext.crm.doctype.opportunity.opportunity import consultar_rol
+	roles =  consultar_rol()
+	if "Back Office" in roles or "Cobranza" in roles or "Departamentos" in roles:
+		if estado == 'SUSPENDIDO: Manual' or estado == 'SUSPENDIDO: Temporal' or estado == 'Activo: Temporal' :
+			if not frappe.db.sql(""" select so.workflow_state from `tabService Order` so
+				inner join  `tabSO Detalle Clientes Suspendidos` sd on sd.parent=so.name
+				where sd.subscription_plan_detail=%(name)s and so.workflow_state not in ('Cancelado','Finalizado')""",{"name": name}):
+				#try:
+				upd_spd = frappe.get_doc("Subscription Plan Detail", {"name": name})
 
-			upd_sus = frappe.get_doc("Subscription", {"name": upd_spd.parent})
+				upd_sus = frappe.get_doc("Subscription", {"name": upd_spd.parent})
 
-			portafolio=get_portafolio_plan(upd_spd.plan)
-			portafolio = str(portafolio[0][0])
+				portafolio=get_portafolio_plan(upd_spd.plan)
+				portafolio = str(portafolio[0][0])
 
-			if portafolio not in ('IPTV'):#'ITV' SE QUITÓ PORQUE SE NECESITAN REGISTRAR LA REACTIVACION DE ESAS V.
-				var = False
-				status =''
-				if frappe.db.exists("Service Order", {"tipo_de_origen": "Subscription","tipo_de_orden":"REACTIVACION","nombre_de_origen":upd_sus.name,"plan_de_subscripcion":name}):
-					so= frappe.get_doc("Service Order", {"tipo_de_origen": "Subscription","tipo_de_orden":"REACTIVACION","nombre_de_origen":upd_sus.name,"plan_de_subscripcion":name})
-					if so.workflow_state=="Cancelado" or so.workflow_state=="Finalizado":
-						status = "Pasa"
+				if portafolio not in ('IPTV'):#'ITV' SE QUITÓ PORQUE SE NECESITAN REGISTRAR LA REACTIVACION DE ESAS V.
+					var = False
+					status =''
+					if frappe.db.exists("Service Order", {"tipo_de_origen": "Subscription","tipo_de_orden":"REACTIVACION","nombre_de_origen":upd_sus.name,"plan_de_subscripcion":name}):
+						so= frappe.get_doc("Service Order", {"tipo_de_origen": "Subscription","tipo_de_orden":"REACTIVACION","nombre_de_origen":upd_sus.name,"plan_de_subscripcion":name})
+						if so.workflow_state=="Cancelado" or so.workflow_state=="Finalizado":
+							status = "Pasa"
+						else:
+							status = "No Pasa"
+
 					else:
-						status = "No Pasa"
+						var = True
+					if status=="Pasa" or var:
 
-				else:
-					var = True
-				if status=="Pasa" or var:
+						direccion=frappe.get_doc("Address", upd_spd.direccion)
+						od = frappe.get_doc({
+							'doctype': "Service Order",
+							'tipo_de_orden': "REACTIVACION",
+							'workflow_state': "Abierto",
+							'tipo_de_origen': "Subscription",
+							'tipo_cliente': frappe.db.get_value('Customer', {"name": upd_sus.party}, 'customer_group'),
+							'nombre': frappe.db.get_value('Customer', {"name": upd_sus.party}, 'customer_name'),
+							'nombre_de_origen': upd_sus.name,
+							'descripcion': frappe._('Ejecutar Reactivacion de {0}').format(name),
+							'tipo': 'Customer',
+							'tercero': upd_sus.party,
+							'plan_de_subscripcion': name,
+							'direccion_de_instalacion': upd_spd.direccion,
+							'portafolio': portafolio,
+							'departamento': direccion.departamento,
+							'municipio': direccion.municipio,
+							'barrio': direccion.barrio,
+							'direccion': direccion.address_line1,
+							'latitud':upd_spd.latitud,
+							'longitud':upd_spd.longitud,
+							'nodo':upd_spd.nodo
+						})
+						od.insert()
+						frappe.msgprint(frappe._('Nueva orden de {0} con ID {1}').format(frappe._(od.tipo_de_orden), frappe.utils.get_link_to_form("Service Order", od.name)))
 
-					direccion=frappe.get_doc("Address", upd_spd.direccion)
-					od = frappe.get_doc({
-						'doctype': "Service Order",
-						'tipo_de_orden': "REACTIVACION",
-						'workflow_state': "Abierto",
-						'tipo_de_origen': "Subscription",
-						'tipo_cliente': frappe.db.get_value('Customer', {"name": upd_sus.party}, 'customer_group'),
-						'nombre': frappe.db.get_value('Customer', {"name": upd_sus.party}, 'customer_name'),
-						'nombre_de_origen': upd_sus.name,
-						'descripcion': frappe._('Ejecutar Reactivacion de {0}').format(name),
-						'tipo': 'Customer',
-						'tercero': upd_sus.party,
-						'plan_de_subscripcion': name,
-						'direccion_de_instalacion': upd_spd.direccion,
-						'portafolio': portafolio,
-						'departamento': direccion.departamento,
-						'municipio': direccion.municipio,
-						'barrio': direccion.barrio,
-						'direccion': direccion.address_line1,
-						'latitud':upd_spd.latitud,
-						'longitud':upd_spd.longitud,
-						'nodo':upd_spd.nodo
-					})
-					od.insert()
-					frappe.msgprint(frappe._('Nueva orden de {0} con ID {1}').format(frappe._(od.tipo_de_orden), frappe.utils.get_link_to_form("Service Order", od.name)))
+						for equipos in upd_sus.equipos:
+							if name==equipos.plan:
+								code = frappe.db.get_value('Serial No', {"name": equipos.equipo}, 'item_code')
+								eos = frappe.get_doc({
+								'doctype': "Equipo_Orden_Servicio",
+								'serial_no': equipos.equipo,
+								'parent': od.name,
+								'parenttype': "Service Order",
+								'parentfield': "equipo_orden_servicio",
+								'item_code': code
+								})
+								eos.insert()
+					else:
+						frappe.msgprint("La orden no se pudo generar: La orden de reactivacion ya fue creada o existe una desinstalación en curso")
 
-					for equipos in upd_sus.equipos:
-						if name==equipos.plan:
-							code = frappe.db.get_value('Serial No', {"name": equipos.equipo}, 'item_code')
-							eos = frappe.get_doc({
-							'doctype': "Equipo_Orden_Servicio",
-							'serial_no': equipos.equipo,
-							'parent': od.name,
-							'parenttype': "Service Order",
-							'parentfield': "equipo_orden_servicio",
-							'item_code': code
-							})
-							eos.insert()
-				else:
-					frappe.msgprint("La orden no se pudo generar: La orden de reactivacion ya fue creada o existe una desinstalación en curso")
-
-			# except Exception as e:
-			# 	frappe.msgprint(frappe._('reactivacion_plan : Fatality Error Project {0} ').format(e))
+				# except Exception as e:
+				# 	frappe.msgprint(frappe._('reactivacion_plan : Fatality Error Project {0} ').format(e))
+			else:
+				frappe.msgprint("Para reactivar necesita finalizar la orden de suspensión vinculado a este plan")
 		else:
-			frappe.msgprint("Para reactivar necesita finalizar la orden de suspensión vinculado a este plan")
+			frappe.msgprint("Se activa solo para planes suspendidos")
 	else:
-		frappe.msgprint("Se activa solo para planes suspendidos")
-
+		frappe.msgprint("Necesita permiso de Back Office, Departamentos o Cobranza")
 def randStr(chars = string.ascii_uppercase + string.digits, N=4):
 	return ''.join(random.choice(chars) for _ in range(N))
 
@@ -2557,3 +2561,82 @@ def gestion_generar_factura(costo,gestion):
 
 	frappe.msgprint(frappe._('Factura B de {0} creada: {1} ').format(subgestion,frappe.utils.get_link_to_form("Sales Invoice", factura)))
 
+@frappe.whitelist()
+def activar_temporalmente(name,estado,cliente):
+	from erpnext.crm.doctype.opportunity.opportunity import consultar_rol
+	roles =  consultar_rol()
+	if "NOC" in roles or "CSC" in roles:
+		plan_detail = frappe.get_doc("Subscription Plan Detail",name)
+		if estado in ('SUSPENDIDO: Manual','SUSPENDIDO: Temporal'):
+			frappe.db.set_value("Subscription Plan Detail",name,"estado_plan","Activo: Temporal")
+			frappe.db.set_value("Subscription Plan Detail",name,"activacion_temporal", now())
+
+			if not frappe.db.exists("Bitacora de Planes", {"name": name}):
+					bitacora_plan = frappe.get_doc({
+						'doctype': "Bitacora de Planes",
+						'plan': plan_detail.plan,
+						'cliente':  cliente,
+						'estado_plan': "Activo: Temporal",
+						'direccion': plan_detail.direccion,
+						'currency': plan_detail.currency,
+						'costo':plan_detail.cost,
+						'intervalo_de_facturacion':plan_detail.billing_interval_count,
+						'subscription_plan_detail': plan_detail.name
+					})
+					bitacora_plan.insert()				
+			else:
+				frappe.db.set_value("Bitacora de Planes",name,"estado_plan","Activo: Temporal")
+			bitacora_detalle = frappe.get_doc({
+					"doctype": "Detalle Bitacora Planes",
+					"detalle":"Plan activado temporalmente",
+					"fecha": now(),
+					"usuario":frappe.session.user,
+					"parent": name,
+					"parentfield":"detalle",
+					"parenttype": "Bitacora de Planes",
+					"tipo_transaccion":"",
+					"tercero": ""
+					})
+			bitacora_detalle.insert()
+		else:
+			frappe.msgprint("Solo se puede reactivar temporalmente a planes suspendidos")
+	else:
+		frappe.msgprint("Permitido solo para NOC y CSC")
+
+def suspender_clientes_activos_temporales():
+	planes = frappe.db.sql(""" select name from `tabSubscription Plan Detail` 
+	where estado_plan='Activo: Temporal' and TIMESTAMPDIFF(HOUR, activacion_temporal,now())>=48; """)
+
+	for plan in planes:
+		plan_detail = frappe.get_doc("Subscription Plan Detail",plan[0])
+		cliente = frappe.db.get_value("Subscrtiption",plan_detail.parent,"party")
+		if not frappe.db.exists("Bitacora de Planes", {"name": name}):
+				bitacora_plan = frappe.get_doc({
+					'doctype': "Bitacora de Planes",
+					'plan': plan_detail.plan,
+					'cliente':  cliente,
+					'estado_plan': "SUSPENDIDO: Manual",
+					'direccion': plan_detail.direccion,
+					'currency': plan_detail.currency,
+					'costo':plan_detail.cost,
+					'intervalo_de_facturacion':plan_detail.billing_interval_count,
+					'subscription_plan_detail': plan_detail.name
+				})
+				bitacora_plan.insert()				
+		else:
+			frappe.db.set_value("Bitacora de Planes",name,"estado_plan","SUSPENDIDO: Manual")
+		bitacora_detalle = frappe.get_doc({
+				"doctype": "Detalle Bitacora Planes",
+				"detalle":"De Activo: Temporal a SUSPENDIDO: Manual",
+				"fecha": now(),
+				#"usuario":frappe.session.user,
+				"parent": plan_detail.name,
+				"parentfield":"detalle",
+				"parenttype": "Bitacora de Planes",
+				"tipo_transaccion":"",
+				"tercero": ""
+				})
+		bitacora_detalle.insert()
+
+	frappe.db.sql("""  update   estado_plan  set='SUSPENDIDO: Manual'    from `tabSubscription Plan Detail`
+	 where estado_plan='Activo: Temporal' and TIMESTAMPDIFF(HOUR, activacion_temporal,now())>=48;  """)

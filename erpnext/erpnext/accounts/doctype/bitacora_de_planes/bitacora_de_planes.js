@@ -6,7 +6,9 @@ frappe.ui.form.on('Bitacora de Planes', {
 
 		var userRoles = frappe.boot.user.roles;
 		console.log(userRoles)
-		if((!userRoles.includes("Cobranza") && !userRoles.includes("Back Office") ) || userRoles.includes("Departamentos")){
+
+
+		if((!userRoles.includes("Cobranza") && !userRoles.includes("Back Office") ) || userRoles.includes("Departamentos" )){
 			frappe.db.get_value("Customer", {"name": frm.doc.cliente},"customer_group",function(res){ 
 				res.customer_group; }).then(r =>{ var rest=r.message; 
 				if(rest.customer_group!="Individual"){

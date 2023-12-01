@@ -22,8 +22,36 @@ frappe.ui.form.on('Subscription', {
 	
 	refresh: function(frm) {
 
+		let x = frappe.call({
+			"method": "erpnext.selling.doctype.customer.customer.mostrar_precio_vendedor",
+			"async": false, 
+			callback: function(r){		
+			}})
+
 		var userRoles = frappe.boot.user.roles;
-		console.log(userRoles)
+		console.log(x.responseJSON.message)
+
+		frappe.db.get_value("Customer", {"name": frm.doc.party},"sales_person",function(res){ 
+			res.sales_person; }).then(r =>{ var rest=r.message; 
+				// console.log("user");
+				console.log("holaaa:"+rest.sales_person);
+			if(rest.sales_person==x.responseJSON.message){
+				frm.toggle_display("start_date", true);
+				frm.toggle_display("end_date", true);
+				frm.toggle_display("duracion_de_contrato", true);
+				frm.toggle_display("invoices", true);
+				// mostrar u ocultar campo de tabla secundaria
+				frm.fields_dict.plans.grid.toggle_display("cost", true);
+				cur_frm.fields_dict["plans"].grid.set_column_disp("cost", true);
+				frm.fields_dict.equipos.grid.toggle_display("precio_de_venta", true);
+				cur_frm.fields_dict["equipos"].grid.set_column_disp("precio_de_venta", true);	
+				frm.fields_dict.equipos.grid.toggle_display("deposito", true);
+				cur_frm.fields_dict["equipos"].grid.set_column_disp("deposito", true);	
+			}
+		})
+
+
+		
 		if(((!userRoles.includes("Cobranza") && !userRoles.includes("Back Office") ) || userRoles.includes("Departamentos")) && frappe.session.user != 'Administrator'){
 			
 
@@ -43,18 +71,35 @@ frappe.ui.form.on('Subscription', {
 						cur_frm.fields_dict["equipos"].grid.set_column_disp("deposito", true);	
 						
 					}
-					else{				
-						frm.toggle_display("start_date", false);
-						frm.toggle_display("end_date", false);
-						frm.toggle_display("duracion_de_contrato", false);
-						frm.toggle_display("invoices", false);
-						// mostrar u ocultar campo de tabla secundaria
-						frm.fields_dict.plans.grid.toggle_display("cost", false);
-						cur_frm.fields_dict["plans"].grid.set_column_disp("cost", false);
-						frm.fields_dict.equipos.grid.toggle_display("precio_de_venta", false);
-						cur_frm.fields_dict["equipos"].grid.set_column_disp("precio_de_venta", false);	
-						frm.fields_dict.equipos.grid.toggle_display("deposito", false);
-						cur_frm.fields_dict["equipos"].grid.set_column_disp("deposito", false);	
+					else{	
+						if(userRoles.includes("Pyme") && rest.customer_group=="Pyme"){
+							frm.toggle_display("start_date", true);
+							frm.toggle_display("end_date", true);
+							frm.toggle_display("duracion_de_contrato", true);
+							frm.toggle_display("invoices", true);
+							// mostrar u ocultar campo de tabla secundaria
+							frm.fields_dict.plans.grid.toggle_display("cost", true);
+							cur_frm.fields_dict["plans"].grid.set_column_disp("cost", true);
+							frm.fields_dict.equipos.grid.toggle_display("precio_de_venta", true);
+							cur_frm.fields_dict["equipos"].grid.set_column_disp("precio_de_venta", true);	
+							frm.fields_dict.equipos.grid.toggle_display("deposito", true);
+							cur_frm.fields_dict["equipos"].grid.set_column_disp("deposito", true);	
+						}
+						else{
+							frm.toggle_display("start_date", false);
+							frm.toggle_display("end_date", false);
+							frm.toggle_display("duracion_de_contrato", false);
+							frm.toggle_display("invoices", false);
+							// mostrar u ocultar campo de tabla secundaria
+							frm.fields_dict.plans.grid.toggle_display("cost", false);
+							cur_frm.fields_dict["plans"].grid.set_column_disp("cost", false);
+							frm.fields_dict.equipos.grid.toggle_display("precio_de_venta", false);
+							cur_frm.fields_dict["equipos"].grid.set_column_disp("precio_de_venta", false);	
+							frm.fields_dict.equipos.grid.toggle_display("deposito", false);
+							cur_frm.fields_dict["equipos"].grid.set_column_disp("deposito", false);	
+						}
+						
+						
 
 					}	
 				 })

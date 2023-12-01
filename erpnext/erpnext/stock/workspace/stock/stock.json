@@ -697,7 +697,7 @@
    "hidden": 0,
    "is_query_report": 0,
    "label": "Reportes de Stock",
-   "link_count": 11,
+   "link_count": 10,
    "onboard": 0,
    "type": "Card Break"
   },
@@ -790,16 +790,6 @@
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "Balance de Inventario de los T\u00e9cnicos",
-   "link_count": 0,
-   "link_to": "Balance de Inventario de los T\u00e9cnicos",
-   "link_type": "Report",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
    "label": "Movimientos de Inventario",
    "link_count": 0,
    "link_to": "Movimientos de Inventario",
@@ -818,7 +808,7 @@
    "type": "Link"
   }
  ],
- "modified": "2023-09-27 10:13:17.361806",
+ "modified": "2023-11-29 08:58:43.947100",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Stock",

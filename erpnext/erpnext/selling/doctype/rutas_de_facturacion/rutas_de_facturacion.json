@@ -33,7 +33,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-06-26 17:23:26.719671",
+ "modified": "2023-11-30 15:20:56.451618",
  "modified_by": "Administrator",
  "module": "Selling",
  "name": "Rutas de Facturacion",
@@ -79,5 +79,7 @@
  ],
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "track_changes": 1,
+ "track_seen": 1
 }
