@@ -26,7 +26,7 @@ from frappe.utils.data import (
 	nowdate,
 )
 from erpnext.aprovisionamiento_api import eliminarAprovisionador, cambiarVelocidadAprovisionador, activarAprovisionador, suspenderAprovisionador
-from frappe.custom.doctype.aprovisionamiento_iptv.aprovisionamiento_iptv import Deshabilitar_Cliente
+from frappe.custom.doctype.aprovisionamiento_iptv.aprovisionamiento_iptv import Deshabilitar_Cliente,Habilitar_Cliente
 import erpnext.crm.doctype.envio_sms
 
 
