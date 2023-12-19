@@ -39,6 +39,7 @@ def aplicar_pagos(id_batch):
 			batchDetail[0].estado =  'Validado'
 
 			deudas.clear()
+			
 			pagos.clear()
 			batch.save(ignore_permissions=True)
 

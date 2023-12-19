@@ -737,12 +737,12 @@
   {
    "dependencies": "Item",
    "hidden": 0,
-   "is_query_report": 0,
+   "is_query_report": 1,
    "label": "Resumen de Existencia",
    "link_count": 0,
    "link_to": "stock-balance",
    "link_type": "Page",
-   "onboard": 0,
+   "onboard": 1,
    "type": "Link"
   },
   {
@@ -753,7 +753,7 @@
    "link_count": 0,
    "link_to": "Stock Ageing",
    "link_type": "Report",
-   "onboard": 0,
+   "onboard": 1,
    "type": "Link"
   },
   {
@@ -764,51 +764,51 @@
    "link_count": 0,
    "link_to": "Item Price Stock",
    "link_type": "Report",
-   "onboard": 0,
+   "onboard": 1,
    "type": "Link"
   },
   {
    "hidden": 0,
-   "is_query_report": 0,
+   "is_query_report": 1,
    "label": "Transferencias Pendientes de Aceptar",
    "link_count": 0,
    "link_to": "Transferencias Pendientes de Aceptar",
    "link_type": "Report",
-   "onboard": 0,
+   "onboard": 1,
    "type": "Link"
   },
   {
    "hidden": 0,
-   "is_query_report": 0,
+   "is_query_report": 1,
    "label": "Detalle Ordenes y Materiales Liquidados",
    "link_count": 0,
    "link_to": "Detalle Ordenes y Materiales Liquidados",
    "link_type": "Report",
-   "onboard": 0,
+   "onboard": 1,
    "type": "Link"
   },
   {
    "hidden": 0,
-   "is_query_report": 0,
+   "is_query_report": 1,
    "label": "Movimientos de Inventario",
    "link_count": 0,
    "link_to": "Movimientos de Inventario",
    "link_type": "Report",
-   "onboard": 0,
+   "onboard": 1,
    "type": "Link"
   },
   {
    "hidden": 0,
-   "is_query_report": 0,
+   "is_query_report": 1,
    "label": "Balance de Inventario por T\u00e9cnico",
    "link_count": 0,
    "link_to": "Balance de Inventario por T\u00e9cnico",
    "link_type": "Report",
-   "onboard": 0,
+   "onboard": 1,
    "type": "Link"
   }
  ],
- "modified": "2023-11-29 08:58:43.947100",
+ "modified": "2023-12-06 12:11:32.223058",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Stock",

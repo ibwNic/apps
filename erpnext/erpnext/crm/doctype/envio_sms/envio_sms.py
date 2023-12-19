@@ -47,9 +47,6 @@ def verificar_sms(name):
 
 	res = json.loads(respuesta.text, object_hook=lambda d: SimpleNamespace(**d))
 
-	# enviar = frappe.get_doc('Envio SMS', name)
-	# enviar.total_sms = res.result[0].available
-	# enviar.save(ignore_permissions=True)
 	return res.result[0].available
 
 @frappe.whitelist()

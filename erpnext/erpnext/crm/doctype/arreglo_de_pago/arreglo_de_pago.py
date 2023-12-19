@@ -117,7 +117,7 @@ def generar_calendario(name):
 
 @frappe.whitelist()
 def update_Vencimiento():
-	facturas = frappe.db.sql("""select name,fecha_de_vencimiento from `tabArreglo de Pago` where docstatus = 0 and workflow_state = 'Pending'; """)
+	facturas = frappe.db.sql("""select name,fecha_de_vencimiento from `tabArreglo de Pago` where docstatus = 0""")
 	fecha_Actual = today()
 	for fac in facturas:
 		# return fac[1]

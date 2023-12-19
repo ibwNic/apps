@@ -810,11 +810,11 @@ class DatabaseQuery:
 						if self.doctype=="Service Order":			
 							conditions = (f"vendedor='nt'")
 						
-
-					if self.doctype=="Address":
-						conditions = (f"`tabAddress`.owner='{frappe.session.user}'")
-					if self.doctype=="Contact":
-						conditions = (f"`tabContact`.owner='{frappe.session.user}'")
+					if "Vendedor Masivo" in user_roles:
+						if self.doctype=="Address":
+							conditions = (f"`tabAddress`.owner='{frappe.session.user}'")
+						if self.doctype=="Contact":
+							conditions = (f"`tabContact`.owner='{frappe.session.user}'")
 				if "Tecnico" in user_roles and frappe.session.user != "Administrator":
 					#tecnico = frappe.db.get_value('Tecnico',{'usuario_reporte':frappe.session.user},'name')
 					consulta = frappe.db.sql(""" select name from `tabTecnico` where usuario_reporte = %(usuario_reporte)s;""",{"usuario_reporte":frappe.session.user})
@@ -830,6 +830,9 @@ class DatabaseQuery:
 							conditions = (f" tecnico in {tecnicos} or name in (select parent from `tabTecnicos Service Order` where tecnico  in {tecnicos})")#" sales_person='" + sales_person +"'"
 						if self.doctype=="Stock Entry":			
 							conditions = (f" tecnico in {tecnicos} ")
+						if self.doctype == "Report":
+							conditions = (f" owner = '{frappe.session.user}' ")
+						
 						
 					else:
 						if self.doctype=="Service Order":
@@ -840,8 +843,11 @@ class DatabaseQuery:
 							conditions = (f" tecnico='nt' ")
 						if self.doctype=="Stock Entry":			
 							conditions = (f" tecnico='nt' ")#
+						if self.doctype == "Report":
+							conditions = (f" owner = '{frappe.session.user}' ")
 					if self.doctype=="Customer":		
 							conditions = (f"  sales_person='nt'")
+
 				if 'Cobranza' in user_roles and frappe.session.user != "Administrator":
 					if self.doctype=="Pago Sin Identificar":			
 							conditions = (f" workflow_state !='Registrado'")

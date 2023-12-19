@@ -49,20 +49,30 @@ frappe.ui.form.on('Arreglo de Pago', {
 			})
 		}
 
-		if(frm.doc.fecha_de_vencimiento!=""){
-			
-			const hoy = new Date();
+		if(frm.doc.fecha_de_vencimiento){
+			var tbl = frm.doc.cuotas;
 
-			function sumarDias(fecha, dias){
-				fecha.setDate(fecha.getDate() + dias);
-				return fecha;
+			if (tbl.length > 0){
+				tbl.forEach(function(f) { 
+					// console.log(f.aplicado)
+					if (f.aplicado === 0){
+						frm.set_value("fecha_de_vencimiento",f.fecha_de_pago)
+					}	
+				});
 			}
-			// console.log(sumarDias(hoy, 15));
 
-			const fec = sumarDias(hoy, 16)
-			console.log(fec.toLocaleDateString('zh-Hans-CN'))
+			// const hoy = new Date();
+
+			// function sumarDias(fecha, dias){
+			// 	fecha.setDate(fecha.getDate() + dias);
+			// 	return fecha;
+			// }
+			// // console.log(sumarDias(hoy, 15));
+
+			// const fec = sumarDias(hoy, 16)
+			// console.log(fec.toLocaleDateString('zh-Hans-CN'))
 			
-			frm.set_value("fecha_de_vencimiento",fec.toLocaleDateString('zh-Hans-CN'))
+			// frm.set_value("fecha_de_vencimiento",fec.toLocaleDateString('zh-Hans-CN'))
 		}
 
 		if(frm.doc.regnumber!=''){

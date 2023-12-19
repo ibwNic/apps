@@ -484,7 +484,7 @@ def generar_suspension_manual(gestion,customer):
 			bitacora_detalle = frappe.get_doc({
 				"doctype": "Detalle Bitacora Planes",
 				"idx":idx_b,
-				"detalle":"SUSPENDIDO: Manual desde Gestion",
+				"detalle":"SUSPENDIDO: Manual",
 				"fecha": now(),
 				"usuario":frappe.session.user,
 				"parent": bitacora_plan.name,
@@ -583,7 +583,7 @@ def programar_suspensiones_temporales():
 				bitacora_plan.save(ignore_permissions=True)					
 				bitacora_detalle = frappe.get_doc({
 					"doctype": "Detalle Bitacora Planes",
-					"detalle":"Plan suspendido temporalmente",
+					"detalle":"SUSPENDIDO: Temporal",
 					"fecha": now(),
 					"idx":idx_b,
 					#"usuario":frappe.session.user,

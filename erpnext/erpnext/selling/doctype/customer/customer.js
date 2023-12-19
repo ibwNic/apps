@@ -104,6 +104,25 @@ frappe.ui.form.on("Customer", {
 	},
 
 	refresh: function(frm) {
+
+
+
+		var rol = frappe.boot.user.roles;
+	
+		if(rol.includes("Vendedor Masivo") && rol.includes("Vendedor Corporativo") && frappe.session.user != 'Administrator' ){
+			let sp = frappe.call({
+				"method": "erpnext.selling.doctype.customer.customer.mostrar_precio_vendedor",
+				"async": false, 
+				callback: function(r){		
+				}})
+			if( frm.doc.sales_person != sp.responseJSON.message )
+			{
+				frappe.set_route(['Form', 'crm']);
+			}
+			
+		}
+
+
 		frappe.call({
 			"method": "erpnext.selling.doctype.customer.customer.get_plans_customer",
 			"args": {
@@ -396,7 +415,7 @@ frappe.ui.form.on("Customer", {
 							<td style="background-color:#FFF7F2; color:#000000;">{{row[3]}}</td>
 							<td style="background-color:#FFF7F2; color:#000000;">{{row[5]}}</td>
 					
-							<td style="background-color:#C6F9FF; color:#000000;">$ {{ row[10] }}</td>
+							<td style="background-color:#C6F9FF; color:#000000;">$ {{ row[10]|comma  }}</td>
 							<td style="background-color:#C6F9FF; color:#000000;">$ {{row[11]}}</td>	
 							<td style="background-color:#FFE897; color:#000000;">$ {{row[12]}}</td>	
 							<td style="background-color:#C2FAB2; "> {%if row[3] == 'Sales Invoice'%}<a style="color:#000000;" href="https://ibwni-crm.ibw.com/api/method/frappe.utils.print_format.download_pdf?doctype=Sales%20Invoice&name={{row[4]}}&format=FORMATO%20FACTURA%20A&no_letterhead=1&letterhead=No%20Letterhead&settings=%7B%7D&_lang=es"><i style="font-size:16px" class="fa">&#xf02f;</i></a>{%endif%}</td>			

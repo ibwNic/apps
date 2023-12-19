@@ -4018,7 +4018,7 @@ def Aplicar_Nota_Credito(deudas=None,pagos=None,cuentaBanco=None,regnumber=None,
 	sum_credits = sum([d.get('credit_in_account_currency', 0.0) for d in accounts])
 
 	if flt(sum_debits,2) < flt(sum_credits,2):
-		facs = list(reversed(list(filter(lambda acc: acc.get("reference_type") == "Sales Invoice", accounts))))
+		facs = list(reversed(list(filter(lambda acc: acc.get("reference_type") == "Sales Invoice", accounts))))  
 		
 		for acc in facs:
 			for MontFac in pagos:

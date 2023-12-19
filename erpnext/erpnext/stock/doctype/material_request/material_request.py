@@ -611,14 +611,16 @@ def update_completed_and_requested_qty(stock_entry, method):
 				ordenes = frappe.db.get_values("Stock Entry Detail", {"parent":stock_entry.name},"service_order")
 				if len(ordenes) > 0:
 					for orden in ordenes:
-						if "OS-" in orden[0]:
-							frappe.db.sql(""" update `tabService Order` set ordered_on_stock = 0 where name = %(orden)s""",{"orden":orden[0]})	
-						elif "OSI-" in orden[0]:
-							frappe.db.sql(""" update `tabOrden de Servicio Interno` set ordered_on_stock = 0 where name = %(orden)s""",{"orden":orden[0]})	
+						try:
+							if "OS-" in orden[0]:
+								frappe.db.sql(""" update `tabService Order` set ordered_on_stock = 0 where name = %(orden)s""",{"orden":orden[0]})	
+							elif "OSI-" in orden[0]:
+								frappe.db.sql(""" update `tabOrden de Servicio Interno` set ordered_on_stock = 0 where name = %(orden)s""",{"orden":orden[0]})	
 
-						else:
-							frappe.db.sql(""" update `tabIssue` set ordered_on_stock = 0 where name = %(orden)s""",{"orden":orden[0]})	
-
+							else:
+								frappe.db.sql(""" update `tabIssue` set ordered_on_stock = 0 where name = %(orden)s""",{"orden":orden[0]})	
+						except:
+							pass
 
 				for serie in frappe.db.sql(""" select serial_no from `tabStock Entry Detail` where parent = %(parent)s """, {"parent":stock_entry.name}):	
 					if serie[0]:				

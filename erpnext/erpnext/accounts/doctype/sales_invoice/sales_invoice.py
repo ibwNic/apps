@@ -1,6 +1,7 @@
 # Copyright (c) 2015, Frappe Technologies Pvt. Ltd. and Contributors
 # License: GNU General Public License v3. See license.txt
 from frappe.utils.file_manager import download_file
+from frappe.utils.file_manager import save_file
 from frappe.utils import get_files_path
 from re import search
 import os
@@ -2642,17 +2643,57 @@ def factura_venta_de_equipos(oportunidad):
 	mr.save()
 	return mr.name
 
+@frappe.whitelist()
+def factura_venta_activacion(oportunidad):
+	opp = frappe.get_doc("Opportunity",oportunidad)
+	items = frappe.db.get_values("Opportunity Item",{"parent":oportunidad},["item_code","descripcion_del_plan"])
+	mr = frappe.new_doc('Sales Invoice')
+	activacion = opp.ingresos_otc
+
+	total = 0
+	for m in items:
+		item1 = mr.append('items', {"item_code": ""})				
+		item1.item_code = m[0]
+		item1.descripcion = m[1]
+		item1.qty=1
+		item1.rate = activacion / len(items)
+		item1.amount = activacion / len(items)
+		item1.item_name = frappe.db.get_value("Item",m[0],"item_name")
+		item1.description = m[1]
+		item1.uom = frappe.db.get_value("Item",m[0],"stock_uom")
+		item1.cost_center = "Principal - NI"
+
+	mr.update({
+		'oportunidad':oportunidad,
+		'naming_series': "B-",
+		'currency': opp.currency,
+		'customer': opp.customer,
+		'tipo_factura':"Instalacion OTC",	
+		"conversion_rate": opp.conversion_rate,
+		"total": total,
+		"tc_facturas": opp.conversion_rate,
+		"posting_date": nowdate(),
+		"due_date":add_days(nowdate(),20)
+	})
+
+	mr.save()
+	return mr.name
+
 
 
 def iterador_de_pbs(names, ruta, name):
-	directorio = "/data/ibw14/sites/formatos/facturaciones/" + name
+	#directorio = "/data/ibw14/sites/formatos/facturaciones/" + name
+	directorio  = "ibwni-crm.ibw.com/public/files/Facturaciones/" + name
+
 	try:
 		os.mkdir(directorio)
 	except OSError:
 		pass
 	contador = 0
+	rutaoriginal=ruta
 	ruta = ruta.replace(" ","_")
-	f = open(f"formatos/facturaciones/{name}/PBS-{ruta}.txt","w")
+	#f = open(f"formatos/facturaciones/{name}/PBS-{ruta}.txt","w")
+	f = open(f"{directorio}/PBS-{ruta}.txt","w")
 	for name in names:
 		try:
 			# sales invoice
@@ -2816,6 +2857,24 @@ def iterador_de_pbs(names, ruta, name):
 			frappe.msgprint(f"no se pudo generar la factura de {name}")
 	f.write(f"TOTAL FACTURAS EN {ruta}: {contador}")
 	f.close()
+	ruta = ruta.replace(" ","_")
+	archivo = f"/ibwni-crm.ibw.com/public/files/Facturaciones/{name}/PBS-{ruta}.txt"
+	
+
+
+	with open(archivo, 'r') as file_content:
+		file_content= file_content.read()
+		
+		nombrado = ruta + ".txt"
+		guardar_archivo("Facturacion", name, file_content, nombrado)
+	
+	
+	
+
+
+
+
+
 
 @frappe.whitelist()
 def generador_formato_pbs(name):
@@ -3068,3 +3127,26 @@ def validar_facturas():
 			upd_child.submit()
 	
 	frappe.db.commit()
+
+
+
+def guardar_archivo(doctype, docname, file_content, file_name=None):
+    # Ensure the document exists
+    if not frappe.db.exists(doctype, docname):
+        frappe.throw(_("Document {0} {1} not found").format(doctype, docname))
+
+    # Create a new File document
+    file_doc = frappe.get_doc({
+        "doctype": "File",
+        "file_name": file_name or "Untitled.txt",
+        "attached_to_doctype": doctype,
+        "attached_to_name": docname,
+        "content": file_content,
+    })
+
+    # Save the File document
+    file_doc.save()
+
+    # Update the field in the target document
+    #frappe.db.set_value(doctype, docname, fieldname, file_doc.file_url)
+

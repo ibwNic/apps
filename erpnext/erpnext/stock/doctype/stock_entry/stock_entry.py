@@ -116,23 +116,73 @@ class StockEntry(StockController):
 							return
 					except:
 						frappe.msgprint("validar equipo y modelo")
+			if self.stock_entry_type == 'Material Transfer' and self.outgoing_stock_entry:
+				if frappe.db.get_value("Stock Entry",self.outgoing_stock_entry,"from_warehouse"):
+					if ("usado" in self.to_warehouse.lower() and 
+						"usado" not in frappe.db.get_value("Stock Entry",self.outgoing_stock_entry,"from_warehouse").lower()):
+						
+						if frappe.db.get_value("Stock Entry",self.outgoing_stock_entry,"from_warehouse") == 'Las mercancías en tránsito - NI':
+							if ("usado" in self.to_warehouse.lower() and 
+							"usado" not in self.from_warehouse.lower() ):
+								frappe.msgprint("No puede agregar a la bodega usados del tecnico los materiales que salen de la bodega de equipos nuevos.")
+								frappe.db.set_value(self.doctype, self.name, 'workflow_state', 'Revisado')
+								self.reload()
+								return
+						else:
+							frappe.msgprint("No puede agregar a la bodega usados del tecnico los materiales que salen de la bodega de equipos nuevos.")
+							frappe.db.set_value(self.doctype, self.name, 'workflow_state', 'Revisado')
+							self.reload()
+							return
+					if ("usado" not in self.to_warehouse.lower() and 
+						"usado" in frappe.db.get_value("Stock Entry",self.outgoing_stock_entry,"from_warehouse").lower()):
+						
+						if frappe.db.get_value("Stock Entry",self.outgoing_stock_entry,"from_warehouse") == 'Las mercancías en tránsito - NI':
+							if ("usado" not in self.to_warehouse.lower() and "usado" in  self.to_warehouse.lower()):
+								frappe.msgprint("No puede agregar a la bodega nuevos del tecnico los materiales que salen de la bodega de equipos usados.")
+								frappe.db.set_value(self.doctype, self.name, 'workflow_state', 'Revisado')
+								self.reload()
+								return
+						else:
+							frappe.msgprint("No puede agregar a la bodega nuevos del tecnico los materiales que salen de la bodega de equipos usados.")
+							frappe.db.set_value(self.doctype, self.name, 'workflow_state', 'Revisado')
+							self.reload()
+							return
 		if self.workflow_state == "Revisado" and self.stock_entry_type == 'Material Transfer':
 			if self.to_warehouse == 'Las mercancías en tránsito - NI' and not self.tecnico:
 				frappe.msgprint("Favor ingresar el técnico que recibirá los materiales")
 				frappe.db.set_value(self.doctype, self.name, 'workflow_state', 'Guardado')
 				self.reload()
 				return
-			if self.outgoing_stock_entry:
-				if frappe.db.get_value("Stock Entry",self.outgoing_stock_entry,"from_warehouse"):
-					if ("usado" in self.to_warehouse.lower() and 
-						"usado" not in frappe.db.get_value("Stock Entry",self.outgoing_stock_entry,"from_warehouse").lower()):
+			if frappe.db.get_value("Stock Entry",self.outgoing_stock_entry,"from_warehouse"):
+				if ("usado" in self.to_warehouse.lower() and 
+					"usado" not in frappe.db.get_value("Stock Entry",self.outgoing_stock_entry,"from_warehouse").lower()):
+					
+					if frappe.db.get_value("Stock Entry",self.outgoing_stock_entry,"from_warehouse") == 'Las mercancías en tránsito - NI':
+						if ("usado" in self.to_warehouse.lower() and 
+						"usado" not in self.from_warehouse.lower() ):
+							frappe.msgprint("No puede agregar a la bodega usados del tecnico los materiales que salen de la bodega de equipos nuevos.")
+							frappe.db.set_value(self.doctype, self.name, 'workflow_state', 'Revisado')
+							self.reload()
+							return
+					else:
 						frappe.msgprint("No puede agregar a la bodega usados del tecnico los materiales que salen de la bodega de equipos nuevos.")
+						frappe.db.set_value(self.doctype, self.name, 'workflow_state', 'Revisado')
+						self.reload()
 						return
-					if ("usado" not in self.to_warehouse.lower() and 
-						"usado" in frappe.db.get_value("Stock Entry",self.outgoing_stock_entry,"from_warehouse").lower()):
+				if ("usado" not in self.to_warehouse.lower() and 
+					"usado" in frappe.db.get_value("Stock Entry",self.outgoing_stock_entry,"from_warehouse").lower()):
+					
+					if frappe.db.get_value("Stock Entry",self.outgoing_stock_entry,"from_warehouse") == 'Las mercancías en tránsito - NI':
+						if ("usado" not in self.to_warehouse.lower() and "usado" in  self.to_warehouse.lower()):
+							frappe.msgprint("No puede agregar a la bodega nuevos del tecnico los materiales que salen de la bodega de equipos usados.")
+							frappe.db.set_value(self.doctype, self.name, 'workflow_state', 'Revisado')
+							self.reload()
+							return
+					else:
 						frappe.msgprint("No puede agregar a la bodega nuevos del tecnico los materiales que salen de la bodega de equipos usados.")
+						frappe.db.set_value(self.doctype, self.name, 'workflow_state', 'Revisado')
+						self.reload()
 						return
-
 		if self.workflow_state == "Revisado" and self.stock_entry_type == 'Material Receipt':
 			for row in self.items:	
 				if row.serial_no:				
@@ -314,7 +364,6 @@ class StockEntry(StockController):
 
 				add("Stock Entry", self.name, usuario, 1, 1, 1, 1, 0, None, 0)
 
-			add("Stock Entry", self.name, 'ana.velasquez@ibw.com', 1, 1, 1, 1, 0, None, 0)
 			add("Stock Entry", self.name, 'oscar.collado@ibw.com', 1, 1, 1, 1, 0, None, 0)
 			add("Stock Entry", self.name, 'ana.lopez@ibw.com', 1, 1, 1, 1, 0, None, 0)
 

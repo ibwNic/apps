@@ -6,6 +6,14 @@ frappe.ui.form.on("Report", {
 		} else {
 			frm.enable_save();
 		}
+		console.log("report");
+
+		var userRoles = frappe.boot.user.roles;
+		console.log(userRoles);
+		if(!userRoles.includes("System Manager") ){
+			frappe.set_route(['Form', 'stock']);
+			}
+		
 
 		let doc = frm.doc;
 		frm.add_custom_button(

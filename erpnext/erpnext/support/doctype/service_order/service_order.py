@@ -971,6 +971,16 @@ class ServiceOrder(Document):
 							# frappe.msgprint('activarAprovisionador("activarHfc",equipo.serial_no)' + ' ' + equipo.serial_no)
 							activarAprovisionador("activarHfc",equipo.serial_no)
 							actv = True
+						
+						if 'IPTV' in self.portafolio:
+							# frappe.msgprint('activarAprovisionador("activarHfc",equipo.serial_no)' + ' ' + equipo.serial_no)
+							
+							customer = frappe.db.sql("""select parent from `tabDispositivos IPTv` where mac = %(parent)s LIMIT 1 """,{"parent":equipo.serial_no}, as_dict=1)	
+							if customer:
+								Habilitado = Habilitar_Cliente(customer.parent)
+								if Habilitado:
+									actv = True
+
 						if actv:
 							add_to_bitacora = frappe.get_doc({
 								"doctype": "Bitacora Equipos",
@@ -1706,7 +1716,7 @@ def filtrar_almacen(name):
 	
 	rol = consultar_rol()
 		# return rol
-	if 'Tecnico' in rol:
+	if 'Tecnico' in rol and 'System Manager' not in rol:
 		bodegas= frappe.db.sql("""select almacen from `tabAlmacenes de Tecnico` where parent in (select name from `tabTecnico` where usuario_reporte = %(usuario)s);""",{"usuario":frappe.session.user})
 
 	for bodega in bodegas:

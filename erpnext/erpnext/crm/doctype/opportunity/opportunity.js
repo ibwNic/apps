@@ -220,29 +220,34 @@ frappe.ui.form.on("Opportunity", {
 				}
 			});
 		}
-		if(frm.doc.opportunity_type === 'Venta de Equipo' && frm.doc.docstatus==0){
-			frm.add_custom_button(__("Factura de Venta"), function() {
-				// let d = frappe.model.get_new_name('sales-invoice');
-				// frappe.route_options = {
-				// 	'oportunidad':frm.doc.name,  
-				// 	'naming_series':"B-",
-				// 	'currency':frm.doc.currency,
-				// 	'customer':frm.doc.customer,
-				// 	'tipo_factura': "Venta de Equipos",					                   				
-				// };
-				// frappe.set_route(['Form', 'sales-invoice', d]);
-				
-				frappe.call({
-					method: "erpnext.accounts.doctype.sales_invoice.sales_invoice.factura_venta_de_equipos",
-					args: {"oportunidad":frm.doc.name},
-					callback: function(r) {
-						//var doc = frappe.model.sync(r.message)[0];
-						frappe.set_route("Form", "Sales Invoice", r.message);	
-						
-					}
+		if((frm.doc.opportunity_type === 'Venta de Equipo' && frm.doc.docstatus==0) || (frm.doc.ingresos_otc > 0 && frm.doc.docstatus==1) ){
+			if(frm.doc.opportunity_type === 'Venta de Equipo'){
+				frm.add_custom_button(__("Factura de Venta"), function() {				
+					frappe.call({
+						method: "erpnext.accounts.doctype.sales_invoice.sales_invoice.factura_venta_de_equipos",
+						args: {"oportunidad":frm.doc.name},
+						callback: function(r) {
+							//var doc = frappe.model.sync(r.message)[0];
+							frappe.set_route("Form", "Sales Invoice", r.message);	
+							
+						}
+					});
 				});
-			});
-			
+			}
+			else{
+				frm.add_custom_button(__("Factura de Venta"), function() {				
+					frappe.call({
+						method: "erpnext.accounts.doctype.sales_invoice.sales_invoice.factura_venta_activacion",
+						args: {"oportunidad":frm.doc.name},
+						callback: function(r) {
+							//var doc = frappe.model.sync(r.message)[0];
+							frappe.set_route("Form", "Sales Invoice", r.message);	
+							
+						}
+					});
+				});
+
+			}	
 		}
 
 		if(!frm.doc.__islocal && frm.perm[0].write && frm.doc.docstatus==0) {

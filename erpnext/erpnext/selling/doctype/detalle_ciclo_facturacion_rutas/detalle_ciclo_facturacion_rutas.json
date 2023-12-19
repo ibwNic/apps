@@ -6,7 +6,8 @@
  "engine": "InnoDB",
  "field_order": [
   "ruta",
-  "cantidad_de_clientes"
+  "cantidad_de_clientes",
+  "adjunto"
  ],
  "fields": [
   {
@@ -18,12 +19,17 @@
    "fieldname": "cantidad_de_clientes",
    "fieldtype": "Data",
    "label": "Cantidad de Clientes"
+  },
+  {
+   "fieldname": "adjunto",
+   "fieldtype": "Attach",
+   "label": "Adjunto"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2022-10-13 11:34:16.722531",
+ "modified": "2023-12-06 10:26:30.494439",
  "modified_by": "Administrator",
  "module": "Selling",
  "name": "Detalle Ciclo Facturacion Rutas",

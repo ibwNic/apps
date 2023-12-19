@@ -250,7 +250,7 @@
  "image_field": "image",
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-03-28 11:23:41.995242",
+ "modified": "2023-12-12 14:27:12.239488",
  "modified_by": "Administrator",
  "module": "Contacts",
  "name": "Contact",
@@ -388,6 +388,18 @@
    "read": 1,
    "report": 1,
    "role": "Support Team",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Vendedor Corporativo",
    "share": 1,
    "write": 1
   }

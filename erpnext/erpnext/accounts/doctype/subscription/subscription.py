@@ -553,6 +553,7 @@ class Subscription(Document):
 			invoice.cost_center = self.cost_center
 			invoice.currency = get_party_account_currency("Customer", self.party, company)
 			paralela =get_exchange_rate('USD','NIO', today(), throw=True)
+			invoice.tc_facturas = paralela
 			invoice.customer = self.party
 
 			if invoice.currency == "USD":
@@ -560,7 +561,7 @@ class Subscription(Document):
 			else:
 				invoice.conversion_rate=1
 
-			invoice.tc_facturas = paralela
+			
 
 			accounting_dimensions = get_accounting_dimensions()
 
@@ -978,7 +979,7 @@ class Subscription(Document):
 			)
 
 		items = []
-		# party = customer
+		party = customer
 
 		plans = []
 
@@ -988,7 +989,8 @@ class Subscription(Document):
 			inner join `tabSubscription`  t3 on  t2.parent =t3.name 
 			inner join `tabSubscription Plan` t4 on t4.name= t2.plan  
 			where t3.name=%(name)s and t2.estado_plan='Activo' and t4.cost>0""",
-		{"name": self.name },
+			{"name": self.name },
+		# {"party": party},
 		)
 
 		# for p in plans:
@@ -2264,7 +2266,9 @@ def get_exchange_rate(from_currency, to_currency, date=None, alternative=True, t
 def reactivacion_plan(name, estado):
 	from erpnext.crm.doctype.opportunity.opportunity import consultar_rol
 	roles =  consultar_rol()
-	if "Back Office" in roles or "Cobranza" in roles or "Departamentos" in roles:
+	if "Back Office" in roles or "Cobranza" in roles or "Departamentos" in roles or "SAC" in roles or "CSC" in roles:
+	# if "Back Office" in roles or "Cobranza" in roles or "Departamentos" in roles:
+
 		if estado == 'SUSPENDIDO: Manual' or estado == 'SUSPENDIDO: Temporal' or estado == 'Activo: Temporal' :
 			if not frappe.db.sql(""" select so.workflow_state from `tabService Order` so
 				inner join  `tabSO Detalle Clientes Suspendidos` sd on sd.parent=so.name
@@ -2277,60 +2281,60 @@ def reactivacion_plan(name, estado):
 				portafolio=get_portafolio_plan(upd_spd.plan)
 				portafolio = str(portafolio[0][0])
 
-				if portafolio not in ('IPTV'):#'ITV' SE QUITÓ PORQUE SE NECESITAN REGISTRAR LA REACTIVACION DE ESAS V.
-					var = False
-					status =''
-					if frappe.db.exists("Service Order", {"tipo_de_origen": "Subscription","tipo_de_orden":"REACTIVACION","nombre_de_origen":upd_sus.name,"plan_de_subscripcion":name}):
-						so= frappe.get_doc("Service Order", {"tipo_de_origen": "Subscription","tipo_de_orden":"REACTIVACION","nombre_de_origen":upd_sus.name,"plan_de_subscripcion":name})
-						if so.workflow_state=="Cancelado" or so.workflow_state=="Finalizado":
-							status = "Pasa"
-						else:
-							status = "No Pasa"
-
+				# if portafolio not in ('IPTV'):#'ITV' SE QUITÓ PORQUE SE NECESITAN REGISTRAR LA REACTIVACION DE ESAS V.
+				var = False
+				status =''
+				if frappe.db.exists("Service Order", {"tipo_de_origen": "Subscription","tipo_de_orden":"REACTIVACION","nombre_de_origen":upd_sus.name,"plan_de_subscripcion":name}):
+					so= frappe.get_doc("Service Order", {"tipo_de_origen": "Subscription","tipo_de_orden":"REACTIVACION","nombre_de_origen":upd_sus.name,"plan_de_subscripcion":name})
+					if so.workflow_state=="Cancelado" or so.workflow_state=="Finalizado":
+						status = "Pasa"
 					else:
-						var = True
-					if status=="Pasa" or var:
+						status = "No Pasa"
 
-						direccion=frappe.get_doc("Address", upd_spd.direccion)
-						od = frappe.get_doc({
-							'doctype': "Service Order",
-							'tipo_de_orden': "REACTIVACION",
-							'workflow_state': "Abierto",
-							'tipo_de_origen': "Subscription",
-							'tipo_cliente': frappe.db.get_value('Customer', {"name": upd_sus.party}, 'customer_group'),
-							'nombre': frappe.db.get_value('Customer', {"name": upd_sus.party}, 'customer_name'),
-							'nombre_de_origen': upd_sus.name,
-							'descripcion': frappe._('Ejecutar Reactivacion de {0}').format(name),
-							'tipo': 'Customer',
-							'tercero': upd_sus.party,
-							'plan_de_subscripcion': name,
-							'direccion_de_instalacion': upd_spd.direccion,
-							'portafolio': portafolio,
-							'departamento': direccion.departamento,
-							'municipio': direccion.municipio,
-							'barrio': direccion.barrio,
-							'direccion': direccion.address_line1,
-							'latitud':upd_spd.latitud,
-							'longitud':upd_spd.longitud,
-							'nodo':upd_spd.nodo
-						})
-						od.insert()
-						frappe.msgprint(frappe._('Nueva orden de {0} con ID {1}').format(frappe._(od.tipo_de_orden), frappe.utils.get_link_to_form("Service Order", od.name)))
+				else:
+					var = True
+				if status=="Pasa" or var:
 
-						for equipos in upd_sus.equipos:
-							if name==equipos.plan:
-								code = frappe.db.get_value('Serial No', {"name": equipos.equipo}, 'item_code')
-								eos = frappe.get_doc({
-								'doctype': "Equipo_Orden_Servicio",
-								'serial_no': equipos.equipo,
-								'parent': od.name,
-								'parenttype': "Service Order",
-								'parentfield': "equipo_orden_servicio",
-								'item_code': code
-								})
-								eos.insert()
-					else:
-						frappe.msgprint("La orden no se pudo generar: La orden de reactivacion ya fue creada o existe una desinstalación en curso")
+					direccion=frappe.get_doc("Address", upd_spd.direccion)
+					od = frappe.get_doc({
+						'doctype': "Service Order",
+						'tipo_de_orden': "REACTIVACION",
+						'workflow_state': "Abierto",
+						'tipo_de_origen': "Subscription",
+						'tipo_cliente': frappe.db.get_value('Customer', {"name": upd_sus.party}, 'customer_group'),
+						'nombre': frappe.db.get_value('Customer', {"name": upd_sus.party}, 'customer_name'),
+						'nombre_de_origen': upd_sus.name,
+						'descripcion': frappe._('Ejecutar Reactivacion de {0}').format(name),
+						'tipo': 'Customer',
+						'tercero': upd_sus.party,
+						'plan_de_subscripcion': name,
+						'direccion_de_instalacion': upd_spd.direccion,
+						'portafolio': portafolio,
+						'departamento': direccion.departamento,
+						'municipio': direccion.municipio,
+						'barrio': direccion.barrio,
+						'direccion': direccion.address_line1,
+						'latitud':upd_spd.latitud,
+						'longitud':upd_spd.longitud,
+						'nodo':upd_spd.nodo
+					})
+					od.insert()
+					frappe.msgprint(frappe._('Nueva orden de {0} con ID {1}').format(frappe._(od.tipo_de_orden), frappe.utils.get_link_to_form("Service Order", od.name)))
+
+					for equipos in upd_sus.equipos:
+						if name==equipos.plan:
+							code = frappe.db.get_value('Serial No', {"name": equipos.equipo}, 'item_code')
+							eos = frappe.get_doc({
+							'doctype': "Equipo_Orden_Servicio",
+							'serial_no': equipos.equipo,
+							'parent': od.name,
+							'parenttype': "Service Order",
+							'parentfield': "equipo_orden_servicio",
+							'item_code': code
+							})
+							eos.insert()
+				else:
+					frappe.msgprint("La orden no se pudo generar: La orden de reactivacion ya fue creada o existe una desinstalación en curso")
 
 				# except Exception as e:
 				# 	frappe.msgprint(frappe._('reactivacion_plan : Fatality Error Project {0} ').format(e))
@@ -2339,7 +2343,7 @@ def reactivacion_plan(name, estado):
 		else:
 			frappe.msgprint("Se activa solo para planes suspendidos")
 	else:
-		frappe.msgprint("Necesita permiso de Back Office, Departamentos o Cobranza")
+		frappe.msgprint("Necesita permiso de Back Office, CSC, Departamentos o Cobranza")
 def randStr(chars = string.ascii_uppercase + string.digits, N=4):
 	return ''.join(random.choice(chars) for _ in range(N))
 
@@ -2588,7 +2592,7 @@ def activar_temporalmente(name,estado,cliente):
 				frappe.db.set_value("Bitacora de Planes",name,"estado_plan","Activo: Temporal")
 			bitacora_detalle = frappe.get_doc({
 					"doctype": "Detalle Bitacora Planes",
-					"detalle":"Plan activado temporalmente",
+					"detalle":"Activo: Temporal",
 					"fecha": now(),
 					"usuario":frappe.session.user,
 					"parent": name,
@@ -2627,7 +2631,7 @@ def suspender_clientes_activos_temporales():
 			frappe.db.set_value("Bitacora de Planes",name,"estado_plan","SUSPENDIDO: Manual")
 		bitacora_detalle = frappe.get_doc({
 				"doctype": "Detalle Bitacora Planes",
-				"detalle":"De Activo: Temporal a SUSPENDIDO: Manual",
+				"detalle":"SUSPENDIDO: Manual",
 				"fecha": now(),
 				#"usuario":frappe.session.user,
 				"parent": plan_detail.name,
