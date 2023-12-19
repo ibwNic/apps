@@ -975,11 +975,12 @@ class ServiceOrder(Document):
 						if 'IPTV' in self.portafolio:
 							# frappe.msgprint('activarAprovisionador("activarHfc",equipo.serial_no)' + ' ' + equipo.serial_no)
 							
-							customer = frappe.db.sql("""select parent from `tabDispositivos IPTv` where mac = %(parent)s LIMIT 1 """,{"parent":equipo.serial_no}, as_dict=1)	
+							customer = frappe.db.sql("""select parent from `tabDispositivos IPTv` where mac = %(parent)s """,{"parent":equipo.serial_no}, as_dict=1)	
 							if customer:
-								Habilitado = Habilitar_Cliente(customer.parent)
-								if Habilitado:
-									actv = True
+								for c in customer:
+									Habilitado = Habilitar_Cliente(c.parent)
+									if Habilitado:
+										actv = True
 
 						if actv:
 							add_to_bitacora = frappe.get_doc({
