@@ -24,7 +24,7 @@
  ],
  "idx": 0,
  "is_standard": "Yes",
- "modified": "2023-11-24 21:32:28.768270",
+ "modified": "2024-01-09 14:07:47.469196",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Cambio de Servicio",
@@ -33,6 +33,11 @@
  "query": "\nselect\ns.party as cliente,\ns.nombre_del_cliente as nombre,\ncu.company_name as Compania,\nad.departamento,\ncu.customer_group as Tipo_Cliente,\nspd.name as plan_id,\nspd.estado_plan as estado,\nspd.plan,\n(  select i.stock_uom from `tabItem` as i where i.name=sp.item  )as Velocidad,\nspd.cost as precio,\nsp.item_group as portafolio,\nspd.service_start,\ns.subscription_update,\n(  select spd2.name from `tabSubscription Plan Detail` as spd2 where spd2.name=spd.old_plan   ) as planID_anterior,\n(  select spd2.plan from `tabSubscription Plan Detail` as spd2 where spd2.name=spd.old_plan  ) as plan_anterior,\n(select spd2.cost from `tabSubscription Plan Detail` as spd2 where spd2.name=spd.old_plan ) as Precio_Anterior,\ns.campana,\ns.tipo_contrato,\ns.vendedor,\ns.name as contrato,\ns.no_contrato as no_contrato,\nday(spd.service_start) as dia,\nmonth(spd.service_start) as mes,\nyear(spd.service_start) as a\u00f1o\nfrom `tabSubscription Plan Detail` spd\ninner join   `tabSubscription` s on spd.parent = s.name\ninner join  `tabSubscription Plan` sp on sp.name = spd.plan\ninner join `tabAddress` ad on ad.name = spd.direccion\ninner join `tabCustomer` cu on  cu.name = s.party\nwhere spd.old_plan is not null  and  spd.service_start >='2023-05-06'\nand DATE(spd.service_start) >= %(FechaD)s \nand DATE(spd.service_start) <= %(FechaH)s\nand spd.estado_plan<>'Inactivo'",
  "ref_doctype": "Subscription",
  "report_name": "Cambio de Servicio",
+ "report_script": "",
  "report_type": "Query Report",
- "roles": []
+ "roles": [
+  {
+   "role": "Back Office"
+  }
+ ]
 }

@@ -24,7 +24,7 @@
  ],
  "idx": 0,
  "is_standard": "Yes",
- "modified": "2023-11-28 16:18:20.714378",
+ "modified": "2024-01-09 14:07:33.596807",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Altas del mes",
@@ -38,9 +38,6 @@
  "roles": [
   {
    "role": "Sales Manager"
-  },
-  {
-   "role": "Coordinador de Ventas"
   },
   {
    "role": "Sales User"

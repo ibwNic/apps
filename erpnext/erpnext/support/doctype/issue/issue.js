@@ -179,7 +179,7 @@ frappe.ui.form.on("Issue", {
 				}
 			}
 		})
-        if (frm.doc.customer !== undefined) {
+        if (frm.doc.customer !== undefined && !frappe.boot.user.roles.includes("Tecnico")) {
             frappe.db.get_value("Customer", {"name": frm.doc.customer},"customer_name",function(res){ 
 			res.customer_name; }).then(r =>{ var rest=r.message;
 			frm.set_value('nombre',rest.customer_name) })
@@ -410,8 +410,10 @@ frappe.ui.form.on("Issue", {
 		},
 		before_save(frm){			
 			if(frm.doc.equipos){
+				let repetidos = []
 				frm.doc.equipos.forEach(e => {
-					if (e.equipo_nuevo){						
+					if (e.equipo_nuevo){
+						repetidos.push(e.equipo_nuevo)				
 						let x = frappe.call({
 							"method": "erpnext.support.doctype.issue.issue.validar_equipo_almacen",
 							"args":{
@@ -427,6 +429,11 @@ frappe.ui.form.on("Issue", {
 						}						
 					}					
 				});	
+				if (tieneDuplicados(repetidos)){
+					frappe.throw("Hay mac repetidos en la tabla de cambio de equipos")
+
+				}
+
 			}
 			if(frm.doc.productos){
 				frm.doc.productos.forEach(e => {
@@ -603,3 +610,8 @@ frappe.ui.form.on("Issue", "crear_direccion", function(frm) {
 		}})
 
 })
+
+
+function tieneDuplicados(array) {
+    return new Set(array).size !== array.length;
+}

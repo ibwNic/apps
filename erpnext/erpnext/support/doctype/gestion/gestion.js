@@ -3,6 +3,14 @@
 
 frappe.ui.form.on('Gestion', {
 	refresh: function(frm) {
+
+        var userRoles = frappe.boot.user.roles;
+
+		if( userRoles.includes("Tecnico") && frappe.session.user != 'Administrator')
+		{
+			frappe.set_route(['Form', 'support']);
+		}
+
         if(!frm.doc.__islocal){
             if(frm.doc.tipo_gestion == "Clientes Terminados" && frm.doc.subgestion == "Reactivacion" && frm.doc.workflow_state == "En Proceso"){
                 frm.set_intro('ESCALAR para solicitar una orden de reactivación de los planes terminados que están en la tabla, FINALIZAR si no se hará la solicitud. Solicitar apoyo de IT solo en caso de no cargarse los planes terminados del cliente en la tabla.', 'blue');

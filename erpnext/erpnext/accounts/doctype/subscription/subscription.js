@@ -22,6 +22,8 @@ frappe.ui.form.on('Subscription', {
 	
 	refresh: function(frm) {
 
+		
+
 		let x = frappe.call({
 			"method": "erpnext.selling.doctype.customer.customer.mostrar_precio_vendedor",
 			"async": false, 
@@ -29,6 +31,12 @@ frappe.ui.form.on('Subscription', {
 			}})
 
 		var userRoles = frappe.boot.user.roles;
+
+		if( userRoles.includes("Tecnico") && frappe.session.user != 'Administrator')
+		{
+			frappe.set_route(['Form', 'support']);
+		}
+
 		console.log(x.responseJSON.message)
 
 		frappe.db.get_value("Customer", {"name": frm.doc.party},"sales_person",function(res){ 
@@ -48,6 +56,14 @@ frappe.ui.form.on('Subscription', {
 				frm.fields_dict.equipos.grid.toggle_display("deposito", true);
 				cur_frm.fields_dict["equipos"].grid.set_column_disp("deposito", true);	
 			}
+			// if((rol.includes("Vendedor Masivo") || rol.includes("Vendedor Corporativo") )&& frappe.session.user != 'Administrator' ){
+
+			// 	if( rest.sales_person != x.responseJSON.message )
+			// 	{
+			// 		frappe.set_route(['Form', 'crm']);
+			// 	}
+				
+			// }
 		})
 
 

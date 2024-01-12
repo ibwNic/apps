@@ -702,15 +702,15 @@ frappe.ui.form.on("Opportunity Item OTC", {
 			});
 			frm.trigger("calculate", cdt, cdn);
 
-			if(item.item === 'Presupuesto de Tercero'){
-				frm.fields_dict.productos_otc.grid.toggle_reqd('nombre_proveedor', true);
-				frm.fields_dict.productos_otc.grid.toggle_reqd('presupuesto_de_tercero', true);
+			// if(item.item === 'Presupuesto de Tercero'){
+			// 	frm.fields_dict.productos_otc.grid.toggle_reqd('nombre_proveedor', true);
+			// 	frm.fields_dict.productos_otc.grid.toggle_reqd('presupuesto_de_tercero', true);
 
-			}
-			else{
-				frm.fields_dict.productos_otc.grid.toggle_reqd('nombre_proveedor', false);
-				frm.fields_dict.productos_otc.grid.toggle_reqd('presupuesto_de_tercero', false);
-			}
+			// }
+			// else{
+			// 	frm.fields_dict.productos_otc.grid.toggle_reqd('nombre_proveedor', false);
+			// 	frm.fields_dict.productos_otc.grid.toggle_reqd('presupuesto_de_tercero', false);
+			// }
 		}
 
     },

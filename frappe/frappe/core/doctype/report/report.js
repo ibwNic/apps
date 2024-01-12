@@ -11,7 +11,7 @@ frappe.ui.form.on("Report", {
 		var userRoles = frappe.boot.user.roles;
 		console.log(userRoles);
 		if(!userRoles.includes("System Manager") ){
-			frappe.set_route(['Form', 'stock']);
+			frappe.set_route(['Form', 'support']);
 			}
 		
 

@@ -832,6 +832,10 @@ class DatabaseQuery:
 							conditions = (f" tecnico in {tecnicos} ")
 						if self.doctype == "Report":
 							conditions = (f" owner = '{frappe.session.user}' ")
+						if self.doctype=="Customer":		
+							conditions = (f"  sales_person='nt'")	
+						if self.doctype=="Subscription":		
+							conditions = (f"  vendedor='nt'")	
 						
 						
 					else:

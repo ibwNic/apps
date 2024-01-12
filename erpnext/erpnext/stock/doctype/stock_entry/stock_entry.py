@@ -148,11 +148,19 @@ class StockEntry(StockController):
 							self.reload()
 							return
 		if self.workflow_state == "Revisado" and self.stock_entry_type == 'Material Transfer':
+
+			for item in self.items:
+				if item.t_warehouse == item.s_warehouse:
+					frappe.msgprint("No se puede transferir desde la misma bodega.")
+					frappe.db.set_value(self.doctype, self.name, 'workflow_state', 'Guardado')
+					self.reload()
+					return
 			if self.to_warehouse == 'Las mercancías en tránsito - NI' and not self.tecnico:
 				frappe.msgprint("Favor ingresar el técnico que recibirá los materiales")
 				frappe.db.set_value(self.doctype, self.name, 'workflow_state', 'Guardado')
 				self.reload()
 				return
+				
 			if frappe.db.get_value("Stock Entry",self.outgoing_stock_entry,"from_warehouse"):
 				if ("usado" in self.to_warehouse.lower() and 
 					"usado" not in frappe.db.get_value("Stock Entry",self.outgoing_stock_entry,"from_warehouse").lower()):
@@ -220,33 +228,33 @@ class StockEntry(StockController):
 					if "\n" in row.serial_no:
 						series = row.serial_no.split("\n")
 						for mac in series:
-							if frappe.db.exists("Subscription Plan Equipos",{"equipo": mac.replace(":","")}) and row.service_order==None:
+							if (row.service_order==None) and frappe.session.user != 'Administrator':
 								frappe.msgprint(f"el numero de serie {mac} existe esta vinculado a un cliente favor usar el metodo de obtencion de equipos de ordenes de desinstalacion y averias.")
 								frappe.db.set_value(self.doctype, self.name, 'workflow_state', 'Guardado')
 								self.reload()
 								return	
-							elif frappe.db.exists("Subscription Plan Equipos",{"equipo": insert_colons(mac)}) and row.service_order==None:
+							elif (row.service_order==None)  and frappe.session.user != 'Administrator':
 								frappe.msgprint(f"el numero de serie {mac} existe esta vinculado a un cliente favor usar el metodo de obtencion de equipos de ordenes de desinstalacion y averias.")
 								frappe.db.set_value(self.doctype, self.name, 'workflow_state', 'Guardado')
 								self.reload()
 								return	
-							elif frappe.db.exists("Subscription Plan Equipos",{"equipo": mac}) and row.service_order==None:
+							elif (row.service_order==None)  and frappe.session.user != 'Administrator':
 								frappe.msgprint(f"el numero de serie {mac} existe esta vinculado a un cliente favor usar el metodo de obtencion de equipos de ordenes de desinstalacion y averias.")
 								frappe.db.set_value(self.doctype, self.name, 'workflow_state', 'Guardado')
 								self.reload()
 								return										
 					else:
-						if frappe.db.exists("Subscription Plan Equipos",{"equipo": row.serial_no.replace(":","")}) and row.service_order==None:
+						if (row.service_order==None)  and frappe.session.user != 'Administrator':
 							frappe.msgprint(f"el numero de serie {row.serial_no} existe esta vinculado a un cliente favor usar el metodo de obtencion de equipos de ordenes de desinstalacion y averias.")
 							frappe.db.set_value(self.doctype, self.name, 'workflow_state', 'Guardado')
 							self.reload()
 							return	
-						elif ":" not in row.serial_no and frappe.db.exists("Subscription Plan Equipos",{"equipo": insert_colons(row.serial_no)}) and row.service_order==None:
+						elif (row.service_order==None)  and frappe.session.user != 'Administrator':
 							frappe.msgprint(f"el numero de serie {row.serial_no} existe esta vinculado a un cliente favor usar el metodo de obtencion de equipos de ordenes de desinstalacion y averias.")
 							frappe.db.set_value(self.doctype, self.name, 'workflow_state', 'Guardado')
 							self.reload()
 							return
-						elif frappe.db.exists("Subscription Plan Equipos",{"equipo": row.serial_no}) and row.service_order==None:
+						elif (row.service_order==None)  and frappe.session.user != 'Administrator':
 							frappe.msgprint(f"el numero de serie {row.serial_no} existe esta vinculado a un cliente favor usar el metodo de obtencion de equipos de ordenes de desinstalacion y averias.")
 							frappe.db.set_value(self.doctype, self.name, 'workflow_state', 'Guardado')
 							self.reload()

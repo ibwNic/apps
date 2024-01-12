@@ -611,7 +611,7 @@ def generar_orden_de_reactivacion(plan, gestion):
 	portafolio=get_portafolio_plan(upd_spd.plan)
 	portafolio = str(portafolio[0][0])
 
-	if portafolio not in ('IPTV'):
+	if portafolio not in ('IPTV+'):
 		var = False
 		status =''
 		if frappe.db.exists("Service Order", {"tipo_de_origen": "Gestion","tipo_de_orden":"REACTIVACION","nombre_de_origen":gestion,"plan_de_subscripcion":plan}):

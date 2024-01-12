@@ -40,6 +40,7 @@ def get_pdf(html, options=None, output: PdfWriter | None = None):
 		# create in-memory binary streams from filedata and create a PdfReader object
 		reader = PdfReader(io.BytesIO(filedata))
 	except OSError as e:
+		
 		if any([error in str(e) for error in PDF_CONTENT_ERRORS]):
 			if not filedata:
 				print(html, options)

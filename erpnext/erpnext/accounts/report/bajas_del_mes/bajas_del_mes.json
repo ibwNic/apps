@@ -24,7 +24,7 @@
  ],
  "idx": 0,
  "is_standard": "Yes",
- "modified": "2023-11-24 21:32:10.598891",
+ "modified": "2024-01-09 14:07:54.959502",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Bajas del mes",
@@ -35,5 +35,9 @@
  "report_name": "Bajas del mes",
  "report_script": "",
  "report_type": "Query Report",
- "roles": []
+ "roles": [
+  {
+   "role": "Back Office"
+  }
+ ]
 }

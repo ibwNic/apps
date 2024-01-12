@@ -84,7 +84,7 @@ frappe.ui.form.on('Service Order', {
 			frm.toggle_display("almacen_filtro",false);
 			if(frm.doc.tipo_de_orden === "REACTIVACION"){
 				frm.toggle_display("materiales_usados",false);
-				frm.set_df_property('equipo_orden_servicio', 'read_only', true);	
+				//frm.set_df_property('equipo_orden_servicio', 'read_only', true);	
 			}
 		}
 

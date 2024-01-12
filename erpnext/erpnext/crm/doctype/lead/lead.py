@@ -293,38 +293,38 @@ class Lead(SellingController, CRMNote):
 
 		return contact
 
-	def create_prospect(self, company_name):
-		try:
-			prospect = frappe.new_doc("Prospect")
+	# def create_prospect(self, company_name):
+	# 	try:
+	# 		prospect = frappe.new_doc("Prospect")
 
-			prospect.company_name = company_name or self.company_name
-			prospect.no_of_employees = self.no_of_employees
-			prospect.industry = self.industry
-			prospect.market_segment = self.market_segment
-			prospect.annual_revenue = self.annual_revenue
-			prospect.territory = self.territory
-			prospect.fax = self.fax
-			prospect.website = self.website
-			prospect.prospect_owner = self.lead_owner
-			prospect.company = self.company
-			prospect.notes = self.notes
+	# 		prospect.company_name = company_name or self.company_name
+	# 		prospect.no_of_employees = self.no_of_employees
+	# 		prospect.industry = self.industry
+	# 		prospect.market_segment = self.market_segment
+	# 		prospect.annual_revenue = self.annual_revenue
+	# 		prospect.territory = self.territory
+	# 		prospect.fax = self.fax
+	# 		prospect.website = self.website
+	# 		prospect.prospect_owner = self.lead_owner
+	# 		prospect.company = self.company
+	# 		prospect.notes = self.notes
 
-			prospect.append(
-				"leads",
-				{
-					"lead": self.name,
-					"lead_name": self.lead_name,
-					"email": self.email_id,
-					"mobile_no": self.mobile_no,
-					"lead_owner": self.lead_owner,
-					"status": self.status,
-				},
-			)
-			prospect.flags.ignore_permissions = True
-			prospect.flags.ignore_mandatory = True
-			prospect.save(ignore_permissions=True)
-		except frappe.DuplicateEntryError:
-			frappe.throw(_("Prospect {0} already exists").format(company_name or self.company_name))
+	# 		prospect.append(
+	# 			"leads",
+	# 			{
+	# 				"lead": self.name,
+	# 				"lead_name": self.lead_name,
+	# 				"email": self.email_id,
+	# 				"mobile_no": self.mobile_no,
+	# 				"lead_owner": self.lead_owner,
+	# 				"status": self.status,
+	# 			},
+	# 		)
+	# 		prospect.flags.ignore_permissions = True
+	# 		prospect.flags.ignore_mandatory = True
+	# 		prospect.save(ignore_permissions=True)
+	# 	except frappe.DuplicateEntryError:
+	# 		frappe.throw(_("Prospect {0} already exists").format(company_name or self.company_name))
 
 #def _make_customer(source_name, target_doc=None):
 # 	# customer = frappe.db.get_value("Prospect Lead", {"lead": source_name},'customer')

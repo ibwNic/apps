@@ -209,6 +209,7 @@ class Document(BaseDocument):
 	def raise_no_permission_to(self, perm_type):
 		"""Raise `frappe.PermissionError`."""
 		roles = [r[0] for r in frappe.db.sql(""" select role from  `tabHas Role` where parent = %(parent)s""", {"parent":frappe.session.user})]
+		
 		if self.doctype == "Feedback" and "Back Office" in roles:
 			pass
 		else:

@@ -245,7 +245,8 @@
   {
    "fieldname": "start_date",
    "fieldtype": "Date",
-   "label": "Subscription Start Date"
+   "label": "Subscription Start Date",
+   "reqd": 1
   },
   {
    "fieldname": "cost_center",
@@ -290,7 +291,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-10-23 08:15:49.328740",
+ "modified": "2024-01-11 11:57:17.185719",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Subscription",

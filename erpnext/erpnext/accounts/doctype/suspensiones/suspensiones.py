@@ -187,7 +187,7 @@ def generar_vista_previa(name):
 	except Exception as e:
 			frappe.msgprint(frappe._('Fatality Error Project {0} ').format(e))	
 
-	return que
+	return
 
 @frappe.whitelist()
 def process_de_Suspencion(name):

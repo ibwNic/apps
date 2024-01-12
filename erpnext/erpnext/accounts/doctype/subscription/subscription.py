@@ -2071,6 +2071,16 @@ def get_addresses_user(party):
 	return lista
 
 @frappe.whitelist()
+def vincular_lead(name):
+	susc = frappe.get_doc("Subscription", name)
+	contratos = frappe.db.sql(""" select count(name) from `tabSubscription` where party=%(party)s """,{"party": susc.party})
+	
+	if contratos[0][0]==1 and not susc.lead:
+		frappe.db.set_value("Subscription",name,"lead",frappe.get_value("Customer", susc.party,"lead_name"))
+
+
+
+@frappe.whitelist()
 def get_contacts_user(party):
 	contactos = frappe.db.sql(""" select name from `tabContact` where name in(
 		select distinct(parent) from `tabDynamic Link` where link_name=%(party)s) """,{"party": party})

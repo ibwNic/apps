@@ -109,7 +109,8 @@ frappe.ui.form.on("Customer", {
 
 		var rol = frappe.boot.user.roles;
 	
-		if(rol.includes("Vendedor Masivo") && rol.includes("Vendedor Corporativo") && frappe.session.user != 'Administrator' ){
+		if((rol.includes("Vendedor Masivo") || rol.includes("Vendedor Corporativo") )&& frappe.session.user != 'Administrator' ){
+			// console.log("1")
 			let sp = frappe.call({
 				"method": "erpnext.selling.doctype.customer.customer.mostrar_precio_vendedor",
 				"async": false, 
@@ -121,6 +122,12 @@ frappe.ui.form.on("Customer", {
 			}
 			
 		}
+		if( rol.includes("Tecnico") && frappe.session.user != 'Administrator')
+			{
+				frappe.set_route(['Form', 'support']);
+			}
+
+
 
 
 		frappe.call({
@@ -141,7 +148,6 @@ frappe.ui.form.on("Customer", {
 					
 					if(((userRoles.includes("Cobranza") || userRoles.includes("Back Office") || frm.doc.customer_group == 'Individual') && !userRoles.includes("Departamentos") ) ||  frappe.session.user == 'Administrator' || frm.doc.sales_person == x.responseJSON.message  || (frm.doc.customer_group == 'Pyme' && userRoles.includes("Pyme")) ){
 						
-
 						const data = document.querySelector("#lista");
 						var tmp_tt_table = `<table class="table table-striped">
 						<thead>
@@ -180,6 +186,11 @@ frappe.ui.form.on("Customer", {
 						data.innerHTML = frappe.render(tmp_tt_table, {"data": r.message});
 					}
 					else{
+	
+						if(( rol.includes("Vendedor Masivo") || rol.includes("Vendedor Corporativo")) && frappe.session.user != 'Administrator' && frm.doc.sales_person != x.responseJSON.message)
+						{
+							frappe.set_route(['Form', 'crm']);
+						}
 						const data = document.querySelector("#lista");
 					var tmp_tt_table = `<table class="table table-striped">
 					<thead>
@@ -375,8 +386,8 @@ frappe.ui.form.on("Customer", {
 	
 	frappe.db.get_value("Sales Person", {"usuario": frappe.session.user},"name",function(res){ 
 		res.name; }).then(r =>{ var rest=r.message; 
-			console.log("user");
-			console.log(rest.name);
+			// console.log("user");
+			// console.log(rest.name);
 		if(rest.name==frm.doc.sales_person){
 			frappe.call({
 				"method": "erpnext.selling.doctype.customer.customer.obtener_estado_de_cuenta",

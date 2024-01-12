@@ -10,7 +10,7 @@
  "idx": 0,
  "is_standard": "Yes",
  "json": "{}",
- "modified": "2023-12-07 08:19:14.064511",
+ "modified": "2024-01-02 15:50:47.055387",
  "modified_by": "Administrator",
  "module": "CRM",
  "name": "OSS",
@@ -24,6 +24,9 @@
  "roles": [
   {
    "role": "Cobranza"
+  },
+  {
+   "role": "Coordinador de Cobranza"
   }
  ]
 }

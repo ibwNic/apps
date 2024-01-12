@@ -25,7 +25,7 @@
  ],
  "idx": 0,
  "is_standard": "Yes",
- "modified": "2023-06-30 09:20:59.384278",
+ "modified": "2024-01-02 10:21:21.161992",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Detalle de Factura de Equipos",
@@ -43,22 +43,16 @@
    "role": "Accounts User"
   },
   {
-   "role": "Cajero"
-  },
-  {
    "role": "Back Office"
   },
   {
    "role": "Employee Self Service"
   },
   {
-   "role": "Administrador Caja"
-  },
-  {
-   "role": "Support Team"
-  },
-  {
    "role": "Gerente de Ventas Corporativas"
+  },
+  {
+   "role": "Stock Manager"
   }
  ]
 }

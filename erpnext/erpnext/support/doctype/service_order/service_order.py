@@ -651,7 +651,7 @@ class ServiceOrder(Document):
 					frappe.db.sql(""" update `tabSubscription` set workflow_state = 'Instalado', current_invoice_start = %(fecha_finalizado)s , current_invoice_end = %(current_invoice_end)s where name =%(nombre_de_origen)s;""",{"fecha_finalizado":self.fecha_atendido,"current_invoice_end":p,"nombre_de_origen":susc.name})
 				combos = tv = gpon = hfc = tv_gpon = tv_hfc = 0
 				hay_combo = False 
-
+				#COMBO = 1 GPON = 1 HFC = 0 TV = 1 TV_G = 1 tv_hfc = 0
 				for plan in susc.plans:
 					if plan.es_combo==1:
 						combos +=1
@@ -720,7 +720,7 @@ class ServiceOrder(Document):
 								'estado_plan': "Activo",
 								})
 							bitacora_detalle.insert(ignore_permissions=True)
-						elif "TV" in plan.plan and plan.estado_plan == 'Inactivo':
+						elif "TV" in plan.plan and plan.estado_plan == 'Inactivo' and "IPTV" not in plan.plan:
 							if not frappe.db.exists("Bitacora de Planes", {"subscription_plan_detail": spd.name}):
 								bitacora_plan = frappe.get_doc({
 									'doctype': "Bitacora de Planes",
@@ -1266,7 +1266,7 @@ class ServiceOrder(Document):
 				frappe.db.set_value(self.doctype, self.name, 'estado', 'Seguimiento')
 				self.reload()
 				return
-			if self.tipo_de_orden == "INSTALACION":
+			if self.tipo_de_orden in ('INSTALACION'):
 				equipos = frappe.db.sql(""" select count(*) from `tabEquipo_Orden_Servicio` where parent = %(parent)s """, {"parent": self.name})
 				try:
 					equipos = int(equipos[0][0])
@@ -1290,34 +1290,35 @@ class ServiceOrder(Document):
 						frappe.db.set_value(self.doctype, self.name, 'workflow_state', 'Seguimiento')
 						self.reload()
 						return
-				almacenes = []
-				tecnicos = [t.tecnico for t in self.cuadrilla_tecnica]
-				tecnicos.append(self.tecnico)
-				if frappe.db.exists("Almacenes de Tecnico",{'parent':['in',tecnicos]},"almacen"):
-					for almacen in frappe.db.get_values("Almacenes de Tecnico",{'parent':['in',tecnicos]},"almacen"):
-						almacenes.append(almacen[0])
-				else:
-					frappe.msgprint("El tecnico no tiene bodegas asignadas")
-					frappe.db.set_value(self.doctype, self.name, 'workflow_state', 'Seguimiento')
-					frappe.db.set_value(self.doctype, self.name, 'fecha_atendido', None)
-					self.reload()
-					return
-				if len(self.equipo_orden_servicio) > 0:
-					for equipo in self.equipo_orden_servicio:
-						if frappe.db.get_value("Serial No",equipo.serial_no,"warehouse") not in almacenes:							
-							frappe.msgprint("El equipo " + equipo.serial_no + " no pertenece a la bodega del técnico")
-							frappe.db.set_value(self.doctype, self.name, 'workflow_state', 'Seguimiento')
-							self.reload()
-							return
-						if 'IMOVIL' in self.portafolio or 'HFC' in self.portafolio:
-							aprov_name = frappe.db.get_value("Aprovisionamiento",{"name":equipo.serial_no},'name')
-							if aprov_name:
-								frappe.db.sql(""" update `tabAprovisionamiento` set plan = %(plan)s where name = %(name)s""", {"plan":self.plan_de_subscripcion,"name":aprov_name})
-							else:
-								frappe.msgprint("El Equipo No esta Aprovisionado")
+				if self.tipo_de_orden =='INSTALACION':
+					almacenes = []
+					tecnicos = [t.tecnico for t in self.cuadrilla_tecnica]
+					tecnicos.append(self.tecnico)
+					if frappe.db.exists("Almacenes de Tecnico",{'parent':['in',tecnicos]},"almacen"):
+						for almacen in frappe.db.get_values("Almacenes de Tecnico",{'parent':['in',tecnicos]},"almacen"):
+							almacenes.append(almacen[0])
+					else:	
+						frappe.msgprint("El tecnico no tiene bodegas asignadas")
+						frappe.db.set_value(self.doctype, self.name, 'workflow_state', 'Seguimiento')
+						frappe.db.set_value(self.doctype, self.name, 'fecha_atendido', None)
+						self.reload()
+						return
+					if len(self.equipo_orden_servicio) > 0:
+						for equipo in self.equipo_orden_servicio:
+							if frappe.db.get_value("Serial No",equipo.serial_no,"warehouse") not in almacenes:							
+								frappe.msgprint("El equipo " + equipo.serial_no + " no pertenece a la bodega del técnico")
 								frappe.db.set_value(self.doctype, self.name, 'workflow_state', 'Seguimiento')
 								self.reload()
-								return	
+								return
+							if 'IMOVIL' in self.portafolio or 'HFC' in self.portafolio:
+								aprov_name = frappe.db.get_value("Aprovisionamiento",{"name":equipo.serial_no},'name')
+								if aprov_name:
+									frappe.db.sql(""" update `tabAprovisionamiento` set plan = %(plan)s where name = %(name)s""", {"plan":self.plan_de_subscripcion,"name":aprov_name})
+								else:
+									frappe.msgprint("El Equipo No esta Aprovisionado")
+									frappe.db.set_value(self.doctype, self.name, 'workflow_state', 'Seguimiento')
+									self.reload()
+									return	
 											
 			if not solucion:
 				frappe.msgprint("Inserte una solución")

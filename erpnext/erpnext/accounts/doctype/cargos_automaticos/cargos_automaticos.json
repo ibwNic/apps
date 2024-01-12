@@ -35,12 +35,14 @@
    "reqd": 1
   },
   {
+   "allow_bulk_edit": 1,
    "fieldname": "detalle",
    "fieldtype": "Table",
    "label": "Detalle",
    "options": "Detalle Cargos"
   },
   {
+   "allow_bulk_edit": 1,
    "fieldname": "rechazados",
    "fieldtype": "Table",
    "label": "Rechazados",
@@ -69,7 +71,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-11-02 08:54:03.149810",
+ "modified": "2023-12-28 11:50:48.672086",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Cargos Automaticos",

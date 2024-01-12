@@ -1,6 +1,6 @@
 {
  "charts": [],
- "content": "[{\"type\":\"spacer\",\"data\":{\"col\":12}},{\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Your Shortcuts</b></span>\",\"col\":12}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Lead\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Suscripci\u00f3n\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Opportunity\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Customer\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Sales Analytics\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Ingresos Colectores\",\"col\":3}},{\"type\":\"spacer\",\"data\":{\"col\":12}},{\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Reports &amp; Masters</b></span>\",\"col\":12}},{\"type\":\"card\",\"data\":{\"card_name\":\"Flujo de ventas\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Informes\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Cobranza\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Campaign\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Settings\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Maintenance\",\"col\":4}}]",
+ "content": "[{\"type\":\"spacer\",\"data\":{\"col\":12}},{\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Your Shortcuts</b></span>\",\"col\":12}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Lead\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Suscripci\u00f3n\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Opportunity\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Customer\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Sales Analytics\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Ingresos Colectores\",\"col\":3}},{\"type\":\"spacer\",\"data\":{\"col\":12}},{\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Reports &amp; Masters</b></span>\",\"col\":12}},{\"type\":\"card\",\"data\":{\"card_name\":\"Flujo de ventas\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Informes\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Cobranza\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Campaign\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Settings\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Maintenance\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Backoffice\",\"col\":4}}]",
  "creation": "2020-01-23 14:48:30.183272",
  "docstatus": 0,
  "doctype": "Workspace",
@@ -632,6 +632,74 @@
   {
    "hidden": 0,
    "is_query_report": 0,
+   "label": "Backoffice",
+   "link_count": 6,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Altas del mes ",
+   "link_count": 0,
+   "link_to": "Altas del mes",
+   "link_type": "Report",
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Bajas del mes ",
+   "link_count": 0,
+   "link_to": "Bajas del mes",
+   "link_type": "Report",
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "cliente pendiente de fact.",
+   "link_count": 0,
+   "link_to": "Clientes Pendientes de Facturar",
+   "link_type": "Report",
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Reporte de Factura",
+   "link_count": 0,
+   "link_to": "REPORTE DE FACTURAS",
+   "link_type": "Report",
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "factura cobranza",
+   "link_count": 0,
+   "link_to": "Facturas Cobranza",
+   "link_type": "Report",
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "reporte de factura cobranza ",
+   "link_count": 0,
+   "link_to": "Reporte de facturas a combranza",
+   "link_type": "Report",
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
    "label": "Cobranza",
    "link_count": 10,
    "onboard": 0,
@@ -659,12 +727,12 @@
   },
   {
    "hidden": 0,
-   "is_query_report": 0,
+   "is_query_report": 1,
    "label": "Rutas de Facturacion",
    "link_count": 0,
    "link_to": "Rutas de Facturacion",
    "link_type": "DocType",
-   "onboard": 0,
+   "onboard": 1,
    "type": "Link"
   },
   {
@@ -741,7 +809,7 @@
    "hidden": 0,
    "is_query_report": 0,
    "label": "Informes",
-   "link_count": 11,
+   "link_count": 13,
    "onboard": 0,
    "type": "Card Break"
   },
@@ -850,16 +918,36 @@
   },
   {
    "hidden": 0,
-   "is_query_report": 0,
+   "is_query_report": 1,
    "label": "OSS",
    "link_count": 0,
    "link_to": "OSS",
    "link_type": "Report",
-   "onboard": 0,
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Detalle de Factura de Equipos",
+   "link_count": 0,
+   "link_to": "Detalle de Factura de Equipos",
+   "link_type": "Report",
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Cambio de Servicio",
+   "link_count": 0,
+   "link_to": "Cambio de Servicio",
+   "link_type": "Report",
+   "onboard": 1,
    "type": "Link"
   }
  ],
- "modified": "2023-12-18 15:39:42.827497",
+ "modified": "2024-01-08 12:37:10.909228",
  "modified_by": "Administrator",
  "module": "CRM",
  "name": "CRM",
