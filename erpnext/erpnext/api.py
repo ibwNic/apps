@@ -5339,6 +5339,7 @@ def Validar_Aplicacion_de_Anticipos(customer):
 	# return consulta['deudas']
 
 	message = []
+
 	for i in consulta['deudas']:
 		# message.append(i['name'])
 		name  = frappe.db.get_value("Nota de Credito Detalle",

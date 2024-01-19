@@ -116,6 +116,7 @@ def validar_issue_abierta(customer,tipo_orden):
 
 @frappe.whitelist()
 def get_address(customer):
+	# mejorar funcion
 		get_add = frappe.db.sql(
 			"""select departamento, municipio, barrio from `tabAddress` where is_primary_address = 1 
 			and name in (select parent from `tabDynamic Link` where link_name = %(customer)s) limit 1; """,
@@ -611,75 +612,75 @@ def generar_orden_de_reactivacion(plan, gestion):
 	portafolio=get_portafolio_plan(upd_spd.plan)
 	portafolio = str(portafolio[0][0])
 
-	if portafolio not in ('IPTV+'):
-		var = False
-		status =''
-		if frappe.db.exists("Service Order", {"tipo_de_origen": "Gestion","tipo_de_orden":"REACTIVACION","nombre_de_origen":gestion,"plan_de_subscripcion":plan}):
-			so= frappe.get_doc("Service Order", {"tipo_de_origen": "Gestion","tipo_de_orden":"REACTIVACION","nombre_de_origen":gestion,"plan_de_subscripcion":plan})
-			if so.workflow_state=="Cancelado" or so.workflow_state=="Finalizado":
-				status = "Pasa"
-			else:
-				status = "No Pasa"
-
-		elif frappe.db.exists("Service Order", {"tipo_de_origen": "Subscription","tipo_de_orden":"DESINSTALACION","nombre_de_origen":upd_sus.name,"plan_de_subscripcion":plan}):
-			so_des = frappe.get_doc("Service Order", {"tipo_de_origen": "Subscription","tipo_de_orden":"DESINSTALACION","nombre_de_origen":upd_sus.name,"plan_de_subscripcion":plan})
-			if so_des.workflow_state=="Abierto" or so_des.workflow_state=="Finalizado" or so_des.workflow_state=="Cancelado":
-				status = "Pasa"
-				if so_des.workflow_state=="Abierto":
-					so_des.update({
-						"workflow_state":"Cancelado",
-						"docstatus" : 1,
-						"solucion":"CANCELADO POR REACTIVACION"		
-					})
-					so_des.save()
-					frappe.db.sql(""" update `tabService Order` set workflow_state = 'Cancelado', estado = 'Cancelado', docstatus = 1 where name = %(orden)s; """,{"orden":so_des.name})
-			else:
-				status = "No Pasa"
-
+	#if portafolio not in ('IPTV+'):
+	var = False
+	status =''
+	if frappe.db.exists("Service Order", {"tipo_de_origen": "Gestion","tipo_de_orden":"REACTIVACION","nombre_de_origen":gestion,"plan_de_subscripcion":plan}):
+		so= frappe.get_doc("Service Order", {"tipo_de_origen": "Gestion","tipo_de_orden":"REACTIVACION","nombre_de_origen":gestion,"plan_de_subscripcion":plan})
+		if so.workflow_state=="Cancelado" or so.workflow_state=="Finalizado":
+			status = "Pasa"
 		else:
-			var = True
-		if status=="Pasa" or var:
-			direccion=frappe.get_doc("Address", upd_spd.direccion)
-			od = frappe.get_doc({
-				'doctype': "Service Order",
-				'tipo_de_orden': "REACTIVACION",
-				'workflow_state': "Abierto",
-				'tipo_de_origen': "Gestion",
-				'tipo_cliente': frappe.db.get_value('Customer', {"name": upd_sus.party}, 'customer_group'),
-				'nombre': frappe.db.get_value('Customer', {"name": upd_sus.party}, 'customer_name'),
-				'nombre_de_origen': gestion,
-				'descripcion': frappe._('Ejecutar Reactivacion de {0}').format(upd_spd.plan),
-				'tipo': 'Customer',
-				'tercero': upd_sus.party,
-				'plan_de_subscripcion': plan,
-				'direccion_de_instalacion': upd_spd.direccion,
-				'portafolio': portafolio,
-				'departamento': direccion.departamento,
-				'municipio': direccion.municipio,
-				'barrio': direccion.barrio,
-				'direccion': direccion.address_line1,
-				'latitud':upd_spd.latitud,
-				'longitud':upd_spd.longitud,
-				'nodo':upd_spd.nodo
-			})
-			od.insert()
-			frappe.msgprint(frappe._('Nueva orden de {0} con ID {1}').format(frappe._(od.tipo_de_orden), frappe.utils.get_link_to_form("Service Order", od.name)))
+			status = "No Pasa"
 
-			for equipos in upd_sus.equipos:
-				if plan==equipos.plan:
-					code = frappe.db.get_value('Serial No', {"name": equipos.equipo}, 'item_code')
-					eos = frappe.get_doc({
-					'doctype': "Equipo_Orden_Servicio",
-					'serial_no': equipos.equipo,
-					'parent': od.name,
-					'parenttype': "Service Order",
-					'parentfield': "equipo_orden_servicio",
-					'item_code': code
-					})
-					eos.insert()
-			frappe.db.sql("Update `tabGestion` set workflow_state = 'Finalizado', estado = 'Finalizado' where name = %(gestion)s",{"gestion":gestion})
+	elif frappe.db.exists("Service Order", {"tipo_de_origen": "Subscription","tipo_de_orden":"DESINSTALACION","nombre_de_origen":upd_sus.name,"plan_de_subscripcion":plan}):
+		so_des = frappe.get_doc("Service Order", {"tipo_de_origen": "Subscription","tipo_de_orden":"DESINSTALACION","nombre_de_origen":upd_sus.name,"plan_de_subscripcion":plan})
+		if so_des.workflow_state=="Abierto" or so_des.workflow_state=="Finalizado" or so_des.workflow_state=="Cancelado":
+			status = "Pasa"
+			if so_des.workflow_state=="Abierto":
+				so_des.update({
+					"workflow_state":"Cancelado",
+					"docstatus" : 1,
+					"solucion":"CANCELADO POR REACTIVACION"		
+				})
+				so_des.save()
+				frappe.db.sql(""" update `tabService Order` set workflow_state = 'Cancelado', estado = 'Cancelado', docstatus = 1 where name = %(orden)s; """,{"orden":so_des.name})
 		else:
-			frappe.msgprint("La orden no se pudo generar: La orden de reactivacion ya fue creada o existe una desinstalación en curso")
+			status = "No Pasa"
+
+	else:
+		var = True
+	if status=="Pasa" or var:
+		direccion=frappe.get_doc("Address", upd_spd.direccion)
+		od = frappe.get_doc({
+			'doctype': "Service Order",
+			'tipo_de_orden': "REACTIVACION",
+			'workflow_state': "Abierto",
+			'tipo_de_origen': "Gestion",
+			'tipo_cliente': frappe.db.get_value('Customer', {"name": upd_sus.party}, 'customer_group'),
+			'nombre': frappe.db.get_value('Customer', {"name": upd_sus.party}, 'customer_name'),
+			'nombre_de_origen': gestion,
+			'descripcion': frappe._('Ejecutar Reactivacion de {0}').format(upd_spd.plan),
+			'tipo': 'Customer',
+			'tercero': upd_sus.party,
+			'plan_de_subscripcion': plan,
+			'direccion_de_instalacion': upd_spd.direccion,
+			'portafolio': portafolio,
+			'departamento': direccion.departamento,
+			'municipio': direccion.municipio,
+			'barrio': direccion.barrio,
+			'direccion': direccion.address_line1,
+			'latitud':upd_spd.latitud,
+			'longitud':upd_spd.longitud,
+			'nodo':upd_spd.nodo
+		})
+		od.insert()
+		frappe.msgprint(frappe._('Nueva orden de {0} con ID {1}').format(frappe._(od.tipo_de_orden), frappe.utils.get_link_to_form("Service Order", od.name)))
+
+		for equipos in upd_sus.equipos:
+			if plan==equipos.plan:
+				code = frappe.db.get_value('Serial No', {"name": equipos.equipo}, 'item_code')
+				eos = frappe.get_doc({
+				'doctype': "Equipo_Orden_Servicio",
+				'serial_no': equipos.equipo,
+				'parent': od.name,
+				'parenttype': "Service Order",
+				'parentfield': "equipo_orden_servicio",
+				'item_code': code
+				})
+				eos.insert()
+		frappe.db.sql("Update `tabGestion` set workflow_state = 'Finalizado', estado = 'Finalizado' where name = %(gestion)s",{"gestion":gestion})
+	else:
+		frappe.msgprint("La orden no se pudo generar: La orden de reactivacion ya fue creada o existe una desinstalación en curso")
 
 
 def programar_cancelaciones():

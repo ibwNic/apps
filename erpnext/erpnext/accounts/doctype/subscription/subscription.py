@@ -362,131 +362,136 @@ class Subscription(Document):
 		Creates a `Invoice` for the `Subscription`, updates `self.invoices` and
 		saves the `Subscription`.
 		"""
-		try:
+		# try:
 
 
-			debit=0
-			if self.subscription_update:
-				costo = frappe.db.sql(
-				"""select total from `tabSales Invoice` where customer = %(name)s and posting_date and docstatus=1  and month(posting_date)=month(now()) and year(posting_date)=year(now()) order by posting_date 
-				and tipo_factura='Recurrente' desc limit 1;""",
-				{"name": self.party   },
+		debit=0
+		if self.subscription_update:
+			costo = frappe.db.sql(
+			"""select case when (
+				select total from `tabSales Invoice` where customer = %(name)s 
+				and posting_date and docstatus=1  and month(posting_date)=month(now()) and year(posting_date)=year(now()) order by posting_date 
+				and tipo_factura='Recurrente' desc limit 1) then (
+				select total from `tabSales Invoice` where customer =  %(name)s  
+				and posting_date and docstatus=1  and month(posting_date)=month(now()) and year(posting_date)=year(now()) order by posting_date 
+				and tipo_factura='Recurrente' desc limit 1) else 0 end as total;""",
+			{"name": self.party   },
+			)
+			if float(costo[0][0]) > 0:	
+				costo_2 = frappe.db.sql(
+				"""select sum(cost) from `tabSubscription Plan Detail` where cost>0 and estado_plan='Activo' and parent=%(name)s;""",
+				{"name": self.name   },
 				)
-				if costo:	
-					costo_2 = frappe.db.sql(
-					"""select sum(cost) from `tabSubscription Plan Detail` where cost>0 and estado_plan='Activo' and parent=%(name)s;""",
-					{"name": self.name   },
+				debit=float(costo_2[0][0])-float(costo[0][0])
+
+
+		doctype = "Sales Invoice" if self.party_type == "Customer" else "Purchase Invoice"
+		if debit>0:
+			invoice = self.create_invoice(prorate,debit)				
+		else:
+			invoice = self.create_invoice(prorate)	
+			
+		# invoice.submit()
+
+		self.append("invoices", {"document_type": doctype, "invoice": invoice.name})
+		self.save()
+		intervalo=int(self.periodo_de_facturacion)
+		i=add_days(self.current_invoice_end, 1)
+
+		p = formatdate(frappe.utils.get_last_day(i), "yyyy-MM-dd")
+
+		if self.campana:
+			promo = frappe.get_doc("promotions campaign", self.campana)
+			if promo:
+				if not promo.primer_mes_de_cortesia:
+					if intervalo>1:
+						p = add_months(p, intervalo-1)
+
+					upd_suscrip = frappe.get_doc("Subscription", {"name": self.name})
+					upd_suscrip.update(
+						{
+							"current_invoice_start":i ,
+							"current_invoice_end":p,
+							"workflow_state":"Activo"
+						}
 					)
-					debit=float(costo_2[0][0])-float(costo[0][0])
+					upd_suscrip.save()
+		else:
+			if intervalo>1:
+				p = add_months(p, intervalo-1)
+
+			upd_suscrip = frappe.get_doc("Subscription", {"name": self.name})
+			upd_suscrip.update(
+				{
+					"current_invoice_start":i ,
+					"current_invoice_end":p,
+					"workflow_state":"Activo"
+				}
+			)
+			upd_suscrip.save()				
 
 
-			doctype = "Sales Invoice" if self.party_type == "Customer" else "Purchase Invoice"
-			if debit>0:
-				invoice = self.create_invoice(prorate,debit)				
-			else:
-				invoice = self.create_invoice(prorate)	
-				
-			# invoice.submit()
+		# if promo.primer_mes_de_cortesia:
+		# 	intervalo=int(self.periodo_de_facturacion)
+		# 	i=add_days(self.current_invoice_end, 1)
+		# 	p = formatdate(frappe.utils.get_last_day(i), "yyyy-MM-dd")
+		# 	if intervalo > 1:
+		# 		p = add_months(p, intervalo)
+		# 	upd_suscrip = frappe.get_doc("Subscription", {"name": self.name})
+		# 	upd_suscrip.update(
+		# 		{
+		# 			"current_invoice_start":i ,
+		# 			"current_invoice_end":p,
+		# 			"workflow_state":"Activo"
+		# 		}
+		# 	)
+		# 	upd_suscrip.save()	
+		# else:
+		# if promo:
+		# 	if not promo.primer_mes_de_cortesia:
+		# 		if intervalo>1:
+		# 			p = add_months(p, intervalo-1)
 
-			self.append("invoices", {"document_type": doctype, "invoice": invoice.name})
-			self.save()
-			intervalo=int(self.periodo_de_facturacion)
-			i=add_days(self.current_invoice_end, 1)
+		# 		upd_suscrip = frappe.get_doc("Subscription", {"name": self.name})
+		# 		upd_suscrip.update(
+		# 			{
+		# 				"current_invoice_start":i ,
+		# 				"current_invoice_end":p,
+		# 				"workflow_state":"Activo"
+		# 			}
+		# 		)
+		# 		upd_suscrip.save()
+		# else:
+		# 		if intervalo>1:
+		# 			p = add_months(p, intervalo-1)
 
-			p = formatdate(frappe.utils.get_last_day(i), "yyyy-MM-dd")
+		# 		upd_suscrip = frappe.get_doc("Subscription", {"name": self.name})
+		# 		upd_suscrip.update(
+		# 			{
+		# 				"current_invoice_start":i ,
+		# 				"current_invoice_end":p,
+		# 				"workflow_state":"Activo"
+		# 			}
+		# 		)
+		# 		upd_suscrip.save()
+		if invoice:
+			for e in self.equipos:
+				portafolio=frappe.db.get_value("Subscription Plan Detail",e.plan,"plan")  
 
-			if self.campana:
-				promo = frappe.get_doc("promotions campaign", self.campana)
-				if promo:
-					if not promo.primer_mes_de_cortesia:
-						if intervalo>1:
-							p = add_months(p, intervalo-1)
+				if "IPTV" in portafolio:
 
-						upd_suscrip = frappe.get_doc("Subscription", {"name": self.name})
-						upd_suscrip.update(
-							{
-								"current_invoice_start":i ,
-								"current_invoice_end":p,
-								"workflow_state":"Activo"
-							}
-						)
-						upd_suscrip.save()
-			else:
-				if intervalo>1:
-					p = add_months(p, intervalo-1)
-
-				upd_suscrip = frappe.get_doc("Subscription", {"name": self.name})
-				upd_suscrip.update(
-					{
-						"current_invoice_start":i ,
-						"current_invoice_end":p,
-						"workflow_state":"Activo"
-					}
-				)
-				upd_suscrip.save()				
-
-
-			# if promo.primer_mes_de_cortesia:
-			# 	intervalo=int(self.periodo_de_facturacion)
-			# 	i=add_days(self.current_invoice_end, 1)
-			# 	p = formatdate(frappe.utils.get_last_day(i), "yyyy-MM-dd")
-			# 	if intervalo > 1:
-			# 		p = add_months(p, intervalo)
-			# 	upd_suscrip = frappe.get_doc("Subscription", {"name": self.name})
-			# 	upd_suscrip.update(
-			# 		{
-			# 			"current_invoice_start":i ,
-			# 			"current_invoice_end":p,
-			# 			"workflow_state":"Activo"
-			# 		}
-			# 	)
-			# 	upd_suscrip.save()	
-			# else:
-			# if promo:
-			# 	if not promo.primer_mes_de_cortesia:
-			# 		if intervalo>1:
-			# 			p = add_months(p, intervalo-1)
-
-			# 		upd_suscrip = frappe.get_doc("Subscription", {"name": self.name})
-			# 		upd_suscrip.update(
-			# 			{
-			# 				"current_invoice_start":i ,
-			# 				"current_invoice_end":p,
-			# 				"workflow_state":"Activo"
-			# 			}
-			# 		)
-			# 		upd_suscrip.save()
-			# else:
-			# 		if intervalo>1:
-			# 			p = add_months(p, intervalo-1)
-
-			# 		upd_suscrip = frappe.get_doc("Subscription", {"name": self.name})
-			# 		upd_suscrip.update(
-			# 			{
-			# 				"current_invoice_start":i ,
-			# 				"current_invoice_end":p,
-			# 				"workflow_state":"Activo"
-			# 			}
-			# 		)
-			# 		upd_suscrip.save()
-			if invoice:
-				for e in self.equipos:
-					portafolio=frappe.db.get_value("Subscription Plan Detail",e.plan,"plan")  
-
-					if "IPTV" in portafolio:
-
-						upd_suscrip_equipos = frappe.get_doc("Subscription Plan Equipos", {"plan": e.plan})
-						upd_suscrip_equipos.update(
-							{
-								"cuotas_pendientes":float(upd_suscrip_equipos.numero_de_cuotas)-1 ,
-							}
-						)
-						upd_suscrip_equipos.save()	
+					upd_suscrip_equipos = frappe.get_doc("Subscription Plan Equipos", {"plan": e.plan})
+					upd_suscrip_equipos.update(
+						{
+							"cuotas_pendientes":float(upd_suscrip_equipos.numero_de_cuotas)-1 ,
+						}
+					)
+					upd_suscrip_equipos.save()	
 
 
-			return invoice
-		except Exception as e:
-			frappe.msgprint(frappe._('generate_invoice : Fatality Error Project {0} ').format(e))
+		return invoice
+		# except Exception as e:
+		# 	frappe.msgprint(frappe._('generate_invoice : Fatality Error Project {0} ').format(e))
 
 
 	def generate_invoice_Recurrente_B(self, prorate=0):
@@ -709,6 +714,7 @@ class Subscription(Document):
 		"""
 		Creates a `Invoice`, submits it and returns it
 		"""
+		frappe.msgprint(self.party)
 		doctype = "Sales Invoice" if self.party_type == "Customer" else "Purchase Invoice"
 
 		invoice = frappe.new_doc(doctype)
@@ -1291,6 +1297,10 @@ class Subscription(Document):
 			for plan in plans:
 				
 				plan_doc = frappe.get_doc("Subscription Plan", plan.plan)
+				mes_start_date = frappe.utils.formatdate(self.start_date, "MM")
+				year_start_date = frappe.utils.formatdate(self.start_date, "YY")
+				Mes_current_start = frappe.utils.formatdate(self.current_invoice_start, "MM")
+				Year_current_start = frappe.utils.formatdate(self.current_invoice_start, "YY")
 
 				if not plan.old_plan:
 					pasa=True
@@ -1309,6 +1319,8 @@ class Subscription(Document):
 						pasa=True
 					if plan_doc.item_group!=plan_old_item_group:
 						pasa=True
+					if (mes_start_date!=Mes_current_start or year_start_date!=Year_current_start):
+						pasa = True
 
 
 				if plan.estado_plan=="Activo" and pasa:

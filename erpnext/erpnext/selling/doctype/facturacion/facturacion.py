@@ -179,7 +179,8 @@ def get_items_from_customer(self,customer, currency_invoice,prorate=0):
 
 	# en las pruebas se esta usando el "current_invoice_end" pero en produccion hay que usar el "current_invoice_start"
 	plans = frappe.db.sql(
-	"""select t2.plan,t2.qty,t2.currency,t2.cost,t3.periodo_de_facturacion,t2.name,t4.tipocambio,t2.name  from   `tabSubscription Plan Detail` t2
+	"""select t2.plan,t2.qty,t2.currency,t2.cost,t3.periodo_de_facturacion,t2.name,t4.tipocambio,t2.name
+	  from   `tabSubscription Plan Detail` t2
 		inner join `tabSubscription`  t3 on  t2.parent =t3.name 
 		inner join `tabSubscription Plan` t4 on t4.name= t2.plan  
 		where t3.party=%(party)s and t3.current_invoice_start=%(cis)s and t2.estado_plan='Activo' and t2.cost>0""",
@@ -193,6 +194,7 @@ def get_items_from_customer(self,customer, currency_invoice,prorate=0):
 	# 		frappe.msgprint(frappe._('Fatality Error Project Plan: {0} ').format(e))
 	# 		return
 	# return
+	item2 = None
 	for plan in plans:
 		# frappe.msgprint(str(plan[4]) )
 		# return
@@ -228,7 +230,7 @@ def get_items_from_customer(self,customer, currency_invoice,prorate=0):
 					
 					plan_equipo= frappe.get_doc("Subscription Plan Equipos", {"plan": plan[7]})
 
-					if plan_equipo.cuotas_pendientes==0:
+					if plan_equipo.cuotas_pendientes<1:
 						pass
 					else:
 						#rate_ip=(float(plan_equipo.precio_de_venta)-float(plan_equipo.primer_pago))/float(plan_equipo.cuotas_pendientes)
@@ -238,14 +240,12 @@ def get_items_from_customer(self,customer, currency_invoice,prorate=0):
 						item2 = {
 						"item_code": "Activacion por OTC",
 						"qty": 1,
-						"rate":float(rate_ip)*float(paralela),
+						"rate":float(rate_ip)*float(self.paralela),
 						"cost_center": plan_doc.cost_center,
 						"plan_detail":plan[7],
 						}	
 
 						frappe.db.set_value("Subscription Plan Equipos",{"plan": plan[7]},"cuotas_pendientes",int(plan_equipo.cuotas_pendientes)-1)			
-
-
 
 			else:
 				item = {
@@ -256,7 +256,9 @@ def get_items_from_customer(self,customer, currency_invoice,prorate=0):
 					"plan_detail":plan[5],
 				}
 				
+				
 		else:
+			#factura esta en dolares
 			if plan[2]=="NIO":
 				# frappe.msgprint(frappe._('precio plan {0} ').format(plan[2]))
 				# if plan[6]>0:
@@ -289,22 +291,21 @@ def get_items_from_customer(self,customer, currency_invoice,prorate=0):
 					
 					plan_equipo= frappe.get_doc("Subscription Plan Equipos", {"plan": plan[7]})
 
-					if plan_equipo.cuotas_pendientes==0:
+					if plan_equipo.cuotas_pendientes<1:
 						pass
-					else:
-						if plan_equipo.numero_de_cuotas > 0:	
-							#rate_ip=(float(plan_equipo.precio_de_venta)-float(plan_equipo.primer_pago))/float(plan_equipo.cuotas_pendientes)
-							rate_ip=(float(plan_equipo.precio_de_venta)-float(plan_equipo.deposito))/float(plan_equipo.numero_de_cuotas)
+					else:					
+						#rate_ip=(float(plan_equipo.precio_de_venta)-float(plan_equipo.primer_pago))/float(plan_equipo.cuotas_pendientes)
+						rate_ip=(float(plan_equipo.precio_de_venta)-float(plan_equipo.deposito))/float(plan_equipo.numero_de_cuotas)
+						
+						item2 = {
+						"item_code": "Activacion por OTC",
+						"qty": 1,
+						"rate":float(rate_ip),
+						"cost_center": plan_doc.cost_center,
+						"plan_detail":plan[7],
+						}	
 
-							item2 = {
-							"item_code": "Activacion por OTC",
-							"qty": 1,
-							"rate":float(rate_ip),
-							"cost_center": plan_doc.cost_center,
-							"plan_detail":plan[7],
-							}	
-							frappe.db.set_value("Subscription Plan Equipos",{"plan": plan[7]},"cuotas_pendientes",int(plan_equipo.cuotas_pendientes)-1)			
-
+						frappe.db.set_value("Subscription Plan Equipos",{"plan": plan[7]},"cuotas_pendientes",int(plan_equipo.cuotas_pendientes)-1)			
 
 
 		# for i in item:
@@ -313,7 +314,15 @@ def get_items_from_customer(self,customer, currency_invoice,prorate=0):
 		if deferred:
 			item.update(
 				{
-					deferred_field: deferred,
+					"deferred_field": deferred,
+					"service_start_date": self.current_invoice_start,
+					"service_end_date": self.current_invoice_end,
+				}
+			)
+			if item2:
+				item2.update(
+				{
+					"deferred_field": deferred,
 					"service_start_date": self.current_invoice_start,
 					"service_end_date": self.current_invoice_end,
 				}
@@ -326,6 +335,8 @@ def get_items_from_customer(self,customer, currency_invoice,prorate=0):
 				item.update({dimension: plan_doc.get(dimension)})
 
 		items.append(item)
+	if item2:
+		items.append(item2)
 
 	return items	
 
@@ -471,10 +482,10 @@ def update_rutas(name):
 def process_de_Facturacion(name):
 	# frappe.msgprint(name)
 	fact = frappe.get_doc("Facturacion", name)
-	nio='%NIO%'
+	# nio='%NIO%'
 
 	Customers_f = frappe.db.sql(
-	"""select cliente from	`tabDetalle Ciclo Facturacion`  where parent=%(pt)s and sales_invoice is null  order by ruta desc limit 4000""",
+	"""select dcf.cliente from	`tabDetalle Ciclo Facturacion` dcf inner join `tabCustomer` c on dcf.cliente = c.name where dcf.parent=%(pt)s and dcf.sales_invoice is null  order by dcf.ruta, c.barrio  limit 4000""",
 	{"pt": name},
 	)
 	
@@ -514,9 +525,9 @@ def process_de_Vistaprevia(name):
 	Clientes = frappe.db.sql(
 	"""select distinct t3.party from `tabSubscription Plan` t1 
 	inner join `tabSubscription Plan Detail`  t2 on  t1.name = t2.plan
-	inner join `tabSubscription`  t3 on  t2.parent =t3.name  
-	where t2.estado_plan='Activo' and t3.current_invoice_start =%(cis)s  and t2.cost>0 and t3.party not in ('SCI-310076001')  limit 20000""",
-	{"cis": fact.current_invoice_start},
+	inner join `tabSubscription`  t3 on  t2.parent =t3.name	
+	where t2.estado_plan='Activo' and t2.plan like %(iptv)s and t3.current_invoice_start =%(cis)s  and t2.cost>0 and t3.party not in ('SCI-310076001')  limit 20000""",
+	{"cis": fact.current_invoice_start, "iptv":"%IPTV%"},
 	)
 
 	try:
@@ -750,7 +761,7 @@ def process_de_Vistaprevia(name):
 		"""select  distinct t1.name from `tabCustomer` t1 
 				inner join `tabDetalle Ciclo Facturacion` t5 on t1.name=t5.cliente
 				where t1.territory = 'Jinotega' 
-			and t1.eco_factura=0 and  t5.parent=%(t5)s and t5.marck=0 limit 50000""",
+			and t1.eco_factura=0 and  t5.parent=%(t5)s and t5.marck=0  limit 50000""",
 		{"t5": name},
 		)
 

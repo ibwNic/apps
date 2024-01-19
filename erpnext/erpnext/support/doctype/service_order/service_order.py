@@ -71,6 +71,13 @@ class ServiceOrder(Document):
 		
 		
 		if self.workflow_state == "Finalizado":
+			if not self.fecha_atendido:
+				frappe.msgprint("No hay fecha atendido, favor reintentar pasar a atendido")
+				frappe.db.set_value(self.doctype, self.name, 'workflow_state', 'Seguimiento')
+				frappe.db.set_value(self.doctype, self.name, 'estado_anterior', 'SEGUIMIENTO')
+				frappe.db.set_value(self.doctype, self.name, 'docstatus', 0)
+				self.reload()
+				return
 			
 			if self.tipo_de_origen == 'Gestion' and frappe.db.get_value("Gestion",self.nombre_de_origen,"workflow_state") == 'Atendido':
 				frappe.db.set_value("Gestion",{"name":self.nombre_de_origen},"facturado",1)

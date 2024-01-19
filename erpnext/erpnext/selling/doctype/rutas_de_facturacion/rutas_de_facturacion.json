@@ -7,8 +7,11 @@
  "engine": "InnoDB",
  "field_order": [
   "nombre",
-  "barrios",
-  "collector"
+  "collector",
+  "column_break_3",
+  "territory",
+  "section_break_5",
+  "barrios"
  ],
  "fields": [
   {
@@ -18,7 +21,6 @@
    "unique": 1
   },
   {
-   "allow_bulk_edit": 1,
    "fieldname": "barrios",
    "fieldtype": "Table",
    "label": "Barrios",
@@ -27,13 +29,28 @@
   {
    "fieldname": "collector",
    "fieldtype": "Link",
-   "label": "collector",
+   "label": "colector",
    "options": "Colectores"
+  },
+  {
+   "description": "Modifique el departamento o municipio para filtrar los barrios en la tabla",
+   "fieldname": "territory",
+   "fieldtype": "Link",
+   "label": "Territory",
+   "options": "Territory"
+  },
+  {
+   "fieldname": "column_break_3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_5",
+   "fieldtype": "Section Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-11-30 15:20:56.451618",
+ "modified": "2024-01-17 16:03:56.004588",
  "modified_by": "Administrator",
  "module": "Selling",
  "name": "Rutas de Facturacion",
